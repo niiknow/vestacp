@@ -24,8 +24,9 @@ RUN dpkg --configure -a \
 # setting up aws-cli and s3cmd
     && wget -O- -q http://s3tools.org/repo/deb-all/stable/s3tools.key | apt-key add - \
     && wget -O/etc/apt/sources.list.d/s3tools.list http://s3tools.org/repo/deb-all/stable/s3tools.list \
-    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927 \
-    && echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.2 main" | tee /etc/apt/sources.list.d/mongodb-org-3.2.list \
+    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 \
+    &&  echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" \  
+        | sudo tee /etc/apt/sources.list.d/mongodb-3.4.list \
     && apt-get update && apt-get -y upgrade \
     && apt-get -y install s3cmd mongodb-org-tools \
     && curl -O https://bootstrap.pypa.io/get-pip.py \
@@ -60,13 +61,17 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
 
 ADD ./files /
 RUN chmod +x /etc/init.d/dovecot \
+    && chmod +x /etc/cron.hourly/vesta-backup-etc \
     && chmod +x /etc/my_init.d/startup.sh \
 
 # initialize ips for docker support
     && cd /usr/local/vesta/data/ips && mv * 127.0.0.1 \
-    && cd /etc/apache2/conf.d && sed -i -- 's/172.*.*.*:80/127.0.0.1:80/g' * && sed -i -- 's/172.*.*.*:8443/127.0.0.1:8443/g' * \
-    && cd /etc/nginx/conf.d && sed -i -- 's/172.*.*.*:80;/80;/g' * && sed -i -- 's/172.*.*.*:8080/127.0.0.1:8080/g' * \
-    && cd /home/admin/conf/web && sed -i -- 's/172.*.*.*:80;/80;/g' * && sed -i -- 's/172.*.*.*:8080/127.0.0.1:8080/g' * \
+    && cd /etc/apache2/conf.d \
+    && sed -i -- 's/172.*.*.*:80/127.0.0.1:80/g' * && sed -i -- 's/172.*.*.*:8443/127.0.0.1:8443/g' * \
+    && cd /etc/nginx/conf.d \
+    && sed -i -- 's/172.*.*.*:80;/80;/g' * && sed -i -- 's/172.*.*.*:8080/127.0.0.1:8080/g' * \
+    && cd /home/admin/conf/web \
+    && sed -i -- 's/172.*.*.*:80;/80;/g' * && sed -i -- 's/172.*.*.*:8080/127.0.0.1:8080/g' * \
     && rm -f /etc/service/sshd/down \
     && /etc/my_init.d/00_regen_ssh_host_keys.sh \
 
@@ -76,6 +81,7 @@ RUN chmod +x /etc/init.d/dovecot \
     && service redis-server stop \
     && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/mysql/g" /etc/mysql/my.cnf \
     && sed -i -e "s/dir \./dir \/vesta\/redis\/db/g" /etc/redis/redis.conf \
+    && sed -i -e "s/\/etc\/redis/\/vesta\/redis/g" /etc/init.d/redis-server \
 
 # the rest
     && mkdir /vesta-start \
@@ -124,9 +130,9 @@ RUN chmod +x /etc/init.d/dovecot \
     && rm -rf /usr/local/vesta \
     && ln -s /vesta/local/vesta /usr/local/vesta \
 
-    && mv /etc/shadow /vesta-start/etc/shadow \
-    && rm -rf /etc/shadow \
-    && ln -s /vesta/etc/shadow /etc/shadow \
+    && mv /etc/memcached.conf /vesta-start/etc/memcached.conf \
+    && rm -rf /etc/memcached.conf \
+    && ln -s /vesta/etc/memcached.conf /etc/memcached.conf \
 
     && mv /etc/bind /vesta-start/etc/bind \
     && rm -rf /etc/bind \

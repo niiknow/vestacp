@@ -16,17 +16,8 @@ then
 
     # disable localhost redirect to bad default IP
     sed -i -e "s/^NAT=.*/NAT=\'\'/g" /vesta/local/vesta/data/ips/127.0.0.1
+
 fi
 
 # starting Vesta
-cd /etc/init.d/ \
-&& ./vesta start \
-&& ./mysql start \
-&& ./nginx start \
-&& ./exim4 start \
-&& ./dovecot start \
-&& ./apache2 start \
-&& ./postgresql start
-# && ./clamav-daemon start \
-# && ./spamassassin start \
-# && ./php7.0-fpm start \
+bash /vesta/bin/my-startup.sh
