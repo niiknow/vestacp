@@ -12,13 +12,12 @@ RUN apt-get update && apt-get -y upgrade \
     && apt-get -y install wget curl git unzip nano vim rsync sudo tar \
        apt-utils software-properties-common build-essential \
        python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev libffi-dev libssl-dev \
-       libmagickwand-dev imagemagick perl netcat php-dev php-pear mcrypt pwgen \
+       libmagickwand-dev imagemagick perl netcat mcrypt pwgen memcached \
        tcl redis-server netcat openssl libpcre3 dnsmasq procps
 
 RUN dpkg --configure -a \
 
 # setup imagick and python
-    && pecl install imagick \
     && curl -s -o /tmp/python-support_1.0.15_all.deb https://launchpadlibrarian.net/109052632/python-support_1.0.15_all.deb \
     && dpkg -i /tmp/python-support_1.0.15_all.deb \
 
@@ -31,9 +30,11 @@ RUN dpkg --configure -a \
     && apt-get -y install s3cmd mongodb-org-tools \
     && curl -O https://bootstrap.pypa.io/get-pip.py \
     && python get-pip.py \
-    && pip install awscli \
+    && pip install awscli
 
 # install VestaCP
+RUN dpkg --configure -a \
+    && apt-get update && apt-get -yq upgrade && apt-get install -yf \
     && curl -s -o /tmp/vst-install-ubuntu.sh https://vestacp.com/pub/vst-install-ubuntu.sh \
     && bash /tmp/vst-install-ubuntu.sh \
     --nginx yes --apache yes --phpfpm no \
@@ -50,15 +51,14 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
     && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
     && apt-get update && apt-get -y upgrade \
     && apt-get install -y exim4-daemon-heavy \
-    && apt-get install -y nodejs \
+    && apt-get install -y nodejs php-memcached \
     && npm install --quiet -g gulp express bower mocha karma-cli pm2 && npm cache clean \
     && ln -sf /usr/bin/nodejs /bin/node \
-    && apt-get -y autoremove \
     && dpkg --configure -a \
-    && apt-get update && apt-get -yq upgrade && apt-get install -yf \
+    && apt-get -yf autoremove \
     && apt-get clean
 
-ADD files/ /
+ADD ./files /
 RUN chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/my_init.d/startup.sh \
 
@@ -73,13 +73,16 @@ RUN chmod +x /etc/init.d/dovecot \
 # redirect sql data folder
     && service mysql stop \
     && service postgresql stop \
+    && service redis-server stop \
     && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/mysql/g" /etc/mysql/my.cnf \
+    && sed -i -e "s/dir \./dir \/vesta\/redis\/db/g" /etc/redis/redis.conf \
 
 # the rest
     && mkdir /vesta-start \
     && mkdir /vesta-start/etc \
     && mkdir /vesta-start/var \
     && mkdir /vesta-start/local \
+    && mkdir -p /vesta-start/redis/db \
 
     && mv /etc/php /vesta-start/etc/php \
     && rm -rf /etc/php \
@@ -92,6 +95,10 @@ RUN chmod +x /etc/init.d/dovecot \
     && mv /etc/exim4   /vesta-start/etc/exim4 \
     && rm -rf /etc/exim4 \
     && ln -s /vesta/etc/exim4 /etc/exim4 \
+
+    && mv /etc/redis   /vesta-start/etc/redis \
+    && rm -rf /etc/redis \
+    && ln -s /vesta/etc/redis /etc/redis \
 
     && mv /etc/dovecot /vesta-start/etc/dovecot \
     && rm -rf /etc/dovecot \
@@ -141,17 +148,18 @@ RUN chmod +x /etc/init.d/dovecot \
 # vesta session
     && mkdir -p /vesta-start/local/vesta/data/sessions \
     && chmod 775 /vesta-start/local/vesta/data/sessions \
-    && chown root:admin /vesta-start/local/vesta/data/sessions \
+    && chown root:admin /vesta-start/local/vesta/data/sessions
 
 # php stuff
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 520M/" /vesta-start/etc/php/7.0/apache2/php.ini && \
-    sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 520M/" /vesta-start/etc/php/7.0/cli/php.ini && \
-    sed -i "s/post_max_size = 8M/post_max_size = 520M/" /vesta-start/etc/php/7.0/apache2/php.ini && \
-    sed -i "s/post_max_size = 8M/post_max_size = 520M/" /vesta-start/etc/php/7.0/cli/php.ini && \
-    sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini && \
-    sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini && \
-    sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini && \
-    sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini
+RUN sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 520M/" /vesta-start/etc/php/7.0/apache2/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 520M/" /vesta-start/etc/php/7.0/cli/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 520M/" /vesta-start/etc/php/7.0/apache2/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 520M/" /vesta-start/etc/php/7.0/cli/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini 
+
 
 VOLUME ["/vesta", "/home"]
 
