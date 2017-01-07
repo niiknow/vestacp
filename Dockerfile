@@ -43,7 +43,7 @@ RUN dpkg --configure -a \
     --exim yes --dovecot yes --spamassassin yes --clamav yes --named yes \
     --iptables no --fail2ban no \
     --mysql yes --postgresql yes --remi yes \
-    --quota no --password MakeDonaldDrumpfAgain2017 \
+    --quota no --password MakeItSo17 \
     -y no -f \
     && apt-get clean
 
