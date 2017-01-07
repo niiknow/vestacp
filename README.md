@@ -33,7 +33,7 @@ Use SFTP instead of FTP on the 2222 port.
 - [x] Both AWS CLI and s3cmd has been installed to simplify your backup lifestyle.  You just need to setup a cron.
 - [ ] Update default *index.html* to remove reference to VestaCP for security.
 - [ ] Disable phpmyadmin and phppgadmin
-- [ ] Redirect *startup.sh* to allow persisting of configuration
+- [x] Redirect *startup.sh* to /vesta/my-startup.sh so you can control startups
 
 ### misc/testing
 - [x] nginx, apache, log viewing
@@ -41,11 +41,11 @@ Use SFTP instead of FTP on the 2222 port.
 - [x] Letsencrypt
 - [x] Send Email 
 - [x] phpmyadmin and phppgadmin 
-- [ ] DNS Server and Webmail
-- [ ] Backup
+- [ ] DNS Server and Receive Mail
+- [x] Backup
 
 ### your todo
-- [ ] Since this is a Control Panel that you will be updating:
+- [ ] Since this is a Control Panel that you will need to update:
 
 1. Only expose port that you required.
 2. Change the default/initial *admin* password for security purpose.
