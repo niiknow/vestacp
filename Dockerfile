@@ -41,7 +41,7 @@ RUN dpkg --configure -a \
     --nginx yes --apache yes --phpfpm no \
     --vsftpd no --proftpd no \
     --exim yes --dovecot yes --spamassassin yes --clamav yes --named yes \
-    --iptables no --fail2ban no \
+    --iptables yes --fail2ban yes \
     --mysql yes --postgresql yes --remi yes \
     --quota no --password MakeItSo17 \
     -y no -f \
@@ -155,7 +155,7 @@ RUN chmod +x /etc/init.d/dovecot \
     && chmod 775 /vesta-start/local/vesta/data/sessions \
     && chown root:admin /vesta-start/local/vesta/data/sessions
 
-# php stuff
+# php apache2 stuff
 RUN sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 520M/" /vesta-start/etc/php/7.0/apache2/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 520M/" /vesta-start/etc/php/7.0/cli/php.ini \
     && sed -i "s/post_max_size = 8M/post_max_size = 520M/" /vesta-start/etc/php/7.0/apache2/php.ini \
@@ -164,7 +164,6 @@ RUN sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 520M/" /vesta-start
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini 
-
 
 VOLUME ["/vesta", "/home"]
 
