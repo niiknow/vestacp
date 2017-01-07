@@ -85,9 +85,14 @@ RUN chmod +x /etc/init.d/dovecot \
 
 # the rest
     && mkdir -p /vesta-start/etc \
+    && mkdir -p /vesta-start/etc-bak/nginx/conf.d \
     && mkdir -p /vesta-start/var \
     && mkdir -p /vesta-start/local \
     && mkdir -p /vesta-start/redis/db \
+
+# disable phpmyadmin and phppgadmin by default, backup the config first    
+    && rsync -a /etc/nginx/conf.d/* /vesta-start/etc-bak/nginx/conf.d \
+    && rm -rf /etc/nginx/conf.d/php*.inc \
 
     && mv /etc/php /vesta-start/etc/php \
     && rm -rf /etc/php \
@@ -165,6 +170,6 @@ RUN sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 520M/" /vesta-start
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini 
 
-VOLUME ["/vesta", "/home"]
+VOLUME ["/vesta", "/home", "/backup"]
 
 EXPOSE 22 25 53 54 80 110 443 993 3306 5432 8083
