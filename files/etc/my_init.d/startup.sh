@@ -22,4 +22,4 @@ then
 fi
 
 # starting Vesta
-bash /vesta/bin/my-startup.sh
+bash /vesta/my-startup.sh
