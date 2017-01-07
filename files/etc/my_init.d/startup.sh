@@ -11,10 +11,10 @@ then
     sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /vesta/local/vesta/data/templates/web/nginx/default.tpl
     sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /vesta/local/vesta/data/templates/web/nginx/default.stpl
     
-    # sed -i -e "s/proxy_set_header X-Real-IP \$remote_addr\;\n      proxy_pass/proxy_pass/g" /vesta/local/vesta/data/templates/web/nginx/default.tpl
-    # sed -i -e "s/proxy_set_header X-Real-IP \$remote_addr\;\n      proxy_pass/proxy_pass/g" /vesta/local/vesta/data/templates/web/nginx/default.stpl
-    
     bash /usr/local/vesta/upd/switch_rpath.sh
+    
+    # patch psql9.5 backup
+    sed -i -e "s/\-x \-i \-f/\-x \-f/g" /vesta/local/vesta/func/db.sh
     
     # disable localhost redirect to bad default IP
     sed -i -e "s/^NAT=.*/NAT=\'\'/g" /vesta/local/vesta/data/ips/127.0.0.1
