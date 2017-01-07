@@ -3,4 +3,5 @@
 mkdir -p /vesta/etc-bak
 rsync -a /etc/passwd /vesta/etc-bak/passwd
 rsync -a /etc/shadow /vesta/etc-bak/shadow
+rsync -a /etc/gshadow /vesta/etc-bak/gshadow
 rsync -a /etc/group	/vesta/etc-bak/group
