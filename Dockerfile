@@ -84,10 +84,9 @@ RUN chmod +x /etc/init.d/dovecot \
     && sed -i -e "s/\/etc\/redis/\/vesta\/redis/g" /etc/init.d/redis-server \
 
 # the rest
-    && mkdir /vesta-start \
-    && mkdir /vesta-start/etc \
-    && mkdir /vesta-start/var \
-    && mkdir /vesta-start/local \
+    && mkdir -p /vesta-start/etc \
+    && mkdir -p /vesta-start/var \
+    && mkdir -p /vesta-start/local \
     && mkdir -p /vesta-start/redis/db \
 
     && mv /etc/php /vesta-start/etc/php \
