@@ -4,6 +4,7 @@ if [[ -d /vesta/etc-bak ]]; then
 	# restore users
 	rsync -a /vesta/etc-bak/passwd /etc/passwd
 	rsync -a /vesta/etc-bak/shadow /etc/shadow
+	rsync -a /vesta/etc-bak/gshadow /etc/gshadow
 	rsync -a /vesta/etc-bak/group /etc/group
 fi	
 
