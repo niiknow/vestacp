@@ -61,7 +61,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
 
 ADD ./files /
 RUN chmod +x /etc/init.d/dovecot \
-    && chmod +x /etc/cron.hourly/vesta-backup-etc \
+    && chmod +x /etc/cron.hourly/vestacp-backup-etc \
     && chmod +x /etc/my_init.d/startup.sh \
 
 # initialize ips for docker support
