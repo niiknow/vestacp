@@ -63,6 +63,8 @@ ADD ./files /
 RUN chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/cron.hourly/vestacp-backup-etc \
     && chmod +x /etc/my_init.d/startup.sh \
+    && rm -f /etc/service/sshd/down \
+    && /etc/my_init.d/00_regen_ssh_host_keys.sh \
 
 # initialize ips for docker support
     && cd /usr/local/vesta/data/ips && mv * 127.0.0.1 \
@@ -72,8 +74,10 @@ RUN chmod +x /etc/init.d/dovecot \
     && sed -i -- 's/172.*.*.*:80;/80;/g' * && sed -i -- 's/172.*.*.*:8080/127.0.0.1:8080/g' * \
     && cd /home/admin/conf/web \
     && sed -i -- 's/172.*.*.*:80;/80;/g' * && sed -i -- 's/172.*.*.*:8080/127.0.0.1:8080/g' * \
-    && rm -f /etc/service/sshd/down \
-    && /etc/my_init.d/00_regen_ssh_host_keys.sh \
+
+# increase postgresql limit to support at least 8gb ram
+    && sed -i -e "s/^max_connections = 100/max_connections = 300/g" /etc/postgresql/9.5/main/postgresql.conf \
+    && sed -i -e "s/^shared_buffers = 128MB/shared_buffers = 2048MB/g" /etc/postgresql/9.5/main/postgresql.conf \
 
 # redirect sql data folder
     && service mysql stop \
@@ -85,14 +89,14 @@ RUN chmod +x /etc/init.d/dovecot \
 
 # the rest
     && mkdir -p /vesta-start/etc \
-    && mkdir -p /vesta-start/etc-bak/nginx/conf.d \
+    && mkdir -p /vesta-start/etc-bak/apache/conf.d \
     && mkdir -p /vesta-start/var \
     && mkdir -p /vesta-start/local \
     && mkdir -p /vesta-start/redis/db \
 
-# disable phpmyadmin and phppgadmin by default, backup the config first    
-    && rsync -a /etc/nginx/conf.d/* /vesta-start/etc-bak/nginx/conf.d \
-    && rm -rf /etc/nginx/conf.d/php*.inc \
+# disable phpmyadmin by default, backup the config first - see readme    
+    && rsync -a /etc/apache/conf.d/* /vesta-start/etc-bak/apache/conf.d \
+    && rm -rf /etc/apache/conf.d/phpmyadmin.conf \
 
     && mv /etc/php /vesta-start/etc/php \
     && rm -rf /etc/php \

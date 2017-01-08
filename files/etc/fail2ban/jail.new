@@ -1,0 +1,85 @@
+[ssh-iptables]
+enabled  = true
+filter   = sshd
+action   = vesta[name=SSH]
+logpath  = /var/log/auth.log
+maxretry = 5
+bantime = 600
+
+[vsftpd-iptables]
+enabled  = false
+filter   = vsftpd
+action   = vesta[name=FTP]
+logpath  = /var/log/vsftpd.log
+maxretry = 5
+bantime = 600
+
+[exim-iptables]
+enabled = true
+filter  = exim-vesta
+action  = vesta[name=MAIL]
+logpath = /var/log/exim4/mainlog
+maxretry = 5
+bantime = 600
+
+[dovecot-iptables]
+enabled = true
+filter  = dovecot-vesta
+action  = vesta[name=MAIL]
+logpath = /var/log/dovecot.log
+maxretry = 5
+bantime = 600
+
+[mysqld-iptables]
+enabled  = true
+filter   = mysqld-auth
+action   = vesta[name=DB]
+logpath  = /var/log/mysql.log
+maxretry = 5
+bantime = 600
+
+[postgresql-iptables]
+enabled  = true
+filter   = postgresql-auth
+action   = vesta[name=DB]
+logpath  = /var/log/postgresql/postgresql-9.5-main.log
+maxretry = 5
+bantime = 600
+
+[vesta-iptables]
+enabled = true
+filter  = vesta
+action  = vesta[name=VESTA]
+logpath = /var/log/vesta/auth.log
+maxretry = 5
+bantime = 600
+
+[apache-overflows]
+enabled  = true
+port     = http,https
+filter   = apache-overflows
+logpath  = /var/log/apache2/domains/*.error.log
+maxretry = 5
+
+[apache-badbots]
+enabled  = true
+port     = http,https
+filter   = apache-badbots
+logpath  = /var/log/apache2/domains/*.error.log
+maxretry = 5
+
+[roundcube-iptables]
+enabled  = true
+filter   = roundcube-vesta
+action   = vesta[name=WEB]
+logpath  = /var/log/roundcube/errors
+maxretry = 5
+bantime = 600
+
+[phppgadmin-iptables]
+enabled  = false
+filter   = phppgadmin-auth
+action   = vesta[name=WEB]
+logpath  = /var/log/apache2/domains/*.error.log
+maxretry = 5
+bantime = 600
