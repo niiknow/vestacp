@@ -14,9 +14,6 @@ then
     sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /vesta/local/vesta/data/templates/web/nginx/php-fpm/*.stpl
     
     bash /usr/local/vesta/upd/switch_rpath.sh
-    
-    # patch psql9.5 backup
-    sed -i -e "s/\-x \-i \-f/\-x \-f/g" /vesta/local/vesta/func/db.sh
 
     # patch default website
     cd "$(dirname "$(find /home/admin/web/* -type d -name public_html)")" \
@@ -33,6 +30,13 @@ then
 
     # remove rlimit in docker nginx
     sed -i -e "s/^worker_rlimit_nofile    65535;//g" /vesta/etc/nginx/nginx.conf
+
+    # vesta monkey patching
+    # patch psql9.5 backup
+    sed -i -e "s/\-x \-i \-f/\-x \-f/g" /vesta/local/vesta/func/db.sh
+
+    # https://github.com/serghey-rodin/vesta/issues/1009
+    sed -i -e "s/unzip/unzip \-o/g" /vesta/local/vesta/bin/v-extract-fs-archive
 fi
 
 # starting Vesta

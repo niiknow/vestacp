@@ -4,7 +4,7 @@ The ultimate control panel with docker (thanks lagun4ik for a great start)
 What's included with VestaCP?
 * ubuntu 16.04 lts + Vesta 0.9.8-17
 * nginx (proxy)->apache2->php7.0 - high performance implementation
-* letsencrypt, memcached, redis, mysql 5.7, postgresql 9.5
+* letsencrypt, memcached, redis, mysql 5.7, postgresql 9.5, nodejs 6.x
 * folder redirection for configuration persistence and automatic backup provided by VestaCP
 * SSH/SFTP, DNS, named, dovecot, spamassassin, clamav, etc... - installed but author does not recommend running inside of docker
 

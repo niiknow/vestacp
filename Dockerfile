@@ -41,7 +41,7 @@ RUN dpkg --configure -a \
     --nginx yes --apache yes --phpfpm no \
     --vsftpd no --proftpd no \
     --exim yes --dovecot yes --spamassassin yes --clamav yes --named yes \
-    --iptables no --fail2ban no \
+    --iptables yes --fail2ban yes \
     --mysql yes --postgresql yes --remi yes \
     --quota no --password MakeItSo17 \
     -y no -f \
@@ -52,7 +52,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
     && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
     && apt-get update && apt-get -y upgrade \
     && apt-get install -y exim4-daemon-heavy \
-    && apt-get install -y nodejs php-memcached \
+    && apt-get install -y nodejs php-memcached php-mongodb \
     && npm install --quiet -g gulp express bower mocha karma-cli pm2 && npm cache clean \
     && ln -sf /usr/bin/nodejs /bin/node \
     && dpkg --configure -a \
@@ -87,6 +87,7 @@ RUN chmod +x /etc/init.d/dovecot \
     && service mysql stop \
     && service postgresql stop \
     && service redis-server stop \
+    && service fail2ban stop \
     && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/mysql/g" /etc/mysql/my.cnf \
     && sed -i -e "s/dir \./dir \/vesta\/redis\/db/g" /etc/redis/redis.conf \
     && sed -i -e "s/\/etc\/redis/\/vesta\/redis/g" /etc/init.d/redis-server \
@@ -162,6 +163,8 @@ RUN chmod +x /etc/init.d/dovecot \
     && mkdir -p /home-bak \
     && rsync -a /home/* /home-bak \
     && mkdir -p /etc/my_init.d \
+    && cat /root/.bash_profile >> /root/.profile \
+    && rm -f /root/.bash_profile \
 
 # vesta session
     && mkdir -p /vesta-start/local/vesta/data/sessions \
