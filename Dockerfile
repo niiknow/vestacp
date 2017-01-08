@@ -89,14 +89,14 @@ RUN chmod +x /etc/init.d/dovecot \
 
 # the rest
     && mkdir -p /vesta-start/etc \
-    && mkdir -p /vesta-start/etc-bak/apache/conf.d \
+    && mkdir -p /vesta-start/etc-bak/apache2/conf.d \
     && mkdir -p /vesta-start/var \
     && mkdir -p /vesta-start/local \
     && mkdir -p /vesta-start/redis/db \
 
 # disable phpmyadmin by default, backup the config first - see readme    
-    && rsync -a /etc/apache/conf.d/* /vesta-start/etc-bak/apache/conf.d \
-    && rm -rf /etc/apache/conf.d/phpmyadmin.conf \
+    && rsync -a /etc/apache2/conf.d/* /vesta-start/etc-bak/apache2/conf.d \
+    && rm -rf /etc/apache2/conf.d/phpmyadmin.conf \
 
     && mv /etc/php /vesta-start/etc/php \
     && rm -rf /etc/php \
