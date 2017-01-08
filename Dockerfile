@@ -65,7 +65,7 @@ RUN chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/my_init.d/startup.sh \
     && rm -f /etc/service/sshd/down \
     && /etc/my_init.d/00_regen_ssh_host_keys.sh \
-    && rm -rf /tmp/*
+    && rm -rf /tmp/* \
 
 # initialize ips for docker support
     && cd /usr/local/vesta/data/ips && mv * 127.0.0.1 \
