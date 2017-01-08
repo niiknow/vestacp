@@ -41,7 +41,7 @@ RUN dpkg --configure -a \
     --nginx yes --apache yes --phpfpm no \
     --vsftpd no --proftpd no \
     --exim yes --dovecot yes --spamassassin yes --clamav yes --named yes \
-    --iptables yes --fail2ban yes \
+    --iptables no --fail2ban no \
     --mysql yes --postgresql yes --remi yes \
     --quota no --password MakeItSo17 \
     -y no -f \
@@ -65,6 +65,7 @@ RUN chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/my_init.d/startup.sh \
     && rm -f /etc/service/sshd/down \
     && /etc/my_init.d/00_regen_ssh_host_keys.sh \
+    && rm -rf /tmp/*
 
 # initialize ips for docker support
     && cd /usr/local/vesta/data/ips && mv * 127.0.0.1 \
@@ -78,6 +79,9 @@ RUN chmod +x /etc/init.d/dovecot \
 # increase postgresql limit to support at least 8gb ram
     && sed -i -e "s/^max_connections = 100/max_connections = 300/g" /etc/postgresql/9.5/main/postgresql.conf \
     && sed -i -e "s/^shared_buffers = 128MB/shared_buffers = 2048MB/g" /etc/postgresql/9.5/main/postgresql.conf \
+    && sed -i -e "s/%q%u@%d '/%q%u@%d %r '/g" /etc/postgresql/9.5/main/postgresql.conf \
+    && sed -i -e "s/^#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/9.5/main/postgresql.conf \
+    && sed -i -e "s/^#PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config \
 
 # redirect sql data folder
     && service mysql stop \
@@ -96,7 +100,7 @@ RUN chmod +x /etc/init.d/dovecot \
 
 # disable phpmyadmin by default, backup the config first - see readme    
     && rsync -a /etc/apache2/conf.d/* /vesta-start/etc-bak/apache2/conf.d \
-    && rm -rf /etc/apache2/conf.d/phpmyadmin.conf \
+    && rm -rf /etc/apache2/conf.d/php*.conf \
 
     && mv /etc/php /vesta-start/etc/php \
     && rm -rf /etc/php \
@@ -165,10 +169,10 @@ RUN chmod +x /etc/init.d/dovecot \
     && chown root:admin /vesta-start/local/vesta/data/sessions
 
 # php apache2 stuff
-RUN sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 520M/" /vesta-start/etc/php/7.0/apache2/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 520M/" /vesta-start/etc/php/7.0/cli/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 520M/" /vesta-start/etc/php/7.0/apache2/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 520M/" /vesta-start/etc/php/7.0/cli/php.ini \
+RUN sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /vesta-start/etc/php/7.0/apache2/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /vesta-start/etc/php/7.0/cli/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /vesta-start/etc/php/7.0/apache2/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /vesta-start/etc/php/7.0/cli/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini \

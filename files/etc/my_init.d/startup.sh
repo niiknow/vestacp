@@ -28,15 +28,11 @@ then
     # disable localhost redirect to bad default IP
     sed -i -e "s/^NAT=.*/NAT=\'\'/g" /vesta/local/vesta/data/ips/127.0.0.1
 
-    # adjust postgresql
-    sed -i -e "s/^max_connections = 100/max_connections = 300/g" /etc/postgresql/9.5/main/postgresql.conf
-    sed -i -e "s/^shared_buffers = 128MB/shared_buffers = 2500MB/g" /etc/postgresql/9.5/main/postgresql.conf
+    # increase memcache max size from 64m to 2g
+    sed -i -e "s/^\-m 64/\-m 2048/g" /vesta/etc/memcached.conf
 
-fi
-
-if [[ -f /etc/fail2ban/jail.new ]]; then
-    mv /etc/fail2ban/jail.local /etc/fail2ban/jail.local-bak
-    mv /etc/fail2ban/jail.new /etc/fail2ban/jail.local
+    # remove rlimit in docker nginx
+    sed -i -e "s/^worker_rlimit_nofile    65535;//g" /vesta/etc/nginx/nginx.conf
 fi
 
 # starting Vesta
