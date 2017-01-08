@@ -6,7 +6,7 @@ What's included with VestaCP?
 * nginx (proxy)->apache2->php7.0 - high performance implementation
 * letsencrypt, memcached, redis, mysql 5.7, postgresql 9.5, nodejs 6.x
 * folder redirection for configuration persistence and automatic backup provided by VestaCP
-* SSH/SFTP, DNS, named, dovecot, spamassassin, clamav, etc... - installed but author does not recommend running inside of docker
+* SSH/SFTP, DNS, named, dovecot, spamassassin, clamav, etc... - installed but  does not recommend running inside of docker
 
 Running this image:
 
@@ -23,7 +23,9 @@ docker run -d \
 
 ## Volumes
 /vesta  -- all configurations
+
 /home   -- users data
+
 /backup -- users backup
 
 ## Authorization
@@ -38,7 +40,7 @@ Please redirect mysql and postgresql port for additional security.  Feel free to
 ## Welcome to Hosting in 2017!
 Below are scenarios that work great with this docker.
 
-### Secure, High Performance, and Reliable WordPress Site in 2017
+### 1) WordPress Site in 2017
 docker run -d \
   --restart=always \
   -p 80:80 \
@@ -53,7 +55,7 @@ docker run -d \
 3. Setup Letsencrypt to help with security and SEO.  Welcome to 2017!!!
 4. Setup cron job to sync /backup folder with aws s3 for remote backup and you're good to go.
 
-### Secure, High Performance, and Reliable MYSQL Server 2017
+### 2) MYSQL Server
 docker run -d \
   --restart=always \
   -p 4321:3306 \
@@ -66,7 +68,7 @@ docker run -d \
 3. Connect securely to your MYSQL to any port as in example above mapping to 4321 on docker host.  Welcome to 2017!!!  Your backup is automatically done through VestaCP.
 4. Setup cron job to sync /backup folder with aws s3 for remote backup and you're good to go.
 
-### Secure, High Performance, and Reliable Postgresql Server
+### 3) Postgresql Server
 docker run -d \
   --restart=always \
   -p 4321:5432 \
@@ -105,3 +107,15 @@ docker run -d \
 I also recommend installing maldetect on the docker host machine for scanning of the /home folder inside the data container.
 
 Enjoy!!!
+
+# LICENSE
+
+The MIT License (MIT)
+
+Copyright (c) 2017 friends@niiknow.org
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
