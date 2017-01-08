@@ -181,4 +181,4 @@ RUN sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /vesta-start
 
 VOLUME ["/vesta", "/home", "/backup"]
 
-EXPOSE 22 25 53 54 80 110 443 993 3306 5432 8083
+EXPOSE 22 25 53 54 80 110 443 993 3306 5432 6379 8083

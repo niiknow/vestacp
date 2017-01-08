@@ -45,7 +45,6 @@ docker run -d \
   --restart=always \
   -p 80:80 \
   -p 443:443 \
-  -p 3306:3306 \
   -p 8083:8083 \
   -v vestacp-data:/vesta -v vestacp-data:/home -v vestacp-data:/backup \
   niiknow/vestacp
