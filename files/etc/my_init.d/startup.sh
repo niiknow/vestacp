@@ -37,6 +37,10 @@ then
 
     # https://github.com/serghey-rodin/vesta/issues/1009
     sed -i -e "s/unzip/unzip \-o/g" /vesta/local/vesta/bin/v-extract-fs-archive
+
+    touch ~/.profile \
+    && cat ~/.bash_profile >> ~/.profile \
+    && rm -f ~/.bash_profile
 fi
 
 # starting Vesta

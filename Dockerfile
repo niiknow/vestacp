@@ -163,8 +163,6 @@ RUN chmod +x /etc/init.d/dovecot \
     && mkdir -p /home-bak \
     && rsync -a /home/* /home-bak \
     && mkdir -p /etc/my_init.d \
-    && cat ~/.bash_profile >> ~/.profile \
-    && rm -f ~/.bash_profile \
 
 # vesta session
     && mkdir -p /vesta-start/local/vesta/data/sessions \
