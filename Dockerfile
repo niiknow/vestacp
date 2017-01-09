@@ -23,6 +23,12 @@ RUN dpkg --configure -a \
     && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 \
     && add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://nyc2.mirrors.digitalocean.com/mariadb/repo/10.1/ubuntu xenial main' \
 
+# getting golang
+    && curl -s -o /tmp/go1.7.linux-amd64.tar.gz https://storage.googleapis.com/golang/go1.7.linux-amd64.tar.gz \
+    && cd /tmp \
+    && tar -xvf go1.7.linux-amd64.tar.gz \
+    && mv go /usr/local \
+
 # setting up aws-cli, s3cmd, and mongodb tools
     && wget -O- -q http://s3tools.org/repo/deb-all/stable/s3tools.key | apt-key add - \
     && wget -O/etc/apt/sources.list.d/s3tools.list http://s3tools.org/repo/deb-all/stable/s3tools.list \
