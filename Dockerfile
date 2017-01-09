@@ -17,11 +17,13 @@ RUN apt-get update && apt-get -y upgrade \
 
 RUN dpkg --configure -a \
 
-# setup imagick and python
+# setup imagick, mariadb, python
     && curl -s -o /tmp/python-support_1.0.15_all.deb https://launchpadlibrarian.net/109052632/python-support_1.0.15_all.deb \
     && dpkg -i /tmp/python-support_1.0.15_all.deb \
+    && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 \
+    && add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://nyc2.mirrors.digitalocean.com/mariadb/repo/10.1/ubuntu xenial main' \
 
-# setting up aws-cli and s3cmd
+# setting up aws-cli, s3cmd, and mongodb tools
     && wget -O- -q http://s3tools.org/repo/deb-all/stable/s3tools.key | apt-key add - \
     && wget -O/etc/apt/sources.list.d/s3tools.list http://s3tools.org/repo/deb-all/stable/s3tools.list \
     && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 \
@@ -37,6 +39,7 @@ RUN dpkg --configure -a \
 RUN dpkg --configure -a \
     && apt-get update && apt-get -yq upgrade && apt-get install -yf \
     && curl -s -o /tmp/vst-install-ubuntu.sh https://vestacp.com/pub/vst-install-ubuntu.sh \
+    && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
     && bash /tmp/vst-install-ubuntu.sh \
     --nginx yes --apache yes --phpfpm no \
     --vsftpd no --proftpd no \
@@ -163,6 +166,9 @@ RUN chmod +x /etc/init.d/dovecot \
     && mkdir -p /home-bak \
     && rsync -a /home/* /home-bak \
     && mkdir -p /etc/my_init.d \
+    && rm -f /core \
+    && rm -f /get-pip.py \
+    && rm -f /deb_signing.key \
 
 # vesta session
     && mkdir -p /vesta-start/local/vesta/data/sessions \
