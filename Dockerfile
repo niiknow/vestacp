@@ -95,6 +95,10 @@ RUN chmod +x /etc/init.d/dovecot \
     && sed -i -e "s/dir \./dir \/vesta\/redis\/db/g" /etc/redis/redis.conf \
     && sed -i -e "s/\/etc\/redis/\/vesta\/redis/g" /etc/init.d/redis-server \
 
+# monkey patching
+    && curl https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/db.sh > /usr/local/vesta/func/db.sh \
+    && curl https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/rebuild.sh > /usr/local/vesta/func/rebuild.sh \
+
 # the rest
     && mkdir -p /vesta-start/etc \
     && mkdir -p /vesta-start/etc-bak/apache2/conf.d \

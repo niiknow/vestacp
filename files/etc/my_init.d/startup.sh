@@ -41,6 +41,10 @@ then
     touch ~/.profile \
     && cat ~/.bash_profile >> ~/.profile \
     && rm -f ~/.bash_profile
+
+    echo $'\nServerName localhost\n' >> /etc/apache2/apache2.conf
+
+    sed -i -e "s/^ULIMIT_MAX_FILES=.*/ULIMIT_MAX_FILES=/g" /usr/sbin/apache2ctl
 fi
 
 # starting Vesta
