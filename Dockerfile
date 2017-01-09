@@ -18,6 +18,7 @@ RUN apt-get update && apt-get -y upgrade \
 RUN dpkg --configure -a \
 
 # setup imagick, mariadb, python
+    && cd /tmp \
     && curl -s -o /tmp/python-support_1.0.15_all.deb https://launchpadlibrarian.net/109052632/python-support_1.0.15_all.deb \
     && dpkg -i /tmp/python-support_1.0.15_all.deb \
     && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 \
@@ -25,7 +26,6 @@ RUN dpkg --configure -a \
 
 # getting golang
     && curl -s -o /tmp/go1.7.linux-amd64.tar.gz https://storage.googleapis.com/golang/go1.7.linux-amd64.tar.gz \
-    && cd /tmp \
     && tar -xvf go1.7.linux-amd64.tar.gz \
     && mv go /usr/local \
 
@@ -74,7 +74,6 @@ RUN chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/my_init.d/startup.sh \
     && rm -f /etc/service/sshd/down \
     && /etc/my_init.d/00_regen_ssh_host_keys.sh \
-    && rm -rf /tmp/* \
 
 # initialize ips for docker support
     && cd /usr/local/vesta/data/ips && mv * 127.0.0.1 \
@@ -177,9 +176,7 @@ RUN chmod +x /etc/init.d/dovecot \
     && mkdir -p /home-bak \
     && rsync -a /home/* /home-bak \
     && mkdir -p /etc/my_init.d \
-    && rm -f /core \
-    && rm -f /get-pip.py \
-    && rm -f /deb_signing.key \
+    && rm -rf /tmp/* \
 
 # vesta session
     && mkdir -p /vesta-start/local/vesta/data/sessions \
