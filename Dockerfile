@@ -87,6 +87,7 @@ RUN chmod +x /etc/init.d/dovecot \
     && sed -i -e "s/^#PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config \
 
 # redirect sql data folder
+    && service apache2 stop \
     && service mysql stop \
     && service postgresql stop \
     && service redis-server stop \
