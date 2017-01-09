@@ -47,7 +47,13 @@ then
     echo $'\nServerName localhost\n' >> /etc/apache2/apache2.conf
 
     sed -i -e "s/^ULIMIT_MAX_FILES=.*/ULIMIT_MAX_FILES=/g" /usr/sbin/apache2ctl
+
+    mkdir -p /home/admin/bin
+    chown admin:admin /home/admin/bin
+    mv /etc/my_init.d/my-startup.sh /home/admin/bin
+    chown admin:admin /home/admin/bin/my-startup.sh
+
 fi
 
 # starting Vesta
-bash /vesta/my-startup.sh
+bash /home/admin/bin/my-startup.sh
