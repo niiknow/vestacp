@@ -25,14 +25,15 @@ chmod 775 /vesta/var/log/roundcube/errors
 
 # you control your startup in this file
 cd /etc/init.d/ \
+&& ./apache2 start \
+&& ./mysql start \
+&& ./postgresql start \
+&& ./nginx start \
+&& ./vesta start
+
 # && ./exim4 start \
 # && ./dovecot start \
 # && ./clamav-daemon start \
 # && ./spamassassin start \
 # && ./php7.0-fpm start \
 # && ./fail2ban start \ # -- only if you run in privileged mode
-&& ./apache2 start \
-&& ./mysql start \
-&& ./postgresql start \
-&& ./nginx start \
-&& ./vesta start
