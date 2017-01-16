@@ -52,7 +52,7 @@ RUN \
     && apt-get clean
 
 # getting golang
-RUN /
+RUN \
     cd /tmp \
     && curl -s -o /tmp/go1.7.4.linux-amd64.tar.gz https://storage.googleapis.com/golang/go1.7.4.linux-amd64.tar.gz \
     && tar -zxf go1.7.4.linux-amd64.tar.gz \
