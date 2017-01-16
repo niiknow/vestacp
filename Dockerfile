@@ -1,51 +1,33 @@
-FROM phusion/baseimage
+FROM niiknow/docker-hostingbase
 
 MAINTAINER friends@niiknow.org
 
-ENV VESTA /usr/local/vesta \
-    DEBIAN_FRONTEND noninteractive \
+ENV VESTA=/usr/local/vesta
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get -o Acquire::GzipIndexes=false update
-
-# start
-RUN apt-get update && apt-get -y upgrade \
-    && apt-get -y install wget curl git unzip nano vim rsync sudo tar \
-       apt-utils software-properties-common build-essential \
-       python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev libffi-dev libssl-dev \
-       libmagickwand-dev imagemagick perl netcat mcrypt pwgen memcached \
-       tcl redis-server netcat openssl libpcre3 dnsmasq procps
-
-RUN dpkg --configure -a \
-
-# setup imagick, mariadb, python
-    && cd /tmp \
-    && curl -s -o /tmp/python-support_1.0.15_all.deb https://launchpadlibrarian.net/109052632/python-support_1.0.15_all.deb \
-    && dpkg -i /tmp/python-support_1.0.15_all.deb \
-    && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 \
-    && add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://nyc2.mirrors.digitalocean.com/mariadb/repo/10.1/ubuntu xenial main' \
+# install composer, nodejs
+RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --install-dir=/usr/local/bin --filename=composer \
+    && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
+    && apt-get update && apt-get -y upgrade \
+    && apt-get install -y nodejs php-memcached php-mongodb \
+    && npm install --quiet -g gulp express bower mocha karma-cli pm2 && npm cache clean \
+    && ln -sf /usr/bin/nodejs /bin/node \
 
 # getting golang
-    && curl -s -o /tmp/go1.7.linux-amd64.tar.gz https://storage.googleapis.com/golang/go1.7.linux-amd64.tar.gz \
-    && tar -xvf go1.7.linux-amd64.tar.gz \
+    && cd /tmp \
+    && curl -s -o /tmp/go1.7.4.linux-amd64.tar.gz https://storage.googleapis.com/golang/go1.7.4.linux-amd64.tar.gz \
+    && tar -zxf go1.7.4.linux-amd64.tar.gz \
     && mv go /usr/local \
 
-# setting up aws-cli, s3cmd, and mongodb tools
-    && wget -O- -q http://s3tools.org/repo/deb-all/stable/s3tools.key | apt-key add - \
-    && wget -O/etc/apt/sources.list.d/s3tools.list http://s3tools.org/repo/deb-all/stable/s3tools.list \
-    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 \
-    &&  echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" \  
-        | sudo tee /etc/apt/sources.list.d/mongodb-3.4.list \
-    && apt-get update && apt-get -y upgrade \
-    && apt-get -y install s3cmd mongodb-org-tools \
-    && curl -O https://bootstrap.pypa.io/get-pip.py \
-    && python get-pip.py \
-    && pip install awscli
-
 # install VestaCP
-RUN dpkg --configure -a \
-    && apt-get update && apt-get -yq upgrade && apt-get install -yf \
     && curl -s -o /tmp/vst-install-ubuntu.sh https://vestacp.com/pub/vst-install-ubuntu.sh \
+
+# fix mariadb instead of mysql and php7.0 instead of php7.1
     && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
+    && sed -i -e "s/ php / php7.0 /g" /tmp/vst-install-ubuntu.sh \
+    && sed -i -e "s/php\-/php7.0\-/g" /tmp/vst-install-ubuntu.sh \
+
+# begin VestaCP install
     && bash /tmp/vst-install-ubuntu.sh \
     --nginx yes --apache yes --phpfpm no \
     --vsftpd no --proftpd no \
@@ -54,17 +36,9 @@ RUN dpkg --configure -a \
     --mysql yes --postgresql yes --remi yes \
     --quota no --password MakeItSo17 \
     -y no -f \
-    && apt-get clean
 
-# install composer, nodejs, fix exim4 issue starting on ubuntu
-RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --install-dir=/usr/local/bin --filename=composer \
-    && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
-    && apt-get update && apt-get -y upgrade \
+# fix exim4 issue starting on ubuntu
     && apt-get install -y exim4-daemon-heavy \
-    && apt-get install -y nodejs php-memcached php-mongodb \
-    && npm install --quiet -g gulp express bower mocha karma-cli pm2 && npm cache clean \
-    && ln -sf /usr/bin/nodejs /bin/node \
-    && dpkg --configure -a \
     && apt-get -yf autoremove \
     && apt-get clean
 
@@ -108,10 +82,12 @@ RUN chmod +x /etc/init.d/dovecot \
     && mkdir -p /vesta-start/local \
     && mkdir -p /vesta-start/redis/db \
 
-# disable phpmyadmin by default, backup the config first - see readme    
+# disable php*admin and roundcube by default, backup the config first - see README.md    
     && rsync -a /etc/apache2/conf.d/* /vesta-start/etc-bak/apache2/conf.d \
     && rm -rf /etc/apache2/conf.d/php*.conf \
+    && rm -rf /etc/apache2/conf.d/roundcube.conf \
 
+# redirecting folders
     && mv /etc/php /vesta-start/etc/php \
     && rm -rf /etc/php \
     && ln -s /vesta/etc/php /etc/php \
@@ -168,7 +144,7 @@ RUN chmod +x /etc/init.d/dovecot \
     && rm -rf /var/log \
     && ln -s /vesta/var/log /var/log \
 
-# home folder
+# redirecting home folder
     && mkdir -p /home-bak \
     && rsync -a /home/* /home-bak \
     && mkdir -p /etc/my_init.d \
@@ -191,4 +167,4 @@ RUN sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /vesta-start
 
 VOLUME ["/vesta", "/home", "/backup"]
 
-EXPOSE 22 25 53 54 80 110 443 993 3306 5432 6379 8083 10022
+EXPOSE 22 25 53 54 80 110 443 993 3306 5432 6379 8083 10022 11211
