@@ -2,22 +2,18 @@ FROM niiknow/docker-hostingbase
 
 MAINTAINER friends@niiknow.org
 
-ENV VESTA=/usr/local/vesta
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    VESTA=/usr/local/vesta
 
 # install composer, nodejs
-RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --install-dir=/usr/local/bin --filename=composer \
+RUN \
+    cd /tmp \
+    && curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --install-dir=/usr/local/bin --filename=composer \
     && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
     && apt-get update && apt-get -y upgrade \
     && apt-get install -y nodejs php-memcached php-mongodb \
     && npm install --quiet -g gulp express bower mocha karma-cli pm2 && npm cache clean \
     && ln -sf /usr/bin/nodejs /bin/node \
-
-# getting golang
-    && cd /tmp \
-    && curl -s -o /tmp/go1.7.4.linux-amd64.tar.gz https://storage.googleapis.com/golang/go1.7.4.linux-amd64.tar.gz \
-    && tar -zxf go1.7.4.linux-amd64.tar.gz \
-    && mv go /usr/local \
 
 # install both php7.0 and php7.1 to make sure we have them all
     && apt-get install -yq php7.0-mbstring php7.0-cgi php7.0-cli php7.0-dev php7.0-geoip php7.0-common php7.0-xmlrpc \
@@ -50,6 +46,18 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
        --quota no --password MakeItSo17 \
        -y no -f \
 
+# cleanup
+    && rm -rf /tmp/* \
+    && apt-get -yf autoremove \
+    && apt-get clean
+
+# getting golang
+RUN /
+    cd /tmp \
+    && curl -s -o /tmp/go1.7.4.linux-amd64.tar.gz https://storage.googleapis.com/golang/go1.7.4.linux-amd64.tar.gz \
+    && tar -zxf go1.7.4.linux-amd64.tar.gz \
+    && mv go /usr/local \
+
 # php stuff
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/apache2/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/cli/php.ini \
@@ -68,9 +76,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/cli/php.ini \
 
 # cleanup
-    && rm -rf /tmp/* \
-    && apt-get -yf autoremove \
-    && apt-get clean
+    && rm -rf /tmp/*
 
 ADD ./files /
 RUN chmod +x /etc/init.d/dovecot \
