@@ -5,7 +5,7 @@ export TERM=xterm
 if [ -z "`ls /vesta --hide='lost+found'`" ]
 then
     rsync -a /vesta-start/* /vesta
-    rsync -a /home-bak/* /home
+    rsync -a /sysprepz/home/* /home
 
     # make default template work with any IP, we want this for Docker
     sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /vesta/local/vesta/data/templates/web/nginx/*.tpl

@@ -183,8 +183,8 @@ RUN chmod +x /etc/init.d/dovecot \
     && ln -s /vesta/var/log /var/log \
 
 # redirect home folder
-    && mkdir -p /home-bak \
-    && rsync -a /home/* /home-bak \
+    && mkdir -p /sysprepz/home \
+    && rsync -a /home/* /sysprepz/home \
     && mkdir -p /etc/my_init.d \
     && rm -rf /tmp/* \
 
