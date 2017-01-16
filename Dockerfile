@@ -43,28 +43,25 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
     && bash /tmp/vst-install-ubuntu.sh \
        --nginx yes --apache yes --phpfpm no \
        --vsftpd no --proftpd no \
-       --exim yes --dovecot yes --spamassassin no --clamav no --named yes \
+       --named yes --exim yes --dovecot yes \
+       --spamassassin no --clamav no \
        --iptables yes --fail2ban yes \
        --mysql yes --postgresql yes --remi yes \
        --quota no --password MakeItSo17 \
        -y no -f \
 
 # php stuff
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /vesta-start/etc/php/7.0/apache2/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /vesta-start/etc/php/7.0/cli/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /vesta-start/etc/php/7.0/mods-available/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /etc/php/7.0/apache2/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /etc/php/7.0/mods-available/php.ini \
 
-    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /vesta-start/etc/php/7.0/apache2/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /vesta-start/etc/php/7.0/cli/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /vesta-start/etc/php/7.0/mods-available/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /etc/php/7.0/apache2/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /etc/php/7.0/mods-available/php.ini \
 
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/mods-available/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.0/apache2/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.0/mods-available/php.ini \
 
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/mods-available/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/apache2/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/mods-available/php.ini \
 
 # cleanup
     && rm -rf /tmp/* \
