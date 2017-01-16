@@ -51,7 +51,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
        -y no -f \
 
 # php stuff
-    && ls -la /etc/php \
+    && ls -la /etc/php/7.0 \
+    && ls -la /etc/php/7.1 \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /etc/php/7.0/apache2/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /etc/php/7.0/mods-available/php.ini \
 
@@ -115,6 +116,10 @@ RUN chmod +x /etc/init.d/dovecot \
     && rm -rf /etc/apache2/conf.d/roundcube.conf \
 
 # redirect folders
+    && mv /etc/apache2 /vesta-start/etc/apache2 \
+    && rm -rf /etc/apache2 \
+    && ln -s /vesta/etc/apache2 /etc/apache2 \
+
     && mv /etc/php /vesta-start/etc/php \
     && rm -rf /etc/php \
     && ln -s /vesta/etc/php /etc/php \
