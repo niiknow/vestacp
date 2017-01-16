@@ -174,6 +174,10 @@ RUN chmod +x /etc/init.d/dovecot \
     && rm -rf /etc/hosts \
     && ln -s /vesta/etc/hosts /etc/hosts \
 
+    && mv /etc/timezone /vesta-start/etc/timezone \
+    && rm -rf /etc/timezone \
+    && ln -s /vesta/etc/timezone /etc/timezone \
+
     && mv /etc/resolv.conf /vesta-start/etc/resolv.conf \
     && rm -rf /etc/resolv.conf \
     && ln -s /vesta/etc/resolv.conf /etc/resolv.conf \
