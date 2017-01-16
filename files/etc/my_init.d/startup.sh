@@ -48,10 +48,8 @@ then
 
     sed -i -e "s/^ULIMIT_MAX_FILES=.*/ULIMIT_MAX_FILES=/g" /usr/sbin/apache2ctl
 
-    mkdir -p /home/admin/bin
-    chown admin:admin /home/admin/bin
-    mv /etc/my_init.d/my-startup.sh /home/admin/bin
-    chown admin:admin /home/admin/bin/my-startup.sh
+    mv /sysprepz/admin/bin /home/admin
+    chown admin:admin /home/admin/bin -R
 
 fi
 
