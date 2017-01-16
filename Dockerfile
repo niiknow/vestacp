@@ -166,10 +166,6 @@ RUN chmod +x /etc/init.d/dovecot \
     && rm -rf /etc/memcached.conf \
     && ln -s /vesta/etc/memcached.conf /etc/memcached.conf \
 
-    && mv /etc/hosts /vesta-start/etc/hosts \
-    && rm -rf /etc/hosts \
-    && ln -s /vesta/etc/hosts /etc/hosts \
-
     && mv /etc/timezone /vesta-start/etc/timezone \
     && rm -rf /etc/timezone \
     && ln -s /vesta/etc/timezone /etc/timezone \
