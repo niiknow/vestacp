@@ -30,16 +30,13 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
 
 # begin VestaCP install
     && bash /tmp/vst-install-ubuntu.sh \
-    --nginx yes --apache yes --phpfpm no \
-    --vsftpd no --proftpd no \
-    --exim yes --dovecot yes --spamassassin yes --clamav yes --named yes \
-    --iptables yes --fail2ban yes \
-    --mysql yes --postgresql yes --remi yes \
-    --quota no --password MakeItSo17 \
-    -y no -f \
-
-# fix exim4 issue starting on ubuntu
-    && apt-get install -y exim4-daemon-heavy \
+       --nginx yes --apache yes --phpfpm no \
+       --vsftpd no --proftpd no \
+       --exim yes --dovecot yes --spamassassin yes --clamav yes --named yes \
+       --iptables yes --fail2ban yes \
+       --mysql yes --postgresql yes --remi yes \
+       --quota no --password MakeItSo17 \
+       -y no -f \
     && apt-get -yf autoremove \
     && apt-get clean
 
