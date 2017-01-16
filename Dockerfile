@@ -51,6 +51,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
        -y no -f \
 
 # php stuff
+    && ls -la /etc/php7.0 \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /etc/php/7.0/apache2/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /etc/php/7.0/mods-available/php.ini \
 
