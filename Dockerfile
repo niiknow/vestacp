@@ -170,10 +170,6 @@ RUN chmod +x /etc/init.d/dovecot \
     && rm -rf /etc/timezone \
     && ln -s /vesta/etc/timezone /etc/timezone \
 
-    && mv /etc/resolv.conf /vesta-start/etc/resolv.conf \
-    && rm -rf /etc/resolv.conf \
-    && ln -s /vesta/etc/resolv.conf /etc/resolv.conf \
-
     && mv /etc/bind /vesta-start/etc/bind \
     && rm -rf /etc/bind \
     && ln -s /vesta/etc/bind /etc/bind \
