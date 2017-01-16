@@ -24,7 +24,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
 
 # fix mariadb instead of mysql and php7.0 instead of php7.1
     && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
-    && sed -i -e "s/ php / php7.0 /g" /tmp/vst-install-ubuntu.sh \
+    && sed -i -e "s/\-php php /\-php php7.0 /g" /tmp/vst-install-ubuntu.sh \
     && sed -i -e "s/php\-/php7.0\-/g" /tmp/vst-install-ubuntu.sh \
 
 # begin VestaCP install
