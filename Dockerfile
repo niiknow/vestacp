@@ -52,20 +52,20 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
 
 # php stuff
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/apache2/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/mods-available/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.1/mods-available/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/cli/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.1/cli/php.ini \
 
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.0/apache2/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.0/mods-available/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.1/mods-available/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.0/cli/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.1/cli/php.ini \
 
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.0/apache2/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.0/mods-available/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.1/mods-available/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.0/cli/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.1/cli/php.ini \
 
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/apache2/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/mods-available/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/mods-available/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/cli/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/cli/php.ini \
 
 # cleanup
     && rm -rf /tmp/* \
@@ -165,6 +165,18 @@ RUN chmod +x /etc/init.d/dovecot \
     && mv /etc/memcached.conf /vesta-start/etc/memcached.conf \
     && rm -rf /etc/memcached.conf \
     && ln -s /vesta/etc/memcached.conf /etc/memcached.conf \
+
+    && mv /etc/hostname /vesta-start/etc/hostname \
+    && rm -rf /etc/hostname \
+    && ln -s /vesta/etc/hostname /etc/hostname \
+
+    && mv /etc/hosts /vesta-start/etc/hosts \
+    && rm -rf /etc/hosts \
+    && ln -s /vesta/etc/hosts /etc/hosts \
+
+    && mv /etc/resolv.conf /vesta-start/etc/resolv.conf \
+    && rm -rf /etc/resolv.conf \
+    && ln -s /vesta/etc/resolv.conf /etc/resolv.conf \
 
     && mv /etc/bind /vesta-start/etc/bind \
     && rm -rf /etc/bind \
