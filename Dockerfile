@@ -44,26 +44,28 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
        --nginx yes --apache yes --phpfpm no \
        --vsftpd no --proftpd no \
        --named yes --exim yes --dovecot yes \
-       --spamassassin no --clamav no \
+       --spamassassin yes --clamav yes \
        --iptables yes --fail2ban yes \
        --mysql yes --postgresql yes --remi yes \
        --quota no --password MakeItSo17 \
        -y no -f \
 
 # php stuff
-    && ls -la /etc/php/7.0 \
-    && ls -la /etc/php/7.1 \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /etc/php/7.0/apache2/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /etc/php/7.0/mods-available/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/apache2/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/mods-available/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.1/mods-available/php.ini \
 
-    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /etc/php/7.0/apache2/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /etc/php/7.0/mods-available/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.0/apache2/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.0/mods-available/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.1/mods-available/php.ini \
 
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.0/apache2/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.0/mods-available/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.1/mods-available/php.ini \
 
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/apache2/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/mods-available/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/mods-available/php.ini \
 
 # cleanup
     && rm -rf /tmp/* \
