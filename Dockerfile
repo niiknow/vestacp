@@ -43,7 +43,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
     && bash /tmp/vst-install-ubuntu.sh \
        --nginx yes --apache yes --phpfpm no \
        --vsftpd no --proftpd no \
-       --exim yes --dovecot yes --spamassassin yes --clamav yes --named yes \
+       --exim yes --dovecot yes --spamassassin no --clamav no --named yes \
        --iptables yes --fail2ban yes \
        --mysql yes --postgresql yes --remi yes \
        --quota no --password MakeItSo17 \
