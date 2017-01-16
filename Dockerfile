@@ -48,6 +48,26 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --instal
        --mysql yes --postgresql yes --remi yes \
        --quota no --password MakeItSo17 \
        -y no -f \
+
+# php stuff
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /vesta-start/etc/php/7.0/apache2/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /vesta-start/etc/php/7.0/cli/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /vesta-start/etc/php/7.0/mods-available/php.ini \
+
+    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /vesta-start/etc/php/7.0/apache2/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /vesta-start/etc/php/7.0/cli/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /vesta-start/etc/php/7.0/mods-available/php.ini \
+
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/mods-available/php.ini \
+
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/mods-available/php.ini \
+
+# cleanup
+    && rm -rf /tmp/* \
     && apt-get -yf autoremove \
     && apt-get clean
 
@@ -96,7 +116,7 @@ RUN chmod +x /etc/init.d/dovecot \
     && rm -rf /etc/apache2/conf.d/php*.conf \
     && rm -rf /etc/apache2/conf.d/roundcube.conf \
 
-# redirecting folders
+# redirect folders
     && mv /etc/php /vesta-start/etc/php \
     && rm -rf /etc/php \
     && ln -s /vesta/etc/php /etc/php \
@@ -153,7 +173,7 @@ RUN chmod +x /etc/init.d/dovecot \
     && rm -rf /var/log \
     && ln -s /vesta/var/log /var/log \
 
-# redirecting home folder
+# redirect home folder
     && mkdir -p /home-bak \
     && rsync -a /home/* /home-bak \
     && mkdir -p /etc/my_init.d \
@@ -163,16 +183,6 @@ RUN chmod +x /etc/init.d/dovecot \
     && mkdir -p /vesta-start/local/vesta/data/sessions \
     && chmod 775 /vesta-start/local/vesta/data/sessions \
     && chown root:admin /vesta-start/local/vesta/data/sessions
-
-# php apache2 stuff
-RUN sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /vesta-start/etc/php/7.0/apache2/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 100M/" /vesta-start/etc/php/7.0/cli/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /vesta-start/etc/php/7.0/apache2/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 100M/" /vesta-start/etc/php/7.0/cli/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/apache2/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /vesta-start/etc/php/7.0/cli/php.ini 
 
 VOLUME ["/vesta", "/home", "/backup"]
 
