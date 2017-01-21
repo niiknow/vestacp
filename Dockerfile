@@ -5,13 +5,13 @@ MAINTAINER friends@niiknow.org
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta
 
-# install composer, nodejs
+# install composer, mongodb, nodejs
 RUN \
     cd /tmp \
     && curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --install-dir=/usr/local/bin --filename=composer \
     && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
     && apt-get update && apt-get -y upgrade \
-    && apt-get install -y nodejs php-memcached php-mongodb \
+    && apt-get install -y mongodb-org nodejs php-memcached php-mongodb \
     && npm install --quiet -g gulp express bower mocha karma-cli pm2 && npm cache clean \
     && ln -sf /usr/bin/nodejs /bin/node \
 
@@ -80,6 +80,7 @@ RUN \
 
 ADD ./files /
 RUN chmod +x /etc/init.d/dovecot \
+    && chmod +x /etc/init.d/mongod \
     && chmod +x /etc/cron.hourly/vestacp-backup-etc \
     && chmod +x /etc/my_init.d/startup.sh \
     && rm -f /etc/service/sshd/down \
@@ -188,6 +189,17 @@ RUN chmod +x /etc/init.d/dovecot \
     && rm -rf /var/log \
     && ln -s /vesta/var/log /var/log \
 
+# mongodb conf and /data/db
+    && mv /etc/mongod.conf /vesta-start/etc/mongod.conf \
+    && rm -rf /etc/mongod.conf \
+    && ln -s /vesta/etc/mongod.conf /etc/mongod.conf \
+
+    && mkdir -p /data \
+    && mv /data /vesta-start/data \
+    && rm -rf /var/data \
+    && ln -s /vesta/data /var/data \
+
+
 # redirect home folder
     && mkdir -p /sysprepz/home \
     && rsync -a /home/* /sysprepz/home \
@@ -201,4 +213,4 @@ RUN chmod +x /etc/init.d/dovecot \
 
 VOLUME ["/vesta", "/home", "/backup"]
 
-EXPOSE 22 25 53 54 80 110 443 993 3306 5432 6379 8083 10022 11211
+EXPOSE 22 25 53 54 80 110 443 993 3306 5432 6379 8083 10022 11211 27017
