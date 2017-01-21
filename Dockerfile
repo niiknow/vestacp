@@ -199,7 +199,6 @@ RUN chmod +x /etc/init.d/dovecot \
     && rm -rf /var/data \
     && ln -s /vesta/data /var/data \
 
-
 # redirect home folder
     && mkdir -p /sysprepz/home \
     && rsync -a /home/* /sysprepz/home \

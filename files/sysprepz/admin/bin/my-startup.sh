@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # restore current users
 if [[ -f /vesta/etc-bak/passwd ]]; then
 	# restore users
