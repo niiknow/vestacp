@@ -1,4 +1,4 @@
-FROM niiknow/docker-hostingbase:0.5.8
+FROM niiknow/docker-hostingbase:0.5.7
 
 MAINTAINER friends@niiknow.org
 
@@ -24,7 +24,7 @@ RUN \
 # setting up mongodb, couchdb, dotnet, awscli, golang
 RUN \
     cd /tmp \
-    && apt-get install -y mongodb-org php-mongodb couchdb \
+    && apt-get install -yf mongodb-org php-mongodb couchdb couchdb-bin couchdb-common \
 
 # dotnet
     && curl -SL $DOTNET_DOWNLOAD_URL --output /tmp/dotnet.tar.gz \
