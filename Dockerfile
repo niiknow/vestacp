@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # install composer, mongodb, nodejs
 RUN \
     cd /tmp \
-    && curl -sS https://getcomposer.org/installer | php -- --version=1.3.0 --install-dir=/usr/local/bin --filename=composer \
+    && curl -sS https://getcomposer.org/installer | php -- --version=1.3.1 --install-dir=/usr/local/bin --filename=composer \
     && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
     && apt-get update && apt-get -y upgrade \
     && apt-get install -y mongodb-org nodejs php-memcached php-mongodb \
