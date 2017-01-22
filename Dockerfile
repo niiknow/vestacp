@@ -24,7 +24,9 @@ RUN \
 # setting up mongodb, couchdb, dotnet, awscli, golang
 RUN \
     cd /tmp \
-    && apt-get install -yf mongodb-org php-mongodb couchdb couchdb-bin couchdb-common \
+    && apt-get install -yf mongodb-org php-mongodb couchdb  \
+    && wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-2-amd64.deb \
+    dpkg -i couchbase-release-1.0-2-amd64.deb \
 
 # dotnet
     && curl -SL $DOTNET_DOWNLOAD_URL --output /tmp/dotnet.tar.gz \
@@ -47,13 +49,13 @@ RUN \
 # install php
 RUN \
     cd /tmp \
+    && pecl install v8js \
+    && pecl install couchbase \
+
     && apt-get install -yq php7.0-mbstring php7.0-cgi php7.0-cli php7.0-dev php7.0-geoip php7.0-common php7.0-xmlrpc \
         php7.0-curl php7.0-enchant php7.0-imap php7.0-xsl php7.0-mysql php7.0-mysqlnd php7.0-pspell php7.0-gd \
         php7.0-tidy php7.0-opcache php7.0-json php7.0-bz2 php7.0-pgsql php7.0-mcrypt php7.0-readline  \
         php7.0-intl php7.0-sqlite3 php7.0-ldap php7.0-xml php7.0-redis php7.0-imagick php7.0-zip \
-
-    && pecl install v8js \
-    && pecl install couchbase \
 
     && apt-get install -yq php7.1-mbstring php7.1-cgi php7.1-cli php7.1-dev php7.1-geoip php7.1-common php7.1-xmlrpc \
         php7.1-curl php7.1-enchant php7.1-imap php7.1-xsl php7.1-mysql php7.1-mysqlnd php7.1-pspell php7.1-gd \

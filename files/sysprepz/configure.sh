@@ -9,6 +9,10 @@ chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/my_init.d/startup.sh
 
 # mongodb stuff
+# 
+chmod 0755 /data/db
+mkdir -p /data/db
+chown -R mongodb:mongodb /data/db
 chmod 755 /etc/init.d/disable-transparent-hugepages
 
 # couchdb stuff
@@ -160,9 +164,6 @@ rsync -a /etc/apache2/conf.d/* /vesta-start/etc-bak/apache2/conf.d \
     && rm -rf /etc/mongod.conf \
     && ln -s /vesta/etc/mongod.conf /etc/mongod.conf \
 
-    && mkdir -p /data/db \
-    && chmod 0755 /data/db
-    && chown -R mongod:mongod /data/db
     && mv /data /vesta-start/data \
     && rm -rf /var/data \
     && ln -s /vesta/data /var/data
