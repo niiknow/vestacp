@@ -1,4 +1,4 @@
-FROM niiknow/docker-hostingbase:0.4.8
+FROM niiknow/docker-hostingbase:0.4.9
 
 MAINTAINER friends@niiknow.org
 
@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta
 
 RUN cd /tmp \
+    && apt-get clean \
     && curl -sS https://getcomposer.org/installer | php -- --version=1.3.1 --install-dir=/usr/local/bin --filename=composer \
     && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
 
