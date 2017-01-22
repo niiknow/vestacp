@@ -1,10 +1,12 @@
 #!/bin/sh
 #
+DEBIAN_FRONTEND=noninteractive
+export DEBIAN_FRONTEND
 
 chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/init.d/mongod \
     && chmod +x /etc/cron.hourly/vestacp-backup-etc \
-    && chmod +x /etc/my_init.d/startup.sh \
+    && chmod +x /etc/my_init.d/startup.sh
 
 # mongodb stuff
 chmod 755 /etc/init.d/disable-transparent-hugepages
@@ -43,7 +45,7 @@ sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/apa
 
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/apache2/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/cli/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/cli/php.ini
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/cli/php.ini \
 
     && echo "extension=v8js.so" > /etc/php/7.0/mods-available/v8js.ini \
     && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/fpm/conf.d/20-v8js.ini \
