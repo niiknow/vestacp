@@ -1,14 +1,13 @@
-FROM niiknow/docker-hostingbase:0.5.7
+FROM niiknow/docker-hostingbase:0.5.10
 
 MAINTAINER friends@niiknow.org
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    VESTA=/usr/local/vesta
-
-ENV DOTNET_VERSION=1.1.0
-ENV DOTNET_DOWNLOAD_URL=https://dotnetcli.blob.core.windows.net/dotnet/release/1.1.0/Binaries/$DOTNET_VERSION/dotnet-debian-x64.$DOTNET_VERSION.tar.gz
-ENV GOLANG_VERSION=1.7.4
-ENV GOLANG_DOWNLOAD_URL=https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz
+    VESTA=/usr/local/vesta \
+    DOTNET_VERSION=1.1.0 \
+    DOTNET_DOWNLOAD_URL=https://dotnetcli.blob.core.windows.net/dotnet/release/1.1.0/Binaries/$DOTNET_VERSION/dotnet-debian-x64.$DOTNET_VERSION.tar.gz \
+    GOLANG_VERSION=1.7.4 \
+    GOLANG_DOWNLOAD_URL=https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz
 
 # start
 RUN \
@@ -25,8 +24,6 @@ RUN \
 RUN \
     cd /tmp \
     && apt-get install -yf mongodb-org php-mongodb couchdb  \
-    && wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-2-amd64.deb \
-    dpkg -i couchbase-release-1.0-2-amd64.deb \
 
 # dotnet
     && curl -SL $DOTNET_DOWNLOAD_URL --output /tmp/dotnet.tar.gz \
@@ -50,7 +47,6 @@ RUN \
 RUN \
     cd /tmp \
     && pecl install v8js \
-    && pecl install couchbase \
 
     && apt-get install -yq php7.0-mbstring php7.0-cgi php7.0-cli php7.0-dev php7.0-geoip php7.0-common php7.0-xmlrpc \
         php7.0-curl php7.0-enchant php7.0-imap php7.0-xsl php7.0-mysql php7.0-mysqlnd php7.0-pspell php7.0-gd \
