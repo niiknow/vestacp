@@ -1,12 +1,12 @@
-FROM niiknow/docker-hostingbase:0.4.9
+FROM niiknow/docker-hostingbase:0.5.1
 
 MAINTAINER friends@niiknow.org
 
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta
 
-RUN apt-get -o Acquire::GzipIndexes=false update \
-    && curl -sS https://getcomposer.org/installer | php -- --version=1.3.1 --install-dir=/usr/local/bin --filename=composer \
+RUN \
+    curl -sS https://getcomposer.org/installer | php -- --version=1.3.1 --install-dir=/usr/local/bin --filename=composer \
     && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
 
     && apt-get update && apt-get -y upgrade \
