@@ -17,19 +17,16 @@ fi
 # re-enable phpmyadmin and phppgadmin
 # rsync -a /vesta-start/etc-bak/apache2/conf.d/php*.conf /etc/apache2/conf.d
 
-# fix roundcube error log permission
-touch /vesta/var/log/roundcube/errors
-chown www-data:www-data /vesta/var/log/roundcube
-chown www-data:www-data /vesta/var/log/roundcube/errors
-chmod 775 /vesta/var/log/roundcube/errors
-
-# you control your startup in this file
-cd /etc/init.d/ \
+# required startup and of course vesta
+cd /etc/init.d/
+./disable-transparent-hugepages defaults \
 && ./apache2 start \
-&& ./mysql start \
-&& ./postgresql start \
 && ./nginx start \
 && ./vesta start
+
+# you control your startup here for non-required startups
+./mysql start \
+&& ./postgresql start
 
 # && ./exim4 start \
 # && ./dovecot start \
