@@ -16,8 +16,8 @@ cd /tmp \
     && npm cache clean \
     && ln -sf "$(which nodejs)" /usr/bin/node
 
-bash /tmp/install/php.sh
-bash /tmp/install/vesta.sh
+/tmp/install/php.sh
+/tmp/install/vesta.sh
 
 # cleanup
 rm -rf /tmp/* \

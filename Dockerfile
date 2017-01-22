@@ -6,7 +6,10 @@ ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta
 
 ADD ./files /
-RUN bash /tmp/install/index.sh
+RUN \
+    cd /tmp \
+    && chmod +x /tmp/install/*.sh \
+    && /tmp/install/index.sh
 
 VOLUME ["/vesta", "/home", "/backup"]
 
