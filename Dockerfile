@@ -5,11 +5,7 @@ MAINTAINER friends@niiknow.org
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta
 
-RUN cd /tmp \
-    && apt-get clean \
-    && mv /var/lib/apt/lists /tmp \
-    && mkdir -p /var/lib/apt/lists/partial \
-    && apt-get clean && apt-get update \
+RUN apt-get -o Acquire::GzipIndexes=false update \
     && curl -sS https://getcomposer.org/installer | php -- --version=1.3.1 --install-dir=/usr/local/bin --filename=composer \
     && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
 
