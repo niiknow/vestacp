@@ -11,6 +11,10 @@ chmod +x /etc/init.d/dovecot \
 # mongodb stuff
 chmod 755 /etc/init.d/disable-transparent-hugepages
 
+# couchdb stuff
+chown -R couchdb:couchdb /usr/bin/couchdb /etc/couchdb /usr/share/couchdb
+chmod -R 0770 /usr/bin/couchdb /etc/couchdb /usr/share/couchdb
+ 
 # secure ssh
 sed -i -e "s/PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd_config
 

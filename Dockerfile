@@ -1,19 +1,48 @@
-FROM niiknow/docker-hostingbase:0.5.6
+FROM niiknow/docker-hostingbase:0.5.7
 
 MAINTAINER friends@niiknow.org
 
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta
 
-RUN \
-    curl -sS https://getcomposer.org/installer | php -- --version=1.3.1 --install-dir=/usr/local/bin --filename=composer \
-    && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
+ENV DOTNET_VERSION=1.1.0
+ENV DOTNET_DOWNLOAD_URL=https://dotnetcli.blob.core.windows.net/dotnet/release/1.1.0/Binaries/$DOTNET_VERSION/dotnet-debian-x64.$DOTNET_VERSION.tar.gz
+ENV GOLANG_VERSION=1.7.4
+ENV GOLANG_DOWNLOAD_URL=https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz
 
+# start
+RUN \
+    cd /tmp \
     && apt-get update && apt-get -y upgrade \
-    && apt-get install -y nodejs php-memcached php-mongodb \
+
+# install nodejs, memcached, redis-server, and openvpn
+    && apt-get install -y nodejs memcached php-memcached redis-server openvpn \
     && npm install --quiet -g gulp express bower pm2 webpack webpack-dev-server karma protractor typings typescript \
     && npm cache clean \
     && ln -sf "$(which nodejs)" /usr/bin/node
+
+# setting up mongodb, couchdb, dotnet, awscli, golang
+RUN \
+    cd /tmp \
+    && apt-get install -y mongodb-org php-mongodb couchdb \
+
+# dotnet
+    && curl -SL $DOTNET_DOWNLOAD_URL --output /tmp/dotnet.tar.gz \
+    && mkdir -p /usr/share/dotnet \
+    && tar -zxf /tmp/dotnet.tar.gz -C /usr/share/dotnet \
+    && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet \
+
+# awscli
+    && curl -O https://bootstrap.pypa.io/get-pip.py \
+    && python get-pip.py \
+    && pip install awscli \
+
+# getting golang
+    && cd /tmp \
+    && curl -SL $GOLANG_DOWNLOAD_URL --output /tmp/golang.tar.gz \
+    && tar -zxf golang.tar.gz \
+    && mv go /usr/local \
+    && echo -e "\n\GOROOT=/usr/local/go\nexport GOROOT\n" >> /root/.profile
 
 # install php
 RUN \
@@ -23,12 +52,13 @@ RUN \
         php7.0-tidy php7.0-opcache php7.0-json php7.0-bz2 php7.0-pgsql php7.0-mcrypt php7.0-readline  \
         php7.0-intl php7.0-sqlite3 php7.0-ldap php7.0-xml php7.0-redis php7.0-imagick php7.0-zip \
 
+    && pecl install v8js \
+    && pecl install couchbase \
+
     && apt-get install -yq php7.1-mbstring php7.1-cgi php7.1-cli php7.1-dev php7.1-geoip php7.1-common php7.1-xmlrpc \
         php7.1-curl php7.1-enchant php7.1-imap php7.1-xsl php7.1-mysql php7.1-mysqlnd php7.1-pspell php7.1-gd \
         php7.1-tidy php7.1-opcache php7.1-json php7.1-bz2 php7.1-pgsql php7.1-mcrypt php7.1-readline \
-        php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-imagick php7.1-zip \
-
-    && pecl install v8js
+        php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-imagick php7.1-zip
 
 RUN \
     cd /tmp \
@@ -65,4 +95,4 @@ RUN \
 
 VOLUME ["/vesta", "/home", "/backup"]
 
-EXPOSE 22 25 53 54 80 110 443 993 1194 3000 3306 5432 6379 8083 10022 11211 27017
+EXPOSE 22 25 53 54 80 110 443 993 1194 3000 3306 5432 5984 6379 8083 10022 11211 27017
