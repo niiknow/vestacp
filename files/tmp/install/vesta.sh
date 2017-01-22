@@ -2,6 +2,7 @@
 
 export VESTA=/usr/local/vesta
 
+cd /tmp
 curl -s -o /tmp/vst-install-ubuntu.sh https://vestacp.com/pub/vst-install-ubuntu.sh
 
 # fix mariadb instead of mysql and php7.0 instead of php7.1
@@ -58,6 +59,8 @@ cd /usr/local/vesta/data/ips && mv * 127.0.0.1 \
     && sed -i -- 's/172.*.*.*:80;/80;/g' * && sed -i -- 's/172.*.*.*:8080/127.0.0.1:8080/g' * \
     && cd /home/admin/conf/web \
     && sed -i -- 's/172.*.*.*:80;/80;/g' * && sed -i -- 's/172.*.*.*:8080/127.0.0.1:8080/g' *
+
+cd /tmp
 
 # increase postgresql limit to support at least 8gb ram
 sed -i -e "s/^max_connections = 100/max_connections = 300/g" /etc/postgresql/9.5/main/postgresql.conf \

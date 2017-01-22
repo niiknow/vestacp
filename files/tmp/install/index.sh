@@ -6,16 +6,6 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 
-cd /tmp \
-    && curl -sS https://getcomposer.org/installer | php -- --version=1.3.1 --install-dir=/usr/local/bin --filename=composer \
-    && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
-
-    && apt-get update && apt-get -y upgrade \
-    && apt-get install -y mongodb-org nodejs php-memcached php-mongodb \
-    && npm install --quiet -g gulp express bower pm2 webpack webpack-dev-server karma protractor typings typescript \
-    && npm cache clean \
-    && ln -sf "$(which nodejs)" /usr/bin/node
-
 /tmp/install/php.sh
 /tmp/install/vesta.sh
 
@@ -42,6 +32,8 @@ cd "$(dirname "$(find /home/admin/web/* -type d -name public_html)")" \
 && sed -i -e "s/VESTA/NGINX/g" public_html/index.html \
 && sed -i -e "s/vestacp/nginx/g" public_shtml/index.html \
 && sed -i -e "s/VESTA/NGINX/g" public_shtml/index.html \
+
+cd /tmp
 
 # disable localhost redirect to bad default IP
 sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/127.0.0.1
