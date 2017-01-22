@@ -2,12 +2,10 @@ FROM niiknow/docker-hostingbase:0.5.10
 
 MAINTAINER friends@niiknow.org
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    VESTA=/usr/local/vesta \
-    DOTNET_VERSION=1.1.0 \
-    DOTNET_DOWNLOAD_URL=https://dotnetcli.blob.core.windows.net/dotnet/release/1.1.0/Binaries/$DOTNET_VERSION/dotnet-debian-x64.$DOTNET_VERSION.tar.gz \
-    GOLANG_VERSION=1.7.4 \
-    GOLANG_DOWNLOAD_URL=https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz
+ENV DEBIAN_FRONTEND=noninteractive
+ENV VESTA=/usr/local/vesta DOTNET_VERSION=1.1.0 GOLANG_VERSION=1.7.4
+ENV DOTNET_DOWNLOAD_URL=https://dotnetcli.blob.core.windows.net/dotnet/release/$DOTNET_VERSION/Binaries/$DOTNET_VERSION/dotnet-debian-x64.$DOTNET_VERSION.tar.gz
+ENV GOLANG_DOWNLOAD_URL=https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz
 
 # start
 RUN \
