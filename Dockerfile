@@ -205,9 +205,9 @@ RUN \
     && rm -rf /var/lib/mysql \
     && ln -s /vesta/var/mysql /var/lib/mysql \
     
-    && mv /var/lib/postgresql /vesta-start/var/postgresql \
+    && mv /var/lib/postgresql /vesta-start/var/lib/postgresql \
     && rm -rf /var/lib/postgresql \
-    && ln -s /vesta/var/postgresql /var/lib/postgresql \
+    && ln -s /vesta/var/lib/postgresql /var/lib/postgresql \
 
     && mv /root /vesta-start/root \
     && rm -rf /root \
