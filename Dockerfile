@@ -92,6 +92,9 @@ RUN \
     && chmod +x /etc/cron.hourly/vestacp-backup-etc \
     && chmod +x /etc/my_init.d/startup.sh \
 
+# increase memcache max size from 64m to 2g
+    && sed -i -e "s/^\-m 64/\-m 2048/g" /etc/memcached.conf \
+
 # mongodb stuff
 # 
     && mkdir -p /data/db \
@@ -148,6 +151,13 @@ RUN \
     && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cgi/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/cli/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/cgi/conf.d/20-v8js.ini \
+
+# fix docker nginx ips
+    && sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/*.tpl \
+    && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/*.stpl \
+    && sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/php-fpm/*.tpl \
+    && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/php-fpm/*.stpl \
+    && bash /usr/local/vesta/upd/switch_rpath.sh \
 
     && service apache2 stop \
     && service mysql stop \
@@ -260,14 +270,6 @@ RUN \
     && chmod 775 /vesta-start/local/vesta/data/sessions \
     && chown root:admin /vesta-start/local/vesta/data/sessions \
 
-# fix docker nginx ips
-    && sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/*.tpl \
-    && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/*.stpl \
-    && sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/php-fpm/*.tpl \
-    && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/php-fpm/*.stpl \
-
-    && bash /usr/local/vesta/upd/switch_rpath.sh \
-
 # patch default website
     && cd "$(dirname "$(find /home/admin/web/* -type d -name public_html)")" \
     && sed -i -e "s/vestacp/nginx/g" public_html/index.html \
@@ -277,9 +279,6 @@ RUN \
 
 # disable localhost redirect to bad default IP
     && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/127.0.0.1 \
-
-# increase memcache max size from 64m to 2g
-    && sed -i -e "s/^\-m 64/\-m 2048/g" /etc/memcached.conf \
 
 # remove rlimit in docker nginx
     && sed -i -e "s/^worker_rlimit_nofile    65535;//g" /etc/nginx/nginx.conf \
