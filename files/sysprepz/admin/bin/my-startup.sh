@@ -20,6 +20,7 @@ fi
 # required startup and of course vesta
 cd /etc/init.d/
 ./disable-transparent-hugepages defaults \
+&& ./ssh start \
 && ./apache2 start \
 && ./nginx start \
 && ./vesta start
