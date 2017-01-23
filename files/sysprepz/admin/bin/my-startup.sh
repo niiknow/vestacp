@@ -20,14 +20,12 @@ fi
 # required startup and of course vesta
 cd /etc/init.d/
 ./disable-transparent-hugepages defaults \
-&& ./ssh start \
 && ./apache2 start \
+&& ./ssh start \
+&& ./mysql start \
+&& ./postgresql start \
 && ./nginx start \
 && ./vesta start
-
-# you control your startup here for non-required startups
-./mysql start \
-&& ./postgresql start
 
 # && ./exim4 start \
 # && ./dovecot start \
