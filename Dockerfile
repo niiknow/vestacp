@@ -39,7 +39,7 @@ RUN \
     && curl -SL $GOLANG_DOWNLOAD_URL --output /tmp/golang.tar.gz \
     && tar -zxf golang.tar.gz \
     && mv go /usr/local \
-    && echo -e "\n\GOROOT=/usr/local/go\nexport GOROOT\n" >> /root/.profile
+    && echo "\nGOROOT=/usr/local/go\nexport GOROOT\n" >> /root/.profile
 
 # install php
 RUN \
@@ -167,7 +167,7 @@ RUN \
 # https://github.com/serghey-rodin/vesta/issues/1009
     && sed -i -e "s/unzip/unzip \-o/g" /usr/local/vesta/bin/v-extract-fs-archive \
 
-    && echo -e "\nServerName localhost\n" >> /etc/apache2/apache2.conf \
+    && echo "\nServerName localhost\n" >> /etc/apache2/apache2.conf \
     && sed -i -e "s/^ULIMIT_MAX_FILES=.*/ULIMIT_MAX_FILES=/g" /usr/sbin/apache2ctl \
 
 # disable localhost redirect to bad default IP
@@ -178,14 +178,14 @@ RUN \
     && service redis-server stop \
     && service fail2ban stop \
     && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/mysql/g" /etc/mysql/my.cnf \
-    && sed -i -e "s/dir \./dir \/vesta\/redis\/db/g" /etc/redis/redis.conf \
-    && sed -i -e "s/\/etc\/redis/\/vesta\/redis/g" /etc/init.d/redis-server \
+    && sed -i -e "s/dir \./dir \/vesta\/etc\/redis\/db/g" /etc/redis/redis.conf \
+    && sed -i -e "s/\/etc\/redis/\/vesta\/etc\/redis/g" /etc/init.d/redis-server \
 
     && mkdir -p /vesta-start/etc \
     && mkdir -p /vesta-start/etc-bak/apache2/conf.d \
     && mkdir -p /vesta-start/var/lib \
     && mkdir -p /vesta-start/local \
-    && mkdir -p /vesta-start/redis/db \ 
+    && mkdir -p /vesta-start/etc/redis/db \ 
 
 # disable php*admin and roundcube by default, backup the config first - see README.md    
     && rsync -a /etc/apache2/conf.d/* /vesta-start/etc-bak/apache2/conf.d \
