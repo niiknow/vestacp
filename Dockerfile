@@ -157,6 +157,9 @@ RUN \
     && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/php-fpm/*.stpl \
     && bash /usr/local/vesta/upd/switch_rpath.sh \
 
+# remove rlimit in docker nginx
+    && sed -i -e "s/^worker_rlimit_nofile    65535;//g" /etc/nginx/nginx.conf \
+    
     && service mysql stop \
     && service postgresql stop \
     && service redis-server stop \
@@ -276,9 +279,6 @@ RUN \
 
 # disable localhost redirect to bad default IP
 #    && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/127.0.0.1 \
-
-# remove rlimit in docker nginx
-    && sed -i -e "s/^worker_rlimit_nofile    65535;//g" /etc/nginx/nginx.conf \
 
 # vesta monkey patching
 # patch psql9.5 backup
