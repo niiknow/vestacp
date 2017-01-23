@@ -275,7 +275,7 @@ RUN \
     && sed -i -e "s/VESTA/NGINX/g" public_shtml/index.html \
 
 # disable localhost redirect to bad default IP
-    && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/127.0.0.1 \
+#    && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/127.0.0.1 \
 
 # remove rlimit in docker nginx
     && sed -i -e "s/^worker_rlimit_nofile    65535;//g" /etc/nginx/nginx.conf \
