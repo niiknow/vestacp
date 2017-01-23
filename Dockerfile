@@ -170,6 +170,9 @@ RUN \
     && echo $'\nServerName localhost\n' >> /etc/apache2/apache2.conf \
     && sed -i -e "s/^ULIMIT_MAX_FILES=.*/ULIMIT_MAX_FILES=/g" /usr/sbin/apache2ctl \
 
+# disable localhost redirect to bad default IP
+    && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/* \
+
     && service mysql stop \
     && service postgresql stop \
     && service redis-server stop \
@@ -286,9 +289,6 @@ RUN \
     && sed -i -e "s/VESTA/NGINX/g" public_html/index.html \
     && sed -i -e "s/vestacp/nginx/g" public_shtml/index.html \
     && sed -i -e "s/VESTA/NGINX/g" public_shtml/index.html \
-
-# disable localhost redirect to bad default IP
-#    && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/127.0.0.1 \
 
     && rm -rf /tmp/*
 
