@@ -167,7 +167,7 @@ RUN \
 # https://github.com/serghey-rodin/vesta/issues/1009
     && sed -i -e "s/unzip/unzip \-o/g" /usr/local/vesta/bin/v-extract-fs-archive \
 
-    && echo $'\nServerName localhost\n' >> /etc/apache2/apache2.conf \
+    && echo -e "\nServerName localhost\n" >> /etc/apache2/apache2.conf \
     && sed -i -e "s/^ULIMIT_MAX_FILES=.*/ULIMIT_MAX_FILES=/g" /usr/sbin/apache2ctl \
 
 # disable localhost redirect to bad default IP
