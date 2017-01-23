@@ -280,7 +280,7 @@ RUN \
     && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/127.0.0.1 \
 
 # increase memcache max size from 64m to 2g
-    && sed -i -e "s/^\-m 64/\-m 2048/g" /usr/etc/memcached.conf \
+    && sed -i -e "s/^\-m 64/\-m 2048/g" /etc/memcached.conf \
 
 # remove rlimit in docker nginx
     && sed -i -e "s/^worker_rlimit_nofile    65535;//g" /etc/nginx/nginx.conf \
