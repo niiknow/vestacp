@@ -253,9 +253,8 @@ RUN \
     && rm -rf /var/lib/couchdb \
     && ln -s /vesta/var/lib/couchdb /var/lib/couchdb \
 
-    && mkdir -p /sysprepz/home
+    && mkdir -p /sysprepz/home \
     && rsync -a /home/* /sysprepz/home \
-    && mkdir -p /etc/my_init.d \
 
     && mkdir -p /vesta-start/local/vesta/data/sessions \
     && chmod 775 /vesta-start/local/vesta/data/sessions \
