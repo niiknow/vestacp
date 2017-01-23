@@ -94,8 +94,8 @@ RUN \
 
 # mongodb stuff
 # 
-    && chmod 0755 /data/db \
     && mkdir -p /data/db \
+    && chmod 0755 /data/db \
     && chown -R mongodb:mongodb /data/db \
     && chmod 0755 /etc/init.d/disable-transparent-hugepages \
 
@@ -124,21 +124,21 @@ RUN \
 
 # php stuff - after vesta because of vesta-php installs
     & sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/apache2/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/mods-available/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.1/mods-available/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/cli/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.1/cgi/php.ini \
 
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.0/apache2/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.0/mods-available/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.1/mods-available/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.0/cli/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.1/cgi/php.ini \
 
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.0/apache2/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.0/mods-available/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.1/mods-available/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.0/cli/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.1/cgi/php.ini \
 
 
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/apache2/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/mods-available/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/mods-available/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/cli/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/cgi/php.ini \
 
     && echo "extension=v8js.so" > /etc/php/7.0/mods-available/v8js.ini \
     && echo "extension=v8js.so" > /etc/php/7.1/mods-available/v8js.ini \
