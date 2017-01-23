@@ -159,7 +159,17 @@ RUN \
 
 # remove rlimit in docker nginx
     && sed -i -e "s/^worker_rlimit_nofile    65535;//g" /etc/nginx/nginx.conf \
-    
+
+# vesta monkey patching
+# patch psql9.5 backup
+    && sed -i -e "s/\-x \-i \-f/\-x \-f/g" /usr/local/vesta/func/db.sh \
+
+# https://github.com/serghey-rodin/vesta/issues/1009
+    && sed -i -e "s/unzip/unzip \-o/g" /usr/local/vesta/bin/v-extract-fs-archive \
+
+    && echo $'\nServerName localhost\n' >> /etc/apache2/apache2.conf \
+    && sed -i -e "s/^ULIMIT_MAX_FILES=.*/ULIMIT_MAX_FILES=/g" /usr/sbin/apache2ctl \
+
     && service mysql stop \
     && service postgresql stop \
     && service redis-server stop \
@@ -279,16 +289,6 @@ RUN \
 
 # disable localhost redirect to bad default IP
 #    && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/127.0.0.1 \
-
-# vesta monkey patching
-# patch psql9.5 backup
-    && sed -i -e "s/\-x \-i \-f/\-x \-f/g" /usr/local/vesta/func/db.sh \
-
-# https://github.com/serghey-rodin/vesta/issues/1009
-    && sed -i -e "s/unzip/unzip \-o/g" /usr/local/vesta/bin/v-extract-fs-archive \
-
-    && echo $'\nServerName localhost\n' >> /etc/apache2/apache2.conf \
-    && sed -i -e "s/^ULIMIT_MAX_FILES=.*/ULIMIT_MAX_FILES=/g" /usr/sbin/apache2ctl \
 
     && rm -rf /tmp/*
 
