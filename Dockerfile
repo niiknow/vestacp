@@ -1,4 +1,4 @@
-FROM niiknow/docker-hostingbase:0.5.10
+FROM niiknow/docker-hostingbase:0.5.11
 
 MAINTAINER friends@niiknow.org
 
@@ -54,7 +54,20 @@ RUN \
         php7.1-tidy php7.1-opcache php7.1-json php7.1-bz2 php7.1-pgsql php7.1-mcrypt php7.1-readline \
         php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-imagick php7.1-zip \
 
-    && pecl install v8js
+# switch php7.0 version before pecl install
+    && update-alternatives --set php /usr/bin/php7.0 \
+    && pecl config-set php_ini /etc/php/7.0/cli/php.ini \
+    && pecl config-set ext_dir /usr/lib/php/20151012/ \
+    && pecl config-set bin_dir /usr/bin/ \
+    && pecl config-set php_bin /usr/bin/php7.0 \
+    && pecl config-set php_suffix 7.0 \
+
+    && pecl install v8js \
+
+    && echo "extension=v8js.so" > /etc/php/7.0/mods-available/v8js.ini \
+    && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/apache2/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cli/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cgi/conf.d/20-v8js.ini
 
 RUN \
     cd /tmp \
@@ -141,14 +154,6 @@ RUN \
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/apache2/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/cli/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/cgi/php.ini \
-
-#    && echo "extension=v8js.so" > /etc/php/7.0/mods-available/v8js.ini \
-#    && echo "extension=v8js.so" > /etc/php/7.1/mods-available/v8js.ini \
-#    && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/apache2/conf.d/20-v8js.ini \
-#    && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cli/conf.d/20-v8js.ini \
-#    && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cgi/conf.d/20-v8js.ini \
-#    && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/cli/conf.d/20-v8js.ini \
-#    && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/cgi/conf.d/20-v8js.ini \
 
 # fix docker nginx ips
     && sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/*.tpl \
