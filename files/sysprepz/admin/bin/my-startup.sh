@@ -21,7 +21,6 @@ fi
 cd /etc/init.d/
 ./disable-transparent-hugepages defaults \
 && ./apache2 start \
-&& ./ssh start \
 && ./mysql start \
 && ./postgresql start \
 && ./nginx start \

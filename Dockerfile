@@ -96,6 +96,7 @@ ADD ./files /
 RUN \
     cd /tmp \
     chmod +x /etc/init.d/dovecot \
+    && chmod +x /etc/service/sshd/run \
     && chmod +x /etc/init.d/mongod \
     && chmod +x /etc/cron.hourly/vestacp-backup-etc \
     && chmod +x /etc/my_init.d/startup.sh \
