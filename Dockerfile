@@ -1,4 +1,4 @@
-FROM niiknow/docker-hostingbase:0.5.10
+FROM niiknow/docker-hostingbase:0.5.11
 
 MAINTAINER friends@niiknow.org
 
@@ -57,8 +57,8 @@ RUN \
 # switch php7.0 version before pecl install
     && update-alternatives --set php /usr/bin/php7.0 \
     && pecl config-set php_ini /etc/php/7.0/cli/php.ini \
-    && pecl config-set ext_dir /usr/lib/php/20151012/ \
-    && pecl config-set bin_dir /usr/bin/ \
+    && pecl config-set ext_dir /usr/lib/php/20151012 \
+    && pecl config-set bin_dir /usr/bin \
     && pecl config-set php_bin /usr/bin/php7.0 \
     && pecl config-set php_suffix 7.0 \
 
@@ -104,7 +104,7 @@ RUN \
     && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/apache2/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cli/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cgi/conf.d/20-v8js.ini \
-    
+
 # increase memcache max size from 64m to 2g
     && sed -i -e "s/^\-m 64/\-m 2048/g" /etc/memcached.conf \
 
