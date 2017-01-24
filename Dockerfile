@@ -1,4 +1,4 @@
-FROM niiknow/docker-hostingbase:0.5.11
+FROM niiknow/docker-hostingbase:0.5.10
 
 MAINTAINER friends@niiknow.org
 
@@ -62,12 +62,7 @@ RUN \
     && pecl config-set php_bin /usr/bin/php7.0 \
     && pecl config-set php_suffix 7.0 \
 
-    && pecl install v8js \
-
-    && echo "extension=v8js.so" > /etc/php/7.0/mods-available/v8js.ini \
-    && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/apache2/conf.d/20-v8js.ini \
-    && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cli/conf.d/20-v8js.ini \
-    && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cgi/conf.d/20-v8js.ini
+    && pecl install v8js
 
 RUN \
     cd /tmp \
@@ -105,6 +100,11 @@ RUN \
     && chmod +x /etc/cron.hourly/vestacp-backup-etc \
     && chmod +x /etc/my_init.d/startup.sh \
 
+    && echo "extension=v8js.so" > /etc/php/7.0/mods-available/v8js.ini \
+    && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/apache2/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cli/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cgi/conf.d/20-v8js.ini \
+    
 # increase memcache max size from 64m to 2g
     && sed -i -e "s/^\-m 64/\-m 2048/g" /etc/memcached.conf \
 
