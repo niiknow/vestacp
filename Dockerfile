@@ -202,6 +202,10 @@ RUN \
     && rm -rf /etc/apache2 \
     && ln -s /vesta/etc/apache2 /etc/apache2 \
 
+    && mv /etc/ssh /vesta-start/etc/ssh \
+    && rm -rf /etc/ssh \
+    && ln -s /vesta/etc/ssh /etc/ssh \
+
     && mv /etc/php /vesta-start/etc/php \
     && rm -rf /etc/php \
     && ln -s /vesta/etc/php /etc/php \
