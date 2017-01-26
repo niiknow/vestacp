@@ -206,6 +206,10 @@ RUN \
     && rm -rf /etc/ssh \
     && ln -s /vesta/etc/ssh /etc/ssh \
 
+    && mv /etc/fail2ban /vesta-start/etc/fail2ban \
+    && rm -rf /etc/fail2ban \
+    && ln -s /vesta/etc/fail2ban /etc/fail2ban \
+
     && mv /etc/php /vesta-start/etc/php \
     && rm -rf /etc/php \
     && ln -s /vesta/etc/php /etc/php \
