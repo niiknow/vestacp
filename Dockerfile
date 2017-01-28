@@ -44,23 +44,23 @@ RUN \
 # install php
 RUN \
     cd /tmp \
-    && apt-get install -yq php7.0-mbstring php7.0-cgi php7.0-cli php7.0-dev php7.0-geoip php7.0-common php7.0-xmlrpc \
+    && apt-get install -yq php7.0-dev php7.0-mbstring php7.0-cgi php7.0-cli php7.0-dev php7.0-geoip php7.0-common php7.0-xmlrpc \
         php7.0-curl php7.0-enchant php7.0-imap php7.0-xsl php7.0-mysql php7.0-mysqlnd php7.0-pspell php7.0-gd \
         php7.0-tidy php7.0-opcache php7.0-json php7.0-bz2 php7.0-pgsql php7.0-mcrypt php7.0-readline  \
         php7.0-intl php7.0-sqlite3 php7.0-ldap php7.0-xml php7.0-redis php7.0-imagick php7.0-zip \
 
-    && apt-get install -yq php7.1-mbstring php7.1-cgi php7.1-cli php7.1-dev php7.1-geoip php7.1-common php7.1-xmlrpc \
+    && apt-get install -yq php7.1-dev php7.1-mbstring php7.1-cgi php7.1-cli php7.1-dev php7.1-geoip php7.1-common php7.1-xmlrpc \
         php7.1-curl php7.1-enchant php7.1-imap php7.1-xsl php7.1-mysql php7.1-mysqlnd php7.1-pspell php7.1-gd \
         php7.1-tidy php7.1-opcache php7.1-json php7.1-bz2 php7.1-pgsql php7.1-mcrypt php7.1-readline \
         php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-imagick php7.1-zip \
 
 # switch php7.0 version before pecl install
-    && update-alternatives --set php /usr/bin/php7.0 \
-    && pecl config-set php_ini /etc/php/7.0/cli/php.ini \
-    && pecl config-set ext_dir /usr/lib/php/20151012 \
+    && update-alternatives --set php /usr/bin/php7.1 \
+    && pecl config-set php_ini /etc/php/7.1/cli/php.ini \
+    && pecl config-set ext_dir /usr/lib/php/20160303 \
     && pecl config-set bin_dir /usr/bin \
-    && pecl config-set php_bin /usr/bin/php7.0 \
-    && pecl config-set php_suffix 7.0 \
+    && pecl config-set php_bin /usr/bin/php7.1 \
+    && pecl config-set php_suffix 7.1 \
 
     && pecl install v8js
 
