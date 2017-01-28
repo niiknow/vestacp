@@ -55,12 +55,12 @@ RUN \
         php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-imagick php7.1-zip \
 
 # switch php7.0 version before pecl install
-    && update-alternatives --set php /usr/bin/php7.1 \
-    && pecl config-set php_ini /etc/php/7.1/cli/php.ini \
-    && pecl config-set ext_dir /usr/lib/php/20160303 \
+    && update-alternatives --set php /usr/bin/php7.0 \
+    && pecl config-set php_ini /etc/php/7.0/cli/php.ini \
+    && pecl config-set ext_dir /usr/lib/php/20151012 \
     && pecl config-set bin_dir /usr/bin \
-    && pecl config-set php_bin /usr/bin/php7.1 \
-    && pecl config-set php_suffix 7.1 \
+    && pecl config-set php_bin /usr/bin/php7.0 \
+    && pecl config-set php_suffix 7.0 \
 
     && pecl install v8js
 
@@ -105,6 +105,31 @@ RUN \
     && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/apache2/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cli/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/cgi/conf.d/20-v8js.ini \
+
+    && echo "extension=v8js.so" > /etc/php/7.1/mods-available/v8js.ini \
+    && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/apache2/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/cli/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/cgi/conf.d/20-v8js.ini \
+
+    && echo "extension=pcs.so" > /etc/php/7.0/mods-available/pcs.ini \
+    && ln -sf /etc/php/7.0/mods-available/pcs.ini /etc/php/7.0/apache2/conf.d/20-pcs.ini \
+    && ln -sf /etc/php/7.0/mods-available/pcs.ini /etc/php/7.0/cli/conf.d/20-pcs.ini \
+    && ln -sf /etc/php/7.0/mods-available/pcs.ini /etc/php/7.0/cgi/conf.d/20-pcs.ini \
+
+    && echo "extension=pcs.so" > /etc/php/7.1/mods-available/pcs.ini \
+    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/apache2/conf.d/20-pcs.ini \
+    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/cli/conf.d/20-pcs.ini \
+    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/cgi/conf.d/20-pcs.ini \
+
+    && echo "extension=couchbase.so" > /etc/php/7.0/mods-available/couchbase.ini \
+    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/apache2/conf.d/20-couchbase.ini \
+    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/cli/conf.d/20-couchbase.ini \
+    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/cgi/conf.d/20-couchbase.ini \
+
+    && echo "extension=couchbase.so" > /etc/php/7.1/mods-available/couchbase.ini \
+    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/apache2/conf.d/20-couchbase.ini \
+    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cli/conf.d/20-couchbase.ini \
+    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cgi/conf.d/20-couchbase.ini \
 
 # increase memcache max size from 64m to 2g
     && sed -i -e "s/^\-m 64/\-m 2048/g" /etc/memcached.conf \
