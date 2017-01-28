@@ -156,6 +156,10 @@ RUN \
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/cli/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/cgi/php.ini \
 
+    && sed -i "s/;sendmail_path =/sendmail_path = /usr/sbin/exim -t/" /etc/php/7.0/apache2/php.ini \
+    && sed -i "s/;sendmail_path =/sendmail_path = /usr/sbin/exim -t/" /etc/php/7.0/cli/php.ini \
+    && sed -i "s/;sendmail_path =/sendmail_path = /usr/sbin/exim -t/" /etc/php/7.1/cgi/php.ini \
+
 # fix docker nginx ips
     && sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/*.tpl \
     && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/*.stpl \
