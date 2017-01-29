@@ -299,9 +299,9 @@ RUN \
     && rm -rf /etc/mysql \
     && ln -s /vesta/etc/mysql /etc/mysql \
 
-    && mv /var/lib/mysql /vesta-start/var/mysql \
+    && mv /var/lib/mysql /vesta-start/var/lib/mysql \
     && rm -rf /var/lib/mysql \
-    && ln -s /vesta/var/mysql /var/lib/mysql \
+    && ln -s /vesta/var/lib/mysql /var/lib/mysql \
     
     && mv /etc/postgresql   /vesta-start/etc/postgresql \
     && rm -rf /etc/postgresql \
