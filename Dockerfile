@@ -244,7 +244,7 @@ RUN \
     && service postgresql stop \
     && service redis-server stop \
     && service fail2ban stop \
-    && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/mysql/g" /etc/mysql/my.cnf \
+    && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/lib\/mysql/g" /etc/mysql/my.cnf \
     && sed -i -e "s/dir \./dir \/vesta\/etc\/redis\/db/g" /etc/redis/redis.conf \
     && sed -i -e "s/\/etc\/redis/\/vesta\/etc\/redis/g" /etc/init.d/redis-server \
 
@@ -256,8 +256,8 @@ RUN \
 
 # disable php*admin and roundcube by default, backup the config first - see README.md    
     && rsync -a /etc/apache2/conf.d/* /vesta-start/etc-bak/apache2/conf.d \
-    && rm -rf /etc/apache2/conf.d/php*.conf \
-    && rm -rf /etc/apache2/conf.d/roundcube.conf \
+    && rm -f /etc/apache2/conf.d/php*.conf \
+    && rm -f /etc/apache2/conf.d/roundcube.conf \
 
     && mv /etc/apache2 /vesta-start/etc/apache2 \
     && rm -rf /etc/apache2 \
