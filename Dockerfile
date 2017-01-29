@@ -1,4 +1,4 @@
-FROM niiknow/docker-hostingbase:0.6.2
+FROM niiknow/docker-hostingbase:0.6.9
 
 MAINTAINER friends@niiknow.org
 
@@ -59,6 +59,10 @@ RUN \
         php7.1-tidy php7.1-opcache php7.1-json php7.1-bz2 php7.1-pgsql php7.1-mcrypt php7.1-readline php7.1-imagick \
         php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis \
 
+# fix v8js reference of json first
+    && mv /etc/php/5.6/cli/conf.d/20-json.ini /etc/php/5.6/cli/conf.d/15-json.ini \
+    && mv /etc/php/5.6/cgi/conf.d/20-json.ini /etc/php/5.6/cgi/conf.d/15-json.ini \
+
 # switch to php7.0 version before any other install
     && update-alternatives --set php /usr/bin/php7.0 \
     && pecl config-set php_ini /etc/php/7.0/cli/php.ini \
@@ -115,14 +119,14 @@ RUN \
     && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/cgi/conf.d/20-v8js.ini \
 
     && echo "extension=pcs.so" > /etc/php/7.0/mods-available/pcs.ini \
-    && ln -sf /etc/php/7.0/mods-available/pcs.ini /etc/php/7.0/apache2/conf.d/20-pcs.ini \
-    && ln -sf /etc/php/7.0/mods-available/pcs.ini /etc/php/7.0/cli/conf.d/20-pcs.ini \
-    && ln -sf /etc/php/7.0/mods-available/pcs.ini /etc/php/7.0/cgi/conf.d/20-pcs.ini \
+    && ln -sf /etc/php/7.0/mods-available/pcs.ini /etc/php/7.0/apache2/conf.d/15-pcs.ini \
+    && ln -sf /etc/php/7.0/mods-available/pcs.ini /etc/php/7.0/cli/conf.d/15-pcs.ini \
+    && ln -sf /etc/php/7.0/mods-available/pcs.ini /etc/php/7.0/cgi/conf.d/15-pcs.ini \
 
     && echo "extension=pcs.so" > /etc/php/7.1/mods-available/pcs.ini \
-#    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/apache2/conf.d/20-pcs.ini \
-    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/cli/conf.d/20-pcs.ini \
-    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/cgi/conf.d/20-pcs.ini \
+#    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/apache2/conf.d/15-pcs.ini \
+    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/cli/conf.d/15-pcs.ini \
+    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/cgi/conf.d/15-pcs.ini \
 
     && echo "extension=couchbase.so" > /etc/php/7.0/mods-available/couchbase.ini \
     && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/apache2/conf.d/20-couchbase.ini \
@@ -182,7 +186,7 @@ RUN \
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.0/cgi/php.ini \
 
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/5.6/cli/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/5.61/cgi/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/5.6/cgi/php.ini \
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.1/cli/php.ini \
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.1/cgi/php.ini \
 
