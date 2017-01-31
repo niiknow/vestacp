@@ -252,7 +252,6 @@ RUN \
     && mkdir -p /vesta-start/etc-bak/apache2/conf.d \
     && mkdir -p /vesta-start/var/lib \
     && mkdir -p /vesta-start/local \
-    && mkdir -p /vesta-start/etc/redis/db \ 
 
 # disable php*admin and roundcube by default, backup the config first - see README.md    
     && rsync -a /etc/apache2/conf.d/* /vesta-start/etc-bak/apache2/conf.d \
