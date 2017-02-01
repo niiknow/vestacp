@@ -245,6 +245,7 @@ RUN \
     && service redis-server stop \
     && service fail2ban stop \
     && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/lib\/mysql/g" /etc/mysql/my.cnf \
+    && sed -i -e "s/127\.0\.0\.1/\*/g" /etc/redis/redis.conf \
     && sed -i -e "s/\/etc\/redis/\/vesta\/etc\/redis/g" /etc/init.d/redis-server \
 
     && mkdir -p /vesta-start/etc \
