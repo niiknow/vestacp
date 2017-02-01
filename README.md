@@ -68,10 +68,11 @@ I'm still working/testing updating internal fail2ban to not do anything and prov
 ### misc/tested/verified
 - [x] ssh/sftp, nginx, apache2, php7.0 + v8js
 - [x] log viewing in Vesta
+- [x] backup and restore
 - [x] Vesta FileManager
 - [x] Letsencrypt
-- [x] Sending email
-- [x] Backup and restore
+- [x] Sending/outgoing email, dovecot
+- [x] phpmyadmin, phppgadmin
 - [x] Redis, Memcached
 - [x] nodejs, golang
 - [x] MariaDB/MySQL, Postgresql, Mongodb
