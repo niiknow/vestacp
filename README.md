@@ -28,8 +28,8 @@ Use SFTP instead of FTP on the 2222 port.  Disable ssh if you don't really need 
 Below are scenarios that work great with this docker.
 
 ### 1) WordPress Site in 2017
-mkdir -p /opt/vestacp/{vesta,home,data}
-docker run -d --restart=always -p 80:80 -p 443:443 -p 8083:8083 -v /opt/vestacp/vesta:/vesta -v /opt/vestacp/home:/home -v /opt/vestacp/data:/backup niiknow/vestacp
+mkdir -p /opt/vestacp/{vesta,home,backup}
+docker run -d --restart=always -p 80:80 -p 443:443 -p 8083:8083 -v /opt/vestacp/vesta:/vesta -v /opt/vestacp/home:/home -v /opt/vestacp/backup:/backup niiknow/vestacp
 
 1. Change admin password
 2. Modify my-startup.sh and comment out postgresql start.  Install your wordpress site through VestaCP with FileManager.
@@ -37,8 +37,8 @@ docker run -d --restart=always -p 80:80 -p 443:443 -p 8083:8083 -v /opt/vestacp/
 4. Setup cron job to sync /backup folder with aws s3 for remote backup and you're good to go.
 
 ### 2) mysql server
-mkdir -p /opt/vestacp/{vesta,home,data}
-docker run -d --restart=always -p 4321:3306 -p 8083:8083 -v /opt/vestacp/vesta:/vesta -v /opt/vestacp/home:/home -v /opt/vestacp/data:/backup niiknow/vestacp
+mkdir -p /opt/vestacp/{vesta,home,backup}
+docker run -d --restart=always -p 4321:3306 -p 8083:8083 -v /opt/vestacp/vesta:/vesta -v /opt/vestacp/home:/home -v /opt/vestacp/backup:/backup niiknow/vestacp
 
 1. Change admin password.
 2. Modify my-startup.sh and comment out postgresql start.
@@ -46,8 +46,8 @@ docker run -d --restart=always -p 4321:3306 -p 8083:8083 -v /opt/vestacp/vesta:/
 4. Setup cron job to sync /backup folder with aws s3 for remote backup and you're good to go.
 
 ### 3) postgresql server
-mkdir -p /opt/vestacp/{vesta,home,data}
-docker run -d --restart=always -p 4321:5432 -p 8083:8083 -v /opt/vestacp/vesta:/vesta -v /opt/vestacp/home:/home -v /opt/vestacp/data:/backup niiknow/vestacp
+mkdir -p /opt/vestacp/{vesta,home,backup}
+docker run -d --restart=always -p 4321:5432 -p 8083:8083 -v /opt/vestacp/vesta:/vesta -v /opt/vestacp/home:/home -v /opt/vestacp/backup:/backup niiknow/vestacp
 
 1. Change admin password.
 2. Modify my-startup.sh and comment out mysql start.
@@ -91,19 +91,14 @@ As this is a docker image, you have many options.
 1. The best option is to use VestaCP backup and restore.  
 2. I will try to work on migration script to support different version of this docker image, but I would still strongly recommend that you use VestaCP backup and restore.
 
-The manual upgrade step is basically:
-From inside of vesta:
-1.  Make sure you ran your backup and have the latest backup files under /backup
-2.  tar -czf /vesta /backup/vesta."$(date +%F_%R)".tar.gz
-3.  stop all services (hint: service --status-all)
-4.  rm -rf /vesta/*
-
-From the docker host (outside of vesta):
-5.  docker pull niiknow/vestacp:latest
-5.  docker stop the niiknow/vestacp image
-6.  docker start the new image
-7.  docker rm the old image if everything tested fine or start the old image back if not
-
+Let say you followed the instruction above to start your vestacp, the manual upgrade step would be:
+1.  Make sure you ran your backup and have the latest backup files under /opt/vestacp/backup
+2.  docker pull niiknow/vestacp:latest
+3.  docker stop the niiknow/vestacp image
+4.  tar -czf /opt/vestacp/vesta /opt/vestacp/backup/vesta."$(date +%F_%R)".tar.gz
+5.  rm -rf /opt/vestacp/vesta/*
+6.  docker start the new image as instructed above
+7.  docker rm the old image if everything tested fine or start the old image back if test failed
 
 
 # LICENSE
