@@ -285,9 +285,10 @@ RUN \
     && rm -rf /etc/redis \
     && ln -s /vesta/etc/redis /etc/redis \
 
+    && mkdir -p /var/lib/redis \
+    && chown -R redis:redis /var/lib/redis \
     && mv /var/lib/redis /vesta-start/var/lib/redis \
     && rm -rf /var/lib/redis \
-    && chown -R redis:redis /vesta/var/lib/redis \
     && ln -s /vesta/var/lib/redis /var/lib/redis \
 
     && mv /etc/dovecot /vesta-start/etc/dovecot \
