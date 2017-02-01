@@ -245,7 +245,6 @@ RUN \
     && service redis-server stop \
     && service fail2ban stop \
     && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/lib\/mysql/g" /etc/mysql/my.cnf \
-    && sed -i -e "s/dir \./dir \/vesta\/etc\/redis\/db/g" /etc/redis/redis.conf \
     && sed -i -e "s/\/etc\/redis/\/vesta\/etc\/redis/g" /etc/init.d/redis-server \
 
     && mkdir -p /vesta-start/etc \
@@ -285,6 +284,11 @@ RUN \
     && mv /etc/redis   /vesta-start/etc/redis \
     && rm -rf /etc/redis \
     && ln -s /vesta/etc/redis /etc/redis \
+
+    && mv /var/lib/redis /vesta-start/var/lib/redis \
+    && rm -rf /var/lib/redis \
+    && chown -R redis:redis /vesta/var/lib/redis \
+    && ln -s /vesta/var/lib/redis /var/lib/redis \
 
     && mv /etc/dovecot /vesta-start/etc/dovecot \
     && rm -rf /etc/dovecot \
