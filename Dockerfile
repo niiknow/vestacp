@@ -12,16 +12,15 @@ RUN \
     cd /tmp \
     && apt-get update && apt-get -y upgrade \
 
-# install nodejs, memcached, redis-server, and openvpn
-    && apt-get install -y nodejs memcached php-memcached redis-server openvpn \
+# install nodejs, memcached, redis-server, openvpn, mongodb, and couchdb
+    && apt-get install -yf nodejs memcached php-memcached redis-server openvpn mongodb-org php-mongodb couchdb \
     && npm install --quiet -g gulp express bower pm2 webpack webpack-dev-server karma protractor typings typescript \
     && npm cache clean \
     && ln -sf "$(which nodejs)" /usr/bin/node
 
-# setting up mongodb, couchdb, dotnet, awscli, golang
+# setting up dotnet, awscli, golang, php
 RUN \
     cd /tmp \
-    && apt-get install -yf mongodb-org php-mongodb couchdb  \
 
 # dotnet
     && curl -SL $DOTNET_DOWNLOAD_URL --output /tmp/dotnet.tar.gz \
@@ -39,11 +38,9 @@ RUN \
     && curl -SL $GOLANG_DOWNLOAD_URL --output /tmp/golang.tar.gz \
     && tar -zxf golang.tar.gz \
     && mv go /usr/local \
-    && echo "\nGOROOT=/usr/local/go\nexport GOROOT\n" >> /root/.profile
+    && echo "\nGOROOT=/usr/local/go\nexport GOROOT\n" >> /root/.profile \
 
 # install php
-RUN \
-    cd /tmp \
     && apt-get install -yq php5.6-mbstring php5.6-cgi php5.6-cli php5.6-dev php5.6-geoip php5.6-common php5.6-xmlrpc php5.6-sybase \
         php5.6-curl php5.6-enchant php5.6-imap php5.6-xsl php5.6-mysql php5.6-mysqlnd php5.6-pspell php5.6-gd php5.6-zip \
         php5.6-tidy php5.6-opcache php5.6-json php5.6-bz2 php5.6-pgsql php5.6-mcrypt php5.6-readline php5.6-imagick \
@@ -81,7 +78,8 @@ RUN \
         -y no -f \
 
 # cleanup
-    && apt-get install libapache2-mod-php5.6 libapache2-mod-php7.0 && a2dismod php5.6 && a2dismod php7.0 && a2dismod php7.1 \
+    && service apache2 stop \
+    && apt-get install -yf libapache2-mod-php5.6 libapache2-mod-php7.0 && a2dismod php5.6 && a2dismod php7.0 && a2dismod php7.1 \
 
 # fix v8js reference of json first
     && mv /etc/php/5.6/apache2/conf.d/20-json.ini /etc/php/5.6/apache2/conf.d/15-json.ini \
@@ -95,7 +93,6 @@ RUN \
     && pecl config-set bin_dir /usr/bin \
     && pecl config-set php_bin /usr/bin/php7.0 \
     && pecl config-set php_suffix 7.0 \
-    && service apache2 stop \
 
     && rm -rf /tmp/* \
     && apt-get -yf autoremove \
