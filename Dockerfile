@@ -14,8 +14,6 @@ RUN \
 
 # install nodejs, memcached, redis-server, openvpn, mongodb, and couchdb
     && apt-get install -yf nodejs memcached php-memcached redis-server openvpn mongodb-org php-mongodb couchdb \
-    && npm install --quiet -g gulp express bower pm2 webpack webpack-dev-server karma protractor typings typescript \
-    && npm cache clean \
     && ln -sf "$(which nodejs)" /usr/bin/node
 
 # setting up dotnet, awscli, golang, php
@@ -79,20 +77,22 @@ RUN \
 
 # cleanup
     && service apache2 stop \
-    && apt-get install -yf libapache2-mod-php5.6 libapache2-mod-php7.0 && a2dismod php5.6 && a2dismod php7.0 && a2dismod php7.1 \
+    && apt-get install -yf libapache2-mod-php5.6 libapache2-mod-php7.1 && a2dismod php5.6 && a2dismod php7.0 && a2dismod php7.1 \
 
 # fix v8js reference of json first
     && mv /etc/php/5.6/apache2/conf.d/20-json.ini /etc/php/5.6/apache2/conf.d/15-json.ini \
     && mv /etc/php/5.6/cli/conf.d/20-json.ini /etc/php/5.6/cli/conf.d/15-json.ini \
     && mv /etc/php/5.6/cgi/conf.d/20-json.ini /etc/php/5.6/cgi/conf.d/15-json.ini \
 
-# switch to php7.0 version before any other install
+# switch to php7.0 version as default
     && update-alternatives --set php /usr/bin/php7.0 \
     && pecl config-set php_ini /etc/php/7.0/cli/php.ini \
     && pecl config-set ext_dir /usr/lib/php/20151012 \
     && pecl config-set bin_dir /usr/bin \
     && pecl config-set php_bin /usr/bin/php7.0 \
     && pecl config-set php_suffix 7.0 \
+    && apt-get install -yf php7.0-dev \
+    && a2enmod php7.0 \
 
     && rm -rf /tmp/* \
     && apt-get -yf autoremove \
@@ -155,9 +155,6 @@ RUN \
     && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/apache2/conf.d/20-couchbase.ini \
     && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cli/conf.d/20-couchbase.ini \
     && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cgi/conf.d/20-couchbase.ini \
-
-
-    && a2enmod php7.0 \
 
 # increase memcache max size from 64m to 2g
     && sed -i -e "s/^\-m 64/\-m 2048/g" /etc/memcached.conf \
