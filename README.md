@@ -3,14 +3,14 @@ The ultimate control panel with docker (thanks lagun4ik for a great start)
 
 What's included?
 * ubuntu 16.04 lts + Vesta 0.9.8-17
-* nginx (proxy) -> apache2 -> php7.0 - high performance implementation
-* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.1, postgresql 9.5, nodejs 6.x, golang 1.7.4, openvpn, mongodb, couchdb
+* nginx (proxy) -> apache2 -> php7.0 - high performance and flexible implementation
+* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.1, postgresql 9.5, nodejs 6.x, golang 1.7.5, openvpn, mongodb, couchdb
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
 * DNS, named, dovecot, spamassassin, clamav, fail2ban, etc... -- disabled by default
 
 Run this image:
 
-mkdir -p /opt/vestacp/{vesta,home,data}
+mkdir -p /opt/vestacp/{vesta,home,backup}
 docker run -d --restart=always -p 2222:22 -p 80:80 -p 443:443 -p 3306:3306 -p 5432:5432 -p 8083:8083 -v /opt/vestacp/vesta:/vesta -v /opt/vestacp/home:/home -v /opt/vestacp/data:/backup niiknow/vestacp
 
 ## Volumes
@@ -65,13 +65,18 @@ If you enabled additional services, you may also want to enable fail2ban.  This 
 
 I'm still working/testing updating internal fail2ban to not do anything and provide instruction on how to read the /vesta/var/log/fail2ban.log file to globally ban the IP from all services.
 
-### misc/tested
-- [x] nginx, apache, php-fpm{5.6,7.0,7.1}
+### misc/tested/verified
+- [x] ssh/sftp, nginx, apache2, php7.0 + v8js
 - [x] log viewing in Vesta
 - [x] Vesta FileManager
 - [x] Letsencrypt
 - [x] Sending email
 - [x] Backup and restore
+- [x] Redis, Memcached
+- [x] nodejs, golang
+- [x] MariaDB/MySQL, Postgresql, Mongodb
+- [ ] java, dotnet
+- [ ] openvpn
 
 ### your todo
 - [ ] I recommend the following:
