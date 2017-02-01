@@ -92,13 +92,13 @@ As this is a docker image, you have many options.
 2. I will try to work on migration script to support different version of this docker image, but I would still strongly recommend that you use VestaCP backup and restore.
 
 Let say you followed the instruction above to start your vestacp, the manual upgrade step would be:
-1.  Make sure you ran your backup and have the latest backup files under /opt/vestacp/backup
-2.  docker pull niiknow/vestacp:latest
-3.  docker stop the niiknow/vestacp image
-4.  tar -czf /opt/vestacp/vesta /opt/vestacp/backup/vesta."$(date +%F_%R)".tar.gz
-5.  rm -rf /opt/vestacp/vesta/*
-6.  docker start the new image as instructed above
-7.  docker rm the old image if everything tested fine or start the old image back if test failed
+*  Make sure you ran your backup and have the latest backup files under /opt/vestacp/backup
+*  docker pull niiknow/vestacp:latest
+*  docker stop the niiknow/vestacp image
+*  tar -czf /opt/vestacp/vesta /opt/vestacp/backup/vesta."$(date +%F_%R)".tar.gz
+*  rm -rf /opt/vestacp/vesta/*
+*  docker start the new image as instructed above
+*  docker rm the old image if everything tested fine or start the old image back if test failed
 
 
 # LICENSE
