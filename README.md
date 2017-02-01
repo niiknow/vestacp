@@ -91,6 +91,21 @@ As this is a docker image, you have many options.
 1. The best option is to use VestaCP backup and restore.  
 2. I will try to work on migration script to support different version of this docker image, but I would still strongly recommend that you use VestaCP backup and restore.
 
+The manual upgrade step is basically:
+From inside of vesta:
+1.  Make sure you ran your backup and have the latest backup files under /backup
+2.  tar -czf /vesta /backup/vesta."$(date +%F_%R)".tar.gz
+3.  stop all services (hint: service --status-all)
+4.  rm -rf /vesta/*
+
+From the docker host (outside of vesta):
+5.  docker pull niiknow/vestacp:latest
+5.  docker stop the niiknow/vestacp image
+6.  docker start the new image
+7.  docker rm the old image if everything tested fine or start the old image back if not
+
+
+
 # LICENSE
 
 The MIT License (MIT)
