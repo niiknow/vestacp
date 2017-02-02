@@ -83,6 +83,10 @@ I'm still working/testing updating internal fail2ban to not do anything and prov
 - [ ] java, dotnet
 - [ ] openvpn
 
+### known issues
+- [x] postgresql backup does not restore user password or permissions
+
+
 ### your todo
 - [ ] I recommend the following:
 
