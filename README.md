@@ -80,12 +80,11 @@ I'm still working/testing updating internal fail2ban to not do anything and prov
 - [x] Redis, Memcached
 - [x] nodejs, golang
 - [x] MariaDB/MySQL, Postgresql, Mongodb
+- [x] Fix postgresql backup and restore
 - [ ] java, dotnet
 - [ ] openvpn
 
 ### known issues
-- [x] postgresql backup does not restore user password or permissions
-
 
 ### your todo
 - [ ] I recommend the following:

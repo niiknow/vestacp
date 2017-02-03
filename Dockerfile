@@ -261,7 +261,9 @@ RUN \
 
 # vesta monkey patching
 # patch psql9.5 backup
-    && sed -i -e "s/\-x \-i \-f/\-x \-f/g" /usr/local/vesta/func/db.sh \
+    && sed -i -e "s/\-c \-\-inserts \-O \-x \-i \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
+    && sed -i -e "s/dbuser/DBUSER/g" /usr/local/vesta/func/rebuild.sh \
+    && sed -i -e "s/ROLE \$DBUSER/ROLE \$DBUSER WITH LOGIN/g" /usr/local/vesta/func/rebuild.sh \
 
 # https://github.com/serghey-rodin/vesta/issues/1009
     && sed -i -e "s/unzip/unzip \-o/g" /usr/local/vesta/bin/v-extract-fs-archive \
