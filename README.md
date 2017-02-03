@@ -80,7 +80,7 @@ I'm still working/testing updating internal fail2ban to not do anything and prov
 - [x] Redis, Memcached
 - [x] nodejs, golang
 - [x] MariaDB/MySQL, Postgresql, Mongodb
-- [x] Fix postgresql backup and restore
+- [x] Fix postgresql backup and restore issue ref - https://github.com/serghey-rodin/vesta/issues/913
 - [ ] add incron to monitor and immediately backup /etc/{passwd,shadow,gshadow,group}
 - [ ] java, dotnet
 - [ ] openvpn
