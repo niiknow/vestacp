@@ -93,6 +93,10 @@ RUN \
     && pecl config-set php_suffix 7.0 \
     && a2enmod php7.0 \
 
+# restore php-cgi to php7.0
+    && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
+    && ln -s /usr/bin/php-cgi7.0 /usr/bin/php-cgi \
+
     && rm -rf /tmp/* \
     && apt-get -yf autoremove \
     && apt-get clean 
