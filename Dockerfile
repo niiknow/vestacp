@@ -1,4 +1,4 @@
-FROM niiknow/docker-hostingbase:0.7.1
+FROM niiknow/docker-hostingbase:0.8.2
 
 MAINTAINER friends@niiknow.org
 
@@ -109,7 +109,6 @@ RUN \
     &&chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/service/sshd/run \
     && chmod +x /etc/init.d/mongod \
-    && chmod +x /etc/cron.hourly/vestacp-backup-etc \
     && chmod +x /etc/my_init.d/startup.sh \
 
     && echo "extension=v8js.so" > /etc/php/5.6/mods-available/v8js.ini \
