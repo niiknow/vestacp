@@ -15,7 +15,7 @@ fi
 # fi
 
 # re-enable phpmyadmin and phppgadmin
-# rsync -a /vesta-start/etc-bak/apache2/conf.d/php*.conf /etc/apache2/conf.d
+# rsync -a /etc/apache2/conf-d/php*.conf /etc/apache2/conf.d
 
 # required startup and of course vesta
 cd /etc/init.d/

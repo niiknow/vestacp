@@ -18,12 +18,12 @@ then
 fi
 
 # restore current users
-if [[ -f /backup/etc/passwd ]]; then
+if [[ -f /backup/.etc/passwd ]]; then
 	# restore users
-	rsync -a /backup/etc/passwd /etc/passwd
-	rsync -a /backup/etc/shadow /etc/shadow
-	rsync -a /backup/etc/gshadow /etc/gshadow
-	rsync -a /backup/etc/group /etc/group
+	rsync -a /backup/.etc/passwd /etc/passwd
+	rsync -a /backup/.etc/shadow /etc/shadow
+	rsync -a /backup/.etc/gshadow /etc/gshadow
+	rsync -a /backup/.etc/group /etc/group
 fi
 
 # start incron after restore

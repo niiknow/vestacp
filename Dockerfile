@@ -286,12 +286,12 @@ RUN \
     && sed -i -e "s/\/etc\/redis/\/vesta\/etc\/redis/g" /etc/init.d/redis-server \
 
     && mkdir -p /vesta-start/etc \
-    && mkdir -p /vesta-start/etc-bak/apache2/conf.d \
     && mkdir -p /vesta-start/var/lib \
     && mkdir -p /vesta-start/local \
 
 # disable php*admin and roundcube by default, backup the config first - see README.md    
-    && rsync -a /etc/apache2/conf.d/* /vesta-start/etc-bak/apache2/conf.d \
+    && mkdir -p /etc/apache2/conf-d \
+    && rsync -a /etc/apache2/conf.d/* /etc/apache2/conf-d \
     && rm -f /etc/apache2/conf.d/php*.conf \
     && rm -f /etc/apache2/conf.d/roundcube.conf \
 
