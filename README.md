@@ -60,7 +60,7 @@ docker run -d --restart=always -p 4321:5432 -p 8083:8083 -v /opt/vestacp/vesta:/
 
 ## todo/done
 - [x] redirected customizable config folders to /vesta, exclude /home.  The folder home has been setup to be it's own volume.  Do not try to redirect the home folder.  It's like opening a big can of worms.  There are all kind of breaking issues with having home as a symbolic link: Vesta FileManager breaking, apache and nginx breaking, SSL breaking, and so on...
-- [x] Unfortunately, this is a similar issue with /etc/{passwd,shadow,gshadow,group}; thus, user password persistence is currently implemented as an hourly cronjob.
+- [x] Use incrond to watch /etc/{passwd,shadow,gshadow,group} and sync to /backup/.etc so remember to attach the backup volume if you want to save password across restart.
 - [x] AWS CLI has been installed to simplify your backup lifestyle.  You just need to setup a cron on VestaCP.
 - [x] Update *index.html* to remove reference to VestaCP from default site for security.
 - [x] Dovecot, phpmyadmin, phppgadmin, email, and DNS services are disabled by default.  You can enable them by updating /home/admin/bin/my-startup.sh
@@ -70,7 +70,7 @@ If you enabled additional services, you may also want to enable fail2ban.  This 
 I'm still working/testing updating internal fail2ban to not do anything and provide instruction on how to read the /vesta/var/log/fail2ban.log file to globally ban the IP from all services.
 
 ### misc/tested/verified
-- [x] ssh/sftp, nginx, apache2, php7.0 + v8js
+- [x] ssh/sftp, nginx, apache2, php7.0 + v8js 
 - [x] log viewing in Vesta
 - [x] backup and restore
 - [x] Vesta FileManager
@@ -81,11 +81,12 @@ I'm still working/testing updating internal fail2ban to not do anything and prov
 - [x] nodejs, golang
 - [x] MariaDB/MySQL, Postgresql, Mongodb
 - [x] Fix postgresql backup and restore issue ref - https://github.com/serghey-rodin/vesta/issues/913
-- [ ] add incron to monitor and immediately backup /etc/{passwd,shadow,gshadow,group}
+- [x] add incron to monitor and immediately backup /etc/{passwd,shadow,gshadow,group}
 - [ ] java, dotnet
 - [ ] openvpn
 
 ### known issues
+- [ ] MariaDB password is not saved across backup and restore.  After you restore, go to VESTA DB admin UI and update the password.
 
 ### your todo
 - [ ] I recommend the following:
@@ -104,6 +105,8 @@ As this is a docker image, you have many options.
 
 1. The best option is to use VestaCP backup and restore.  
 2. I will try to work on migration script to support different version of this docker image, but I would still strongly recommend that you use VestaCP backup and restore.
+
+https://vestacp.com/docs/#how-to-migrate-user-to-another-server
 
 Let say you followed the instruction above to start your vestacp, the manual upgrade step would be:
 *  Make sure you ran your backup and have the latest backup files under /opt/vestacp/backup
