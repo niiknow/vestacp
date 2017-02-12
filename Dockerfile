@@ -411,7 +411,7 @@ RUN \
     && sed -i -e "s/vestacp/nginx/g" public_shtml/index.html \
     && sed -i -e "s/VESTA/NGINX/g" public_shtml/index.html \
     
-    && rm -rf /backup \
+    && rm -rf /backup/.etc \
     && rm -rf /tmp/*
 
 
