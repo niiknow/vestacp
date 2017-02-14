@@ -184,6 +184,14 @@ RUN \
     && cd /home/admin/conf/web \
     && sed -i -- 's/172.*.*.*:80;/80;/g' * && sed -i -- 's/172.*.*.*:8080/127.0.0.1:8080/g' * \
 
+# patch default website
+    && cd "$(dirname "$(find /home/admin/web/* -type d -name public_html)")" \
+    && sed -i -e "s/vestacp/nginx/g" public_html/index.html \
+    && sed -i -e "s/VESTA/NGINX/g" public_html/index.html \
+    && sed -i -e "s/vestacp/nginx/g" public_shtml/index.html \
+    && sed -i -e "s/VESTA/NGINX/g" public_shtml/index.html \
+    && cd /tmp \
+
 # increase postgresql limit to support at least 8gb ram
     && sed -i -e "s/^max_connections = 100/max_connections = 300/g" /etc/postgresql/9.5/main/postgresql.conf \
     && sed -i -e "s/^shared_buffers = 128MB/shared_buffers = 2048MB/g" /etc/postgresql/9.5/main/postgresql.conf \
@@ -264,8 +272,8 @@ RUN \
 
 # vesta monkey patching
 # patch mysql backup
-    && curl https://raw.githubusercontent.com/Skamasle/vesta/c1cbbd3eb488a26fa78595357bedd54ea6af1c51/func/db.sh > /usr/local/vesta/func/db.sh
-    && curl https://github.com/serghey-rodin/vesta/blob/master/func/rebuild.sh > /usr/local/vesta/func/rebuild.sh
+    && curl https://raw.githubusercontent.com/Skamasle/vesta/c1cbbd3eb488a26fa78595357bedd54ea6af1c51/func/db.sh > /usr/local/vesta/func/db.sh \
+    && curl https://github.com/serghey-rodin/vesta/blob/master/func/rebuild.sh > /usr/local/vesta/func/rebuild.sh \
 
 # patch psql9.5 backup
     && sed -i -e "s/\-c \-\-inserts \-O \-x \-i \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
@@ -408,13 +416,6 @@ RUN \
     && chmod 775 /vesta-start/local/vesta/data/sessions \
     && chown root:admin /vesta-start/local/vesta/data/sessions \
 
-# patch default website
-    && cd "$(dirname "$(find /home/admin/web/* -type d -name public_html)")" \
-    && sed -i -e "s/vestacp/nginx/g" public_html/index.html \
-    && sed -i -e "s/VESTA/NGINX/g" public_html/index.html \
-    && sed -i -e "s/vestacp/nginx/g" public_shtml/index.html \
-    && sed -i -e "s/VESTA/NGINX/g" public_shtml/index.html \
-    
     && rm -rf /backup/.etc \
     && rm -rf /tmp/*
 
