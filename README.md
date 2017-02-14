@@ -116,7 +116,7 @@ Let say you followed the instruction above to start your vestacp, the manual upg
 *  rm -rf /opt/vestacp/vesta/*
 *  docker start the new image as instructed above
 *  docker rm the old image if everything tested fine or start the old image back if test failed
-*  ssh into vesta and restore your users from backup
+*  ssh into vesta and restore your users from backup: https://vestacp.com/docs/#how-to-migrate-user-to-another-server
 
 
 # LICENSE
