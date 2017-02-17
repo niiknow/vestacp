@@ -271,10 +271,6 @@ RUN \
     && sed -i -e "s/^worker_rlimit_nofile    65535;//g" /etc/nginx/nginx.conf \
 
 # vesta monkey patching
-# patch mysql backup
-    && curl https://raw.githubusercontent.com/Skamasle/vesta/c1cbbd3eb488a26fa78595357bedd54ea6af1c51/func/db.sh > /usr/local/vesta/func/db.sh \
-    && curl https://github.com/serghey-rodin/vesta/blob/master/func/rebuild.sh > /usr/local/vesta/func/rebuild.sh \
-
 # patch psql9.5 backup
     && sed -i -e "s/\-c \-\-inserts \-O \-x \-i \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
     && sed -i -e "s/dbuser/DBUSER/g" /usr/local/vesta/func/rebuild.sh \
