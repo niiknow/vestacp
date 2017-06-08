@@ -3,8 +3,8 @@ FROM niiknow/docker-hostingbase:0.8.4
 MAINTAINER friends@niiknow.org
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV VESTA=/usr/local/vesta DOTNET_VERSION=1.1.0 GOLANG_VERSION=1.7.5
-ENV DOTNET_DOWNLOAD_URL=https://dotnetcli.blob.core.windows.net/dotnet/release/$DOTNET_VERSION/Binaries/$DOTNET_VERSION/dotnet-debian-x64.$DOTNET_VERSION.tar.gz
+ENV VESTA=/usr/local/vesta GOLANG_VERSION=1.8.3
+ENV DOTNET_DOWNLOAD_URL=https://download.microsoft.com/download/D/7/A/D7A9E4E9-5D25-4F0C-B071-210CB8267943/dotnet-ubuntu.16.04-x64.1.1.2.tar.gz
 ENV GOLANG_DOWNLOAD_URL=https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz
 
 # start
@@ -267,8 +267,8 @@ RUN \
     && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/php-fpm/*.stpl \
     && bash /usr/local/vesta/upd/switch_rpath.sh \
 
-# remove rlimit in docker nginx
-    && sed -i -e "s/^worker_rlimit_nofile    65535;//g" /etc/nginx/nginx.conf \
+# increase open file limit for nginx and apache
+    && echo "\n\n* soft nofile 700000\n* hard nofile 700000\n\n" >> /etc/security/limits.conf \
 
 # vesta monkey patching
 # patch psql9.5 backup
@@ -280,7 +280,6 @@ RUN \
     && sed -i -e "s/unzip/unzip \-o/g" /usr/local/vesta/bin/v-extract-fs-archive \
 
     && echo "\nServerName localhost\n" >> /etc/apache2/apache2.conf \
-    && sed -i -e "s/^ULIMIT_MAX_FILES=.*/ULIMIT_MAX_FILES=/g" /usr/sbin/apache2ctl \
 
 # disable localhost redirect to bad default IP
     && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/* \
