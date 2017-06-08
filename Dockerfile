@@ -1,10 +1,10 @@
-FROM niiknow/docker-hostingbase:0.8.4
+FROM niiknow/docker-hostingbase:0.8.5
 
 MAINTAINER friends@niiknow.org
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV VESTA=/usr/local/vesta GOLANG_VERSION=1.8.3
-ENV DOTNET_DOWNLOAD_URL=https://download.microsoft.com/download/D/7/A/D7A9E4E9-5D25-4F0C-B071-210CB8267943/dotnet-ubuntu.16.04-x64.1.1.2.tar.gz
+ENV DEBIAN_FRONTEND=noninteractive \
+    VESTA=/usr/local/vesta GOLANG_VERSION=1.8.3 \
+    DOTNET_DOWNLOAD_URL=https://download.microsoft.com/download/D/7/A/D7A9E4E9-5D25-4F0C-B071-210CB8267943/dotnet-ubuntu.16.04-x64.1.1.2.tar.gz
 ENV GOLANG_DOWNLOAD_URL=https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz
 
 # start
@@ -14,6 +14,9 @@ RUN \
 
 # install nodejs, memcached, redis-server, openvpn, mongodb, and couchdb
     && apt-get install -yf nodejs memcached php-memcached redis-server openvpn mongodb-org php-mongodb couchdb \
+    && libpcre3-dev libssl-dev \
+
+# relink nodejs
     && ln -sf "$(which nodejs)" /usr/bin/node
 
 # setting up dotnet, awscli, golang, php
@@ -75,9 +78,12 @@ RUN \
         --quota no --password MakeItSo17 \
         -y no -f \
 
-# cleanup
+# begin apache stuff
     && service apache2 stop \
-    && apt-get install -yf libapache2-mod-php5.6 libapache2-mod-php7.1 && a2dismod php5.6 && a2dismod php7.0 && a2dismod php7.1 \
+
+# install additional mods
+    && apt-get install -yf libapache2-mod-php5.6 libapache2-mod-php7.1 libpcre3-dev \
+    && a2dismod php5.6 && a2dismod php7.0 && a2dismod php7.1 libpcre3-dev \
 
 # fix v8js reference of json first
     && mv /etc/php/5.6/apache2/conf.d/20-json.ini /etc/php/5.6/apache2/conf.d/15-json.ini \
@@ -97,6 +103,12 @@ RUN \
     && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
     && ln -s /usr/bin/php-cgi7.0 /usr/bin/php-cgi \
 
+# install pagespeed
+    && service nginx stop \
+    && mkdir -p /tmp/nginx && cd /tmp/nginx \
+    && bash <(curl -f -L -sS https://ngxpagespeed.com/install) -b /tmp/nginx -y \
+
+# finish cleaning up
     && rm -rf /tmp/* \
     && apt-get -yf autoremove \
     && apt-get clean 
@@ -271,6 +283,9 @@ RUN \
     && echo "\n\n* soft nofile 700000\n* hard nofile 700000\n\n" >> /etc/security/limits.conf \
 
 # vesta monkey patching
+    && curl https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/db.sh > /usr/local/vesta/func/db.sh \
+    && curl https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/rebuild.sh > /usr/local/vesta/func/rebuild.sh \
+
 # patch psql9.5 backup
     && sed -i -e "s/\-c \-\-inserts \-O \-x \-i \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
     && sed -i -e "s/dbuser/DBUSER/g" /usr/local/vesta/func/rebuild.sh \
