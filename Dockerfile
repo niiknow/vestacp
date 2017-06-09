@@ -1,20 +1,28 @@
-FROM niiknow/docker-hostingbase:0.8.5
+FROM niiknow/docker-hostingbase:0.8.6
 
 MAINTAINER friends@niiknow.org
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    VESTA=/usr/local/vesta GOLANG_VERSION=1.8.3 \
-    DOTNET_DOWNLOAD_URL=https://download.microsoft.com/download/D/7/A/D7A9E4E9-5D25-4F0C-B071-210CB8267943/dotnet-ubuntu.16.04-x64.1.1.2.tar.gz
-ENV GOLANG_DOWNLOAD_URL=https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz
+    VESTA=/usr/local/vesta \
+    GOLANG_VERSION=1.8.3 \
+    DOTNET_DOWNLOAD_URL=https://download.microsoft.com/download/D/7/A/D7A9E4E9-5D25-4F0C-B071-210CB8267943/dotnet-ubuntu.16.04-x64.1.1.2.tar.gz 
 
 # start
 RUN \
     cd /tmp \
+
+# add nginx repo
+    && curl -s https://nginx.org/keys/nginx_signing.key | apt-key add - \
+    && cp /etc/apt/sources.list /etc/apt/sources.list.bak \
+    && echo "deb http://nginx.org/packages/mainline/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
+    && echo "deb-src http://nginx.org/packages/mainline/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
+
+# update
     && apt-get update && apt-get -y upgrade \
 
 # install nodejs, memcached, redis-server, openvpn, mongodb, and couchdb
     && apt-get install -yf nodejs memcached php-memcached redis-server openvpn mongodb-org php-mongodb couchdb \
-    && libpcre3-dev libssl-dev \
+       libpcre3-dev libssl-dev nginx \
 
 # relink nodejs
     && ln -sf "$(which nodejs)" /usr/bin/node
@@ -24,7 +32,7 @@ RUN \
     cd /tmp \
 
 # dotnet
-    && curl -SL $DOTNET_DOWNLOAD_URL --output /tmp/dotnet.tar.gz \
+    && curl -SL $DOTNET_DOWNLOAD_URL -o /tmp/dotnet.tar.gz \
     && mkdir -p /usr/share/dotnet \
     && tar -zxf /tmp/dotnet.tar.gz -C /usr/share/dotnet \
     && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet \
@@ -36,7 +44,7 @@ RUN \
 
 # getting golang
     && cd /tmp \
-    && curl -SL $GOLANG_DOWNLOAD_URL --output /tmp/golang.tar.gz \
+    && curl -SL https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz -o /tmp/golang.tar.gz \
     && tar -zxf golang.tar.gz \
     && mv go /usr/local \
     && echo "\nGOROOT=/usr/local/go\nexport GOROOT\n" >> /root/.profile \
@@ -59,13 +67,26 @@ RUN \
 
 RUN \
     cd /tmp \
-    && curl -s -o /tmp/vst-install-ubuntu.sh https://vestacp.com/pub/vst-install-ubuntu.sh \
+    && curl -SL https://vestacp.com/pub/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
 
 # fix mariadb instead of mysql and php7.0 instead of php7.1
     && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
     && sed -i -e "s/\-php php /\-php php7\.0 /g" /tmp/vst-install-ubuntu.sh \
     && sed -i -e "s/php\-/php7\.0\-/g" /tmp/vst-install-ubuntu.sh \
     && sed -i -e "s/libapache2\-mod\-php/libapache2-mod\-php7\.0/g" /tmp/vst-install-ubuntu.sh \
+
+# remove nginx from apt-get so we can install pagespeed
+    && sed -i -e "s/\"nginx apache2/\"apache2/g" /tmp/vst-install-ubuntu.sh \
+    && sed -i -e "s/update-rc.d nginx defaults//g" /tmp/vst-install-ubuntu.sh \
+    && sed -i -e "s/service nginx start//g" /tmp/vst-install-ubuntu.sh \
+    && sed -i -e "s/check_result \$\? \"nginx start failed\"//g" /tmp/vst-install-ubuntu.sh \
+
+# install nginx with pagespeed first so vesta config can override
+    && mkdir -p /tmp/nginx && cd /tmp \
+    && curl -SL https://ngxpagespeed.com/install -o /tmp/build_ngx_pagespeed.sh \
+    && bash /tmp/build_ngx_pagespeed.sh -y -b /tmp/nginx -n latest \
+       -a '--prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=www-data --group=www-data ' \
+    && mkdir -p /etc/nginx/conf.d \
 
 # begin VestaCP install
     && bash /tmp/vst-install-ubuntu.sh \
@@ -82,8 +103,7 @@ RUN \
     && service apache2 stop \
 
 # install additional mods
-    && apt-get install -yf libapache2-mod-php5.6 libapache2-mod-php7.1 libpcre3-dev \
-    && a2dismod php5.6 && a2dismod php7.0 && a2dismod php7.1 libpcre3-dev \
+    && apt-get install -yf libapache2-mod-php5.6 libapache2-mod-php7.1 && a2dismod php5.6 && a2dismod php7.0 && a2dismod php7.1 \
 
 # fix v8js reference of json first
     && mv /etc/php/5.6/apache2/conf.d/20-json.ini /etc/php/5.6/apache2/conf.d/15-json.ini \
@@ -103,11 +123,6 @@ RUN \
     && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
     && ln -s /usr/bin/php-cgi7.0 /usr/bin/php-cgi \
 
-# install pagespeed
-    && service nginx stop \
-    && mkdir -p /tmp/nginx && cd /tmp/nginx \
-    && bash <(curl -f -L -sS https://ngxpagespeed.com/install) -b /tmp/nginx -y \
-
 # finish cleaning up
     && rm -rf /tmp/* \
     && apt-get -yf autoremove \
@@ -118,7 +133,7 @@ ADD ./files /
 # tweaks
 RUN \
     cd /tmp \
-    &&chmod +x /etc/init.d/dovecot \
+    && chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/service/sshd/run \
     && chmod +x /etc/init.d/mongod \
     && chmod +x /etc/my_init.d/startup.sh \
@@ -283,8 +298,9 @@ RUN \
     && echo "\n\n* soft nofile 700000\n* hard nofile 700000\n\n" >> /etc/security/limits.conf \
 
 # vesta monkey patching
-    && curl https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/db.sh > /usr/local/vesta/func/db.sh \
-    && curl https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/rebuild.sh > /usr/local/vesta/func/rebuild.sh \
+    && rm f /usr/local/vesta/func/db.sh && rm -f /usr/local/vesta/func/rebuild.sh \
+    && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/db.sh --output /usr/local/vesta/func/db.sh \
+    && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/rebuild.sh --output /usr/local/vesta/func/rebuild.sh \
 
 # patch psql9.5 backup
     && sed -i -e "s/\-c \-\-inserts \-O \-x \-i \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
