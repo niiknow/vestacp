@@ -54,6 +54,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [ ] java, dotnet
 - [ ] openvpn
 - [ ] nginx pagespeed module
+- [x] multiple php{5.6,7.0,7.1} fcgi templates
 
 ### known issues
 - [ ] MariaDB password is not saved across backup and restore.  After you restore, go to VESTA DB admin UI and update the password.
