@@ -4,9 +4,9 @@ The ultimate control panel with docker (thanks lagun4ik for a great start)
 What's included?
 * ubuntu 16.04 lts + Vesta 0.9.8-17
 * nginx (proxy) -> apache2 -> php7.0 - high performance and flexible implementation
-* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.1, postgresql 9.5, nodejs 6.x, golang 1.7.5, openvpn, mongodb, couchdb
+* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.1, postgresql 9.5, nodejs 8.x, golang 1.8.3, openvpn, mongodb, couchdb
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
-* DNS, named, dovecot, spamassassin, clamav, fail2ban, etc... -- disabled by default
+* DNS, named, dovecot/roundcube, spamassassin, clamav, fail2ban, etc... -- disabled by default
 
 Run this image:
 ```
@@ -36,7 +36,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] Use incrond to watch /etc/{passwd,shadow,gshadow,group} and sync to /backup/.etc so remember to attach the backup volume if you want to save password across restart.
 - [x] AWS CLI has been installed to simplify your backup lifestyle.  You just need to setup a cron on VestaCP.
 - [x] Update *index.html* to remove reference to VestaCP from default site for security.
-- [x] **Dovecot, phpmyadmin, phppgadmin, email, and DNS services are disabled by default.  Look at /home/admin/bin/my-startup.sh for instruction on how to re-enable these services.
+- [x] **Dovecot/roundcube email, phpmyadmin, phppgadmin, and DNS services** are disabled by default.  Look at /home/admin/bin/my-startup.sh for instruction on how to re-enable these services.
 
 ### misc/tested/verified
 - [x] ssh/sftp, nginx, apache2, php7.0 + v8js 
