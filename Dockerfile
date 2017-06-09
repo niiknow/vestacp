@@ -1,11 +1,16 @@
-FROM niiknow/docker-hostingbase:0.8.6
+FROM niiknow/docker-hostingbase:0.8.7
 
 MAINTAINER friends@niiknow.org
 
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
     GOLANG_VERSION=1.8.3 \
-    DOTNET_DOWNLOAD_URL=https://download.microsoft.com/download/D/7/A/D7A9E4E9-5D25-4F0C-B071-210CB8267943/dotnet-ubuntu.16.04-x64.1.1.2.tar.gz 
+    DOTNET_DOWNLOAD_URL=https://download.microsoft.com/download/D/7/A/D7A9E4E9-5D25-4F0C-B071-210CB8267943/dotnet-ubuntu.16.04-x64.1.1.2.tar.gz  \
+    NGINX_BUILD_DIR=/usr/src/nginx \
+    NGINX_VERSION=1.13.1 \
+    NGINX_PAGESPEED_VERSION=1.11.33.4 \
+    NGINX_PAGESPEED_DIR=/usr/src/nginx/ngx_pagespeed-latest-stable/ \
+    IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
 
 # start
 RUN \
@@ -18,36 +23,34 @@ RUN \
     && echo "deb-src http://nginx.org/packages/mainline/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
 
 # update
-    && apt-get update && apt-get -y upgrade \
+    && apt-get update && apt-get -y --no-install-recommends upgrade \
+    && apt-get install -y --no-install-recommends libpcre3-dev libssl-dev dpkg-dev libgd-dev \
 
-# install nodejs, memcached, redis-server, openvpn, mongodb, and couchdb
-    && apt-get install -yf nodejs memcached php-memcached redis-server openvpn mongodb-org php-mongodb couchdb \
-       libpcre3-dev libssl-dev nginx \
+# install nginx with pagespeed first so vesta config can override
+    && mkdir -p ${NGINX_BUILD_DIR} \
 
-# relink nodejs
-    && ln -sf "$(which nodejs)" /usr/bin/node
+# Load Pagespeed module, PSOL and nginx
+    && cd ${NGINX_BUILD_DIR} \
+    && curl -SL https://github.com/pagespeed/ngx_pagespeed/archive/latest-stable.zip  -o ${NGINX_BUILD_DIR}/latest-stable.zip \
+    && unzip latest-stable.zip \
+    && cd ${NGINX_PAGESPEED_DIR} \
+    && curl -SL https://dl.google.com/dl/page-speed/psol/${NGINX_PAGESPEED_VERSION}.tar.gz -o ${NGINX_PAGESPEED_VERSION}.tar.gz \
+    && tar -xzf ${NGINX_PAGESPEED_VERSION}.tar.gz \
 
-# setting up dotnet, awscli, golang, php
-RUN \
-    cd /tmp \
+# get the source
+    && cd ${NGINX_BUILD_DIR}; apt-get source nginx -y \
+    && mv ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.c ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.bak \
 
-# dotnet
-    && curl -SL $DOTNET_DOWNLOAD_URL -o /tmp/dotnet.tar.gz \
-    && mkdir -p /usr/share/dotnet \
-    && tar -zxf /tmp/dotnet.tar.gz -C /usr/share/dotnet \
-    && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet \
+# apply patch
+    && curl -SL $IMAGE_FILTER_URL --output ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.c \
+    && sed -i "s/--with-http_ssl_module/--with-http_ssl_module --with-http_image_filter_module --add-module=\/usr\/src\/nginx\/ngx_pagespeed-latest-stable\//g" ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/debian/rules \
 
-# awscli
-    && curl -O https://bootstrap.pypa.io/get-pip.py \
-    && python get-pip.py \
-    && pip install awscli \
+# get build dependencies
+    && cd ${NGINX_BUILD_DIR}; apt-get build-dep nginx -y \
+    && cd ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}; dpkg-buildpackage -uc -us -b \
 
-# getting golang
-    && cd /tmp \
-    && curl -SL https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz -o /tmp/golang.tar.gz \
-    && tar -zxf golang.tar.gz \
-    && mv go /usr/local \
-    && echo "\nGOROOT=/usr/local/go\nexport GOROOT\n" >> /root/.profile \
+# install new nginx package
+    && cd ${NGINX_BUILD_DIR}; dpkg -i nginx_${NGINX_VERSION}-1~xenial_amd64.deb \
 
 # install php
     && apt-get install -yq php5.6-mbstring php5.6-cgi php5.6-cli php5.6-dev php5.6-geoip php5.6-common php5.6-xmlrpc php5.6-sybase \
@@ -63,11 +66,26 @@ RUN \
     && apt-get install -yq php7.1-mbstring php7.1-cgi php7.1-cli php7.1-dev php7.1-geoip php7.1-common php7.1-xmlrpc php7.1-sybase \
         php7.1-curl php7.1-enchant php7.1-imap php7.1-xsl php7.1-mysql php7.1-mysqlnd php7.1-pspell php7.1-gd php7.1-zip \
         php7.1-tidy php7.1-opcache php7.1-json php7.1-bz2 php7.1-pgsql php7.1-mcrypt php7.1-readline php7.1-imagick \
-        php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-dev
+        php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-dev \
 
-RUN \
+# put back old source list for vesta
+    && rm -f /etc/apt/sources.list && mv /etc/apt/sources.list.bak /etc/apt/sources.list \
+
+# finish cleaning up
+    && rm -rf /tmp/* \
+    && apt-get -yf autoremove \
+    && apt-get clean 
+
+# begin VestaCP install
+RUN   \
     cd /tmp \
+
+# begin setup for vesta
     && curl -SL https://vestacp.com/pub/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
+
+# put nginx on hold so it doesn't get updates with apt-get upgrade, also remove from vesta apt-get
+    && echo "nginx hold" | dpkg --set-selections \
+    && sed -i -e "s/\"nginx apache2/\"apache2/g" /tmp/vst-install-ubuntu.sh \
 
 # fix mariadb instead of mysql and php7.0 instead of php7.1
     && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
@@ -75,20 +93,7 @@ RUN \
     && sed -i -e "s/php\-/php7\.0\-/g" /tmp/vst-install-ubuntu.sh \
     && sed -i -e "s/libapache2\-mod\-php/libapache2-mod\-php7\.0/g" /tmp/vst-install-ubuntu.sh \
 
-# remove nginx from apt-get so we can install pagespeed
-    && sed -i -e "s/\"nginx apache2/\"apache2/g" /tmp/vst-install-ubuntu.sh \
-    && sed -i -e "s/update-rc.d nginx defaults//g" /tmp/vst-install-ubuntu.sh \
-    && sed -i -e "s/service nginx start//g" /tmp/vst-install-ubuntu.sh \
-    && sed -i -e "s/check_result \$\? \"nginx start failed\"//g" /tmp/vst-install-ubuntu.sh \
-
-# install nginx with pagespeed first so vesta config can override
-    && mkdir -p /tmp/nginx && cd /tmp \
-    && curl -SL https://ngxpagespeed.com/install -o /tmp/build_ngx_pagespeed.sh \
-    && bash /tmp/build_ngx_pagespeed.sh -y -b /tmp/nginx -n latest \
-       -a '--prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=www-data --group=www-data ' \
-    && mkdir -p /etc/nginx/conf.d \
-
-# begin VestaCP install
+# begin install vesta
     && bash /tmp/vst-install-ubuntu.sh \
         --nginx yes --apache yes --phpfpm no \
         --vsftpd no --proftpd no \
@@ -103,7 +108,8 @@ RUN \
     && service apache2 stop \
 
 # install additional mods
-    && apt-get install -yf libapache2-mod-php5.6 libapache2-mod-php7.1 && a2dismod php5.6 && a2dismod php7.0 && a2dismod php7.1 \
+    && apt-get install -yf --no-install-recommends libapache2-mod-php5.6 libapache2-mod-php7.1 \
+    && a2dismod php5.6 && a2dismod php7.0 && a2dismod php7.1 \
 
 # fix v8js reference of json first
     && mv /etc/php/5.6/apache2/conf.d/20-json.ini /etc/php/5.6/apache2/conf.d/15-json.ini \
@@ -123,6 +129,31 @@ RUN \
     && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
     && ln -s /usr/bin/php-cgi7.0 /usr/bin/php-cgi \
 
+# install nodejs, memcached, redis-server, openvpn, mongodb, and couchdb
+    && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server openvpn mongodb-org php-mongodb couchdb \
+
+# relink nodejs
+    && ln -sf "$(which nodejs)" /usr/bin/node \
+
+# setting up dotnet, awscli, golang
+# dotnet
+    && curl -SL $DOTNET_DOWNLOAD_URL -o /tmp/dotnet.tar.gz \
+    && mkdir -p /usr/share/dotnet \
+    && tar -zxf /tmp/dotnet.tar.gz -C /usr/share/dotnet \
+    && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet \
+
+# awscli
+    && curl -O https://bootstrap.pypa.io/get-pip.py \
+    && python get-pip.py \
+    && pip install awscli \
+
+# getting golang
+    && cd /tmp \
+    && curl -SL https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz -o /tmp/golang.tar.gz \
+    && tar -zxf golang.tar.gz \
+    && mv go /usr/local \
+    && echo "\nGOROOT=/usr/local/go\nexport GOROOT\n" >> /root/.profile \
+
 # finish cleaning up
     && rm -rf /tmp/* \
     && apt-get -yf autoremove \
@@ -130,9 +161,9 @@ RUN \
 
 ADD ./files /
 
-# tweaks
 RUN \
     cd /tmp \
+# tweaks
     && chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/service/sshd/run \
     && chmod +x /etc/init.d/mongod \
@@ -185,8 +216,8 @@ RUN \
     && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cli/conf.d/20-couchbase.ini \
     && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cgi/conf.d/20-couchbase.ini \
 
-# increase memcache max size from 64m to 2g
-    && sed -i -e "s/^\-m 64/\-m 2048/g" /etc/memcached.conf \
+# increase memcache max size from 64m to 256m
+    && sed -i -e "s/^\-m 64/\-m 256/g" /etc/memcached.conf \
 
 # mongodb stuff
     && mkdir -p /data/db \
@@ -298,7 +329,7 @@ RUN \
     && echo "\n\n* soft nofile 700000\n* hard nofile 700000\n\n" >> /etc/security/limits.conf \
 
 # vesta monkey patching
-    && rm f /usr/local/vesta/func/db.sh && rm -f /usr/local/vesta/func/rebuild.sh \
+    && rm -f /usr/local/vesta/func/db.sh && rm -f /usr/local/vesta/func/rebuild.sh \
     && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/db.sh --output /usr/local/vesta/func/db.sh \
     && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/rebuild.sh --output /usr/local/vesta/func/rebuild.sh \
 
@@ -437,13 +468,24 @@ RUN \
 
     && mkdir -p /sysprepz/home \
     && rsync -a /home/* /sysprepz/home \
+    && chown -R admin:admin /sysprepz/admin/bin \
 
     && mkdir -p /vesta-start/local/vesta/data/sessions \
     && chmod 775 /vesta-start/local/vesta/data/sessions \
     && chown root:admin /vesta-start/local/vesta/data/sessions \
 
+    # fix roundcube error log permission
+    && touch /vesta-start/var/log/roundcube/errors \
+    && chown -R www-data:www-data /vesta-start/var/log/roundcube \
+    && chmod 775 /vesta-start/var/log/roundcube/errors \
+
     && rm -rf /backup/.etc \
-    && rm -rf /tmp/*
+    && rm -rf /tmp/* \
+
+# finish cleaning up
+    && rm -rf /tmp/* \
+    && apt-get -yf autoremove \
+    && apt-get clean 
 
 
 VOLUME ["/vesta", "/home", "/backup"]
