@@ -62,6 +62,17 @@ if [[ -f /backup/.etc/passwd ]]; then
 	rsync -a /backup/.etc/group /etc/group
 fi
 
+
+chown www-data:www-data /var/ngx_pagespeed_cache
+chmod 750 /var/ngx_pagespeed_cache
+
+
+if [ -f /etc/nginx/nginx.new ]; then
+   mv /etc/nginx/nginx.conf /etc/nginx/nginx.old
+   mv /etc/nginx/nginx.new /etc/nginx/nginx.conf
+fi
+
+
 # start incron after restore
 cd /etc/init.d/
 ./incron start

@@ -478,15 +478,18 @@ RUN \
     && chmod 775 /vesta-start/local/vesta/data/sessions \
     && chown root:admin /vesta-start/local/vesta/data/sessions \
 
-    # fix roundcube error log permission
+# fix roundcube error log permission
     && touch /vesta-start/var/log/roundcube/errors \
     && chown -R www-data:www-data /vesta-start/var/log/roundcube \
     && chmod 775 /vesta-start/var/log/roundcube/errors \
 
-    && rm -rf /backup/.etc \
-    && rm -rf /tmp/* \
+# pagespeed stuff
+    && mkdir -p /var/ngx_pagespeed_cache \
+    && chmod 755 /var/ngx_pagespeed_cache \
+    && chown www-data:www-data /var/ngx_pagespeed_cache \
 
 # finish cleaning up
+    && rm -rf /backup/.etc \
     && rm -rf /tmp/* \
     && apt-get -yf autoremove \
     && apt-get clean 
