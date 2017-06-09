@@ -326,8 +326,8 @@ RUN \
     && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/*.stpl \
     && sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/php-fpm/*.tpl \
     && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/php-fpm/*.stpl \
-    && sed -i -e "s/ include / include \%home\%\/\%user\%\/web\/\%domain\%\n include /g" /usr/local/vesta/data/templates/web/nginx/*.tpl \
-    && sed -i -e "s/ include / include \%home\%\/\%user\%\/web\/\%domain\%\n include /g" /usr/local/vesta/data/templates/web/nginx/*.stpl \
+    && sed -i -e "s/ include / include \%home\%\/\%user\%\/web\/\%domain\%\/private\/*.conf\n include /g" /usr/local/vesta/data/templates/web/nginx/*.tpl \
+    && sed -i -e "s/ include / include \%home\%\/\%user\%\/web\/\%domain\%\/private\/*.conf\n include /g" /usr/local/vesta/data/templates/web/nginx/*.stpl \
     && bash /usr/local/vesta/upd/switch_rpath.sh \
 
 # increase open file limit for nginx and apache
