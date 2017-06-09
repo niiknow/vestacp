@@ -468,7 +468,8 @@ RUN \
 
     && mkdir -p /sysprepz/home \
     && rsync -a /home/* /sysprepz/home \
-    && chown -R admin:admin /sysprepz/admin/bin \
+    && mv /sysprepz/admin/bin /sysprepz/home \
+    && chown -R admin:admin /sysprepz/home/admin/bin \
 
     && mkdir -p /vesta-start/local/vesta/data/sessions \
     && chmod 775 /vesta-start/local/vesta/data/sessions \

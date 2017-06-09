@@ -9,7 +9,7 @@ then
 fi
 
 # attempt to recover permission, but it's best to just reinstall
-if [ -n "$(find /vesta/var/lib/mysql -nouser "mysql" -print -prune -o -prune)" ]; then
+if [ -z "$(find /vesta/var/lib/mysql -user mysql)" ]; then
     chown -R mysql:mysql /vesta/lib/mysql
 
     chown -R couchdb:couchdb /vesta/lib/couchdb
@@ -69,3 +69,4 @@ cd /etc/init.d/
 
 # starting Vesta
 bash /home/admin/bin/my-startup.sh
+find /vesta/var/lib/mysql -nouser "mysql" -print -prune -o -prune
