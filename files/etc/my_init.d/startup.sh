@@ -9,20 +9,19 @@ then
 fi
 
 # attempt to recover permission, but it's best to just reinstall
-if [ -z "$(find /vesta/var/lib/mysql -user mysql)" ]; then
-    chown -R mysql:mysql /vesta/lib/mysql
+if [ "$(stat -c %U /vesta/var/lib/mysql)" != "mysql" ]; then
+    chown -R mysql:mysql /vesta/var/lib/mysql
 
-    chown -R couchdb:couchdb /vesta/lib/couchdb
+    chown -R couchdb:couchdb /vesta/var/lib/couchdb
     chown -R couchdb:couchdb /vesta/etc/couchdb
 
-    chown -R postgres:postgres /vesta/lib/postgresql
+    chown -R postgres:postgres /vesta/var/lib/postgresql
 
-    chown -R redis:redis /vesta/lib/redis
+    chown -R redis:redis /vesta/var/lib/redis
     chown redis:redis /vesta/etc/redis/redis.conf
 
     chown -R mongodb:mongodb /vesta/data/db
 
-    chown admin:admin /backup/*.tar
     chown -R admin:admin /home/admin
     chown -R root:root /home/admin/conf
     chown -R Debian-exim:mail /home/admin/conf/mail/*
@@ -31,14 +30,14 @@ if [ -z "$(find /vesta/var/lib/mysql -user mysql)" ]; then
     chown root:root /home/admin/mail
     chown -R admin:mail /home/admin/mail/*
 
-    chown root:bind /vest/etc/bind
-    chown root:bind /vest/etc/bind/name*.*
-    chown bind:bind /vest/etc/bind/rndc.key
-    chown root:Debian-exim /vest/etc/exim4/passwd.client
-    chown admin:admin /vest/etc/fail2ban/action.d/vesta.conf
-    chown admin:admin /vest/etc/fail2ban/action.d
-    chown admin:admin /vest/etc/fail2ban/filter.d/vesta.conf
-    chown admin:admin /vest/etc/fail2ban/jail.local
+    chown root:bind /vesta/etc/bind
+    chown root:bind /vesta/etc/bind/name*.*
+    chown bind:bind /vesta/etc/bind/rndc.key
+    chown root:Debian-exim /vesta/etc/exim4/passwd.client
+    chown admin:admin /vesta/etc/fail2ban/action.d/vesta.conf
+    chown admin:admin /vesta/etc/fail2ban/action.d
+    chown admin:admin /vesta/etc/fail2ban/filter.d/vesta.conf
+    chown admin:admin /vesta/etc/fail2ban/jail.local
 
     chown -R admin:root /vesta/local/vesta/nginx/*_temp/
 
