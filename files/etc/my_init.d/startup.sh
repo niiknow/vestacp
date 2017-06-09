@@ -9,7 +9,8 @@ then
 fi
 
 # attempt to recover permission, but it's best to just reinstall
-if [ -z "$(find /vesta/var/lib/mysql -user mysql)" ]; then
+# commenting out
+: 'if [ -z "$(find /vesta/var/lib/mysql -user mysql)" ]; then
     chown -R mysql:mysql /vesta/lib/mysql
 
     chown -R couchdb:couchdb /vesta/lib/couchdb
@@ -51,7 +52,7 @@ if [ -z "$(find /vesta/var/lib/mysql -user mysql)" ]; then
     # finally, reset logs because it is too complicated
     mv /vesta/var/log /vesta/var/log-old
     rsync -a /vesta-start/var/log /vesta/var/log
-fi
+fi'
 
 
 # restore current users
