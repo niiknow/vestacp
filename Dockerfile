@@ -318,6 +318,9 @@ RUN \
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.1/cli/php.ini \
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.1/cgi/php.ini \
 
+# add multiple php fcgi templates
+    && rsync -a /sysprepz/apache2-templates/* /usr/local/vesta/data/templates/web/apache2/ \
+
 # fix docker nginx ips
     && sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/*.tpl \
     && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/*.stpl \
@@ -468,7 +471,7 @@ RUN \
 
     && mkdir -p /sysprepz/home \
     && rsync -a /home/* /sysprepz/home \
-    && mv /sysprepz/admin/bin /sysprepz/home \
+    && mv /sysprepz/admin/bin /sysprepz/home/admin \
     && chown -R admin:admin /sysprepz/home/admin/bin \
 
     && mkdir -p /vesta-start/local/vesta/data/sessions \
