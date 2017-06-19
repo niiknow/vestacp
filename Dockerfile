@@ -294,17 +294,17 @@ RUN \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.1/cli/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.1/cgi/php.ini \
 
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/apache2/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/cli/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.0/cgi/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.0/apache2/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.0/cli/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.0/cgi/php.ini \
 
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/5.6/apache2/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/5.6/cli/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/5.6/cgi/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/5.6/apache2/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/5.6/cli/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/5.6/cgi/php.ini \
 
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/apache2/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/cli/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 3600/" /etc/php/7.1/cgi/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.1/apache2/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.1/cli/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.1/cgi/php.ini \
 
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.0/apache2/php.ini \
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.0/cli/php.ini \
@@ -317,6 +317,9 @@ RUN \
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.1/apache2/php.ini \
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.1/cli/php.ini \
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.1/cgi/php.ini \
+
+# set same upload limit for php fcgi
+    && sed -i "s/FcgidConnectTimeout 20/FcgidMaxRequestLen 629145600\n  FcgidConnectTimeout 300/" /etc/php/7.1/cgi/php.ini \
 
 # add multiple php fcgi templates
     && rsync -a /sysprepz/apache2-templates/* /usr/local/vesta/data/templates/web/apache2/ \
@@ -331,7 +334,7 @@ RUN \
     && bash /usr/local/vesta/upd/switch_rpath.sh \
 
 # increase open file limit for nginx and apache
-    && echo "\n\n* soft nofile 700000\n* hard nofile 700000\n\n" >> /etc/security/limits.conf \
+    && echo "\n\n* soft nofile 800000\n* hard nofile 800000\n\n" >> /etc/security/limits.conf \
 
 # vesta monkey patching
     && rm -f /usr/local/vesta/func/db.sh && rm -f /usr/local/vesta/func/rebuild.sh \
