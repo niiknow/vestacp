@@ -34,7 +34,7 @@ RUN \
     && curl -SL https://github.com/pagespeed/ngx_pagespeed/archive/latest-stable.zip  -o ${NGINX_BUILD_DIR}/latest-stable.zip \
     && unzip latest-stable.zip \
     && cd ${NGINX_PAGESPEED_DIR} \
-    && curl -SL https://dl.google.com/dl/page-speed/psol/1.12.34.2-x64.tar.gz -o ${NGINX_PAGESPEED_VERSION}.tar.gz \
+    && curl -SL https://dl.google.com/dl/page-speed/psol/${NGINX_PAGESPEED_VERSION}-x64.tar.gz -o ${NGINX_PAGESPEED_VERSION}.tar.gz \
     && tar -xzf ${NGINX_PAGESPEED_VERSION}.tar.gz \
 
 # get the source
