@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     DOTNET_DOWNLOAD_URL=https://download.microsoft.com/download/D/7/A/D7A9E4E9-5D25-4F0C-B071-210CB8267943/dotnet-ubuntu.16.04-x64.1.1.2.tar.gz  \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_VERSION=1.13.1 \
-    NGINX_PAGESPEED_VERSION=1.11.33.4 \
+    NGINX_PAGESPEED_VERSION=1.12.34.2 \
     NGINX_PAGESPEED_DIR=/usr/src/nginx/ngx_pagespeed-latest-stable/ \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
 
@@ -34,7 +34,7 @@ RUN \
     && curl -SL https://github.com/pagespeed/ngx_pagespeed/archive/latest-stable.zip  -o ${NGINX_BUILD_DIR}/latest-stable.zip \
     && unzip latest-stable.zip \
     && cd ${NGINX_PAGESPEED_DIR} \
-    && curl -SL https://dl.google.com/dl/page-speed/psol/${NGINX_PAGESPEED_VERSION}.tar.gz -o ${NGINX_PAGESPEED_VERSION}.tar.gz \
+    && curl -SL https://dl.google.com/dl/page-speed/psol/1.12.34.2-x64.tar.gz -o ${NGINX_PAGESPEED_VERSION}.tar.gz \
     && tar -xzf ${NGINX_PAGESPEED_VERSION}.tar.gz \
 
 # get the source
