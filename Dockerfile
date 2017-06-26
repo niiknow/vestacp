@@ -27,7 +27,7 @@ RUN \
     && usermod -d /var/lib/postgresql -s /bin/bash -a -G ssl-cert postgres \
     && usermod -d /var/lib/spamassassin -s /bin/sh -a -G mail debian-spamd \
     && usermod -d /var/run/epmd epmd \
-    && usermod -d /bin/bash -d /var/lib/couchdb couchdb \
+    && usermod -d -s /bin/bash /var/lib/couchdb couchdb \
     && usermod -d /var/lib/mongodb -a -G nogroup mongodb \
     && usermod -d /var/lib/redis redis \
 
