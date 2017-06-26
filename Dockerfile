@@ -361,7 +361,7 @@ RUN \
     && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/lib\/mysql/g" /etc/mysql/my.cnf \
 
 # setup redis like memcache
-    &&  && sed -i -e 's:^save:# save:g' \
+    && sed -i -e 's:^save:# save:g' \
       -e 's:^bind:# bind:g' \
       -e 's:^logfile:# logfile:' \
       -e 's:daemonize yes:daemonize no:' \
