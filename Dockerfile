@@ -16,6 +16,21 @@ ENV DEBIAN_FRONTEND=noninteractive \
 RUN \
     cd /tmp \
 
+# add our user and group first to make sure their IDs get assigned consistently
+    && echo "nginx mysql bind clamav ssl-cert dovecot dovenull Debian-exim postgres debian-spamd epmd couchdb memcache mongodb redis" | xargs -n1 groupadd -K GID_MIN=100 -K GID_MAX=999 ${g} \
+    && echo "nginx nginx mysql mysql bind bind clamav clamav dovecot dovecot dovenull dovenull Debian-exim Debian-exim postgres postgres debian-spamd debian-spamd epmd epmd couchdb couchdb memcache memcache mongodb mongodb redis redis" | xargs -n2 useradd -d /nonexistent -s /bin/false -K UID_MIN=100 -K UID_MAX=999 -g ${g} \
+    && usermod -d /var/lib/mysql mysql \
+    && usermod -d /var/cache/bind bind \
+    && usermod -d /var/lib/clamav -a -G Debian-exim clamav && usermod -a -G mail clamav \
+    && usermod -d /usr/lib/dovecot -a -G mail dovecot \
+    && usermod -d /var/spool/exim4 -a -G mail Debian-exim \
+    && usermod -d /var/lib/postgresql -s /bin/bash -a -G ssl-cert postgres \
+    && usermod -d /var/lib/spamassassin -s /bin/sh -a -G mail debian-spamd \
+    && usermod -d /var/run/epmd epmd \
+    && usermod -d /bin/bash -d /var/lib/couchdb couchdb \
+    && usermod -d /var/lib/mongodb -a -G nogroup mongodb \
+    && usermod -d /var/lib/redis redis \
+
 # add nginx repo
     && curl -s https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && cp /etc/apt/sources.list /etc/apt/sources.list.bak \
