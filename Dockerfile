@@ -359,7 +359,15 @@ RUN \
     && service redis-server stop \
     && service fail2ban stop \
     && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/lib\/mysql/g" /etc/mysql/my.cnf \
-    && sed -i -e "s/127\.0\.0\.1/\*/g" /etc/redis/redis.conf \
+
+# setup redis like memcache
+    &&  && sed -i -e 's:^save:# save:g' \
+      -e 's:^bind:# bind:g' \
+      -e 's:^logfile:# logfile:' \
+      -e 's:daemonize yes:daemonize no:' \
+      -e 's:# maxmemory \(.*\)$:maxmemory 256mb:' \
+      -e 's:# maxmemory-policy \(.*\)$:maxmemory-policy allkeys-lru:' \
+      /etc/redis/redis.conf \
     && sed -i -e "s/\/etc\/redis/\/vesta\/etc\/redis/g" /etc/init.d/redis-server \
 
     && mkdir -p /vesta-start/etc \
@@ -405,6 +413,10 @@ RUN \
     && mv /var/lib/redis /vesta-start/var/lib/redis \
     && rm -rf /var/lib/redis \
     && ln -s /vesta/var/lib/redis /var/lib/redis \
+
+    && mv /etc/awstats /vesta-start/etc/awstats \
+    && rm -rf /etc/awstats \
+    && ln -s /vesta/etc/awstats /etc/awstats \
 
     && mv /etc/dovecot /vesta-start/etc/dovecot \
     && rm -rf /etc/dovecot \
