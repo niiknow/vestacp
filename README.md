@@ -73,27 +73,9 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 
 Enjoy!!!
 
-## Upgrading
-As this is a docker image, you have many options.
-
-1. The best option is to use VestaCP backup and restore.  
-2. I will try to work on migration script to support different version of this docker image, but I would still strongly recommend that you use VestaCP backup and restore.
-
-https://vestacp.com/docs/#how-to-migrate-user-to-another-server
-
-Let say you followed the instruction above to start your vestacp, the manual upgrade step would be:
-*  Make sure you ran your backup and have the latest backup files under /opt/vestacp/backup
-*  docker pull niiknow/vestacp:latest
-*  docker stop the niiknow/vestacp image
-*  tar -czf /opt/vestacp/vesta /opt/vestacp/backup/vesta."$(date +%F_%R)".tar.gz
-*  rm -rf /opt/vestacp/vesta/*
-*  docker start the new image as instructed above
-*  docker rm the old image if everything tested fine or start the old image back if test failed
-*  ssh into vesta and restore your users from backup: https://vestacp.com/docs/#how-to-migrate-user-to-another-server
-
 ## Release Notes
 
-0.8.52 - add pagespeed and prep for next vesta release.  It has been completely redone in anticipation for next VestaCP release.  In order to upgrade to this image; please perform user backup, download of backup, and restore. It's the same step as you would expect to migrate another server: https://vestacp.com/docs/#how-to-migrate-user-to-another-server 
+0.8.54 - add pagespeed and prep for next vesta release.  It has been completely redone in anticipation for next VestaCP release.  In order to upgrade to this image; please perform user backup, download of backup, and restore. It's the same step as you would expect to migrate another server: https://vestacp.com/docs/#how-to-migrate-user-to-another-server 
 
 The docker image has been redone to keep all users IDs the same to simplify upgrade.  This means that, starting 0.8.52+, you can now simply upgrade the docker image when a new version is released.  
 
