@@ -372,6 +372,9 @@ RUN \
     && service fail2ban stop \
     && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/lib\/mysql/g" /etc/mysql/my.cnf \
 
+# for letsencrypt
+    && touch /usr/local/vesta/data/queue/letsencrypt.pipe \
+    
 # setup redis like memcache
     && sed -i -e 's:^save:# save:g' \
       -e 's:^bind:# bind:g' \
