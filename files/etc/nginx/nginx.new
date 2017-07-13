@@ -119,6 +119,7 @@ http {
         default 0;
         ~SESS 1;
         ~wordpress_logged_in 1;
+        ~CONCRETE5 1;
     }
 
 
