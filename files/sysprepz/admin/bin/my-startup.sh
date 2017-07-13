@@ -31,4 +31,4 @@ cd /etc/init.d/
 # && ./clamav-daemon start \
 # && ./spamassassin start \
 # && ./php7.0-fpm start \
-# && ./fail2ban start \ # -- only if you run in privileged mode
+# && ./fail2ban start \ # -- only if you run with: --cap-add=NET_ADMIN --cap-add=NET_RAW
