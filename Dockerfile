@@ -492,10 +492,6 @@ RUN \
     && rm -rf /etc/mongod.conf \
     && ln -s /vesta/etc/mongod.conf /etc/mongod.conf \
 
-    && mv /data /vesta-start/data \
-    && rm -rf /data \
-    && ln -s /vesta/data /data \
-
     && mv /etc/couchdb /vesta-start/etc/couchdb \
     && rm -rf /etc/couchdb \
     && ln -s /vesta/etc/couchdb /etc/couchdb \

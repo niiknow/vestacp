@@ -37,6 +37,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] AWS CLI has been installed to simplify your backup lifestyle.  You just need to setup a cron on VestaCP.
 - [x] Update *index.html* to remove reference to VestaCP from default site for security.
 - [x] **Dovecot/roundcube email, phpmyadmin, phppgadmin, and DNS services** are disabled by default.  Look at /home/admin/bin/my-startup.sh for instruction on how to re-enable these services.
+- [x] To enable iptables firewall, run docker with: --cap-add=NET_ADMIN --cap-add=NET_RAW
 
 ### misc/tested/verified
 - [x] ssh/sftp, nginx, apache2, php7.0 + v8js 
@@ -91,8 +92,10 @@ Let say you followed the instruction above to start your vestacp, the manual upg
 *  ssh into vesta and restore your users from backup: https://vestacp.com/docs/#how-to-migrate-user-to-another-server
 
 ## Release Notes
-0.8.xx - add pagespeed and prep for next vesta release.  It has been completely redone in anticipation for next VestaCP release and to include Nginx Pagespeed module so in order to upgrade to this image; please perform user backup, download of backup, and restore. It's the same step as you would expect to migrate another server: https://vestacp.com/docs/#how-to-migrate-user-to-another-server 
 
+0.8.52 - add pagespeed and prep for next vesta release.  It has been completely redone in anticipation for next VestaCP release.  In order to upgrade to this image; please perform user backup, download of backup, and restore. It's the same step as you would expect to migrate another server: https://vestacp.com/docs/#how-to-migrate-user-to-another-server 
+
+The docker image has been redone to keep all users IDs the same to simplify upgrade.  This means that, starting 0.8.52+, you can now simply upgrade the docker image when a new version is released.  
 
 0.8.30 - first stable image
 
