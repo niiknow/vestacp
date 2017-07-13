@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     GOLANG_VERSION=1.8.3 \
     DOTNET_DOWNLOAD_URL=https://download.microsoft.com/download/D/7/A/D7A9E4E9-5D25-4F0C-B071-210CB8267943/dotnet-ubuntu.16.04-x64.1.1.2.tar.gz  \
     NGINX_BUILD_DIR=/usr/src/nginx \
-    NGINX_VERSION=1.13.1 \
+    NGINX_VERSION=1.13.3 \
     NGINX_PAGESPEED_VERSION=1.12.34.2 \
     NGINX_PAGESPEED_DIR=/usr/src/nginx/ngx_pagespeed-latest-stable/ \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
@@ -231,14 +231,11 @@ RUN \
     && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cli/conf.d/20-couchbase.ini \
     && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cgi/conf.d/20-couchbase.ini \
 
+# performance tweaks
+    && chmod 0755 /etc/init.d/disable-transparent-hugepages \
+
 # increase memcache max size from 64m to 256m
     && sed -i -e "s/^\-m 64/\-m 256/g" /etc/memcached.conf \
-
-# mongodb stuff
-    && mkdir -p /data/db \
-    && chmod 0755 /data/db \
-    && chown -R mongodb:mongodb /data/db \
-    && chmod 0755 /etc/init.d/disable-transparent-hugepages \
 
 # couchdb stuff
     && mkdir -p /var/lib/couchdb \
@@ -422,6 +419,12 @@ RUN \
     && mv /etc/redis   /vesta-start/etc/redis \
     && rm -rf /etc/redis \
     && ln -s /vesta/etc/redis /etc/redis \
+
+    && mkdir -p /var/lib/mongodb \
+    && chown -R mongodb:mongodb /var/lib/mongodb \
+    && mv /var/lib/mongodb /vesta-start/var/lib/mongodb \
+    && rm -rf /var/lib/mongodb \
+    && ln -s /vesta/var/lib/mongodb /var/lib/mongodb \
 
     && mkdir -p /var/lib/redis \
     && chown -R redis:redis /var/lib/redis \
