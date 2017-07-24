@@ -27,10 +27,13 @@ if [ -f /etc/nginx/nginx.new ]; then
    mv /etc/nginx/nginx.new /etc/nginx/nginx.conf
 fi
 
-
 # start incron after restore
 cd /etc/init.d/
 ./incron start
+
+# make services such as cron and syslog are running too
+rm -f /etc/service/cron/down
+rm -f /etc/service/syslog-ng/down
 
 # starting Vesta
 bash /home/admin/bin/my-startup.sh
