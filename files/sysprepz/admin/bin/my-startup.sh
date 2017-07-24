@@ -1,12 +1,4 @@
 #!/bin/sh
-# restore current users
-if [[ -f /vesta/etc-bak/passwd ]]; then
-	# restore users
-	rsync -a /vesta/etc-bak/passwd /etc/passwd
-	rsync -a /vesta/etc-bak/shadow /etc/shadow
-	rsync -a /vesta/etc-bak/gshadow /etc/gshadow
-	rsync -a /vesta/etc-bak/group /etc/group
-fi
 
 # only if you run in privileged mode
 # if [[ -f /etc/fail2ban/jail.new ]]; then

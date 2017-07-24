@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+# On certain system such as Linode, incron doesn't work
+# so we have to do an hourly cron
+
+bash /usr/bin/backup-creds.sh
