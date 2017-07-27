@@ -1,4 +1,4 @@
-FROM niiknow/docker-hostingbase:0.8.8
+FROM niiknow/docker-hostingbase:0.9.0
 
 MAINTAINER friends@niiknow.org
 
@@ -87,6 +87,7 @@ RUN \
     && rm -f /etc/apt/sources.list && mv /etc/apt/sources.list.bak /etc/apt/sources.list \
 
 # finish cleaning up
+    && rm -rf /usr/src/nginx \
     && rm -rf /tmp/* \
     && apt-get -yf autoremove \
     && apt-get clean 
@@ -170,6 +171,7 @@ RUN   \
     && echo "\nGOROOT=/usr/local/go\nexport GOROOT\n" >> /root/.profile \
 
 # finish cleaning up
+    && rm -rf /tmp/.spam* \
     && rm -rf /tmp/* \
     && apt-get -yf autoremove \
     && apt-get clean 
@@ -361,15 +363,19 @@ RUN \
 # https://github.com/serghey-rodin/vesta/issues/1009
     && sed -i -e "s/unzip/unzip \-o/g" /usr/local/vesta/bin/v-extract-fs-archive \
 
+# apache stuff
     && echo "\nServerName localhost\n" >> /etc/apache2/apache2.conf \
+    && a2enmod headers \
 
 # disable localhost redirect to bad default IP
     && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/* \
 
-    && service mysql stop \
-    && service postgresql stop \
-    && service redis-server stop \
-    && service fail2ban stop \
+    && service mysql stop && service disable mysql \
+    && service postgresql stop && service disable postgresql \
+    && service redis-server stop && service disable redis-server \
+    && service fail2ban stop && service disable fail2ban \
+    && service nginx stop && service disable nginx \
+    && service apache2 stop && service disable apache2 \
     && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/lib\/mysql/g" /etc/mysql/my.cnf \
 
 # for letsencrypt

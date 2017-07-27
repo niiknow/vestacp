@@ -17,23 +17,26 @@ if [[ -f /backup/.etc/passwd ]]; then
 	rsync -a /backup/.etc/group /etc/group
 fi
 
+# make sure runit services are running across restart
+find /etc/service/ -name "down" -exec rm -rf {} \;
+
+# start incron after restore above
+sv restart incrond
+
 
 chown www-data:www-data /var/ngx_pagespeed_cache
 chmod 750 /var/ngx_pagespeed_cache
 
 
 if [ -f /etc/nginx/nginx.new ]; then
-   mv /etc/nginx/nginx.conf /etc/nginx/nginx.old
-   mv /etc/nginx/nginx.new /etc/nginx/nginx.conf
+	mv /etc/nginx/nginx.conf /etc/nginx/nginx.old
+	mv /etc/nginx/nginx.new /etc/nginx/nginx.conf
 fi
 
-# start incron after restore
-cd /etc/init.d/
-./incron start
-
-# make services such as cron and syslog are running too
-rm -f /etc/service/cron/down
-rm -f /etc/service/syslog-ng/down
+if [[ -f /etc/fail2ban/jail.new ]]; then
+    mv /etc/fail2ban/jail.local /etc/fail2ban/jail-local.bak
+    mv /etc/fail2ban/jail.new /etc/fail2ban/jail.local
+fi
 
 # starting Vesta
 bash /home/admin/bin/my-startup.sh
