@@ -5,7 +5,11 @@ export TERM=xterm
 if [ -z "`ls /vesta --hide='lost+found'`" ]
 then
     rsync -a /vesta-start/* /vesta
-    rsync -a /sysprepz/home/* /home    
+    rsync -a /sysprepz/home/* /home
+
+# save some bytes, you can do it later
+#    rm -rf /sysprepz
+#    rm -rf /vesta-start
 fi
 
 # restore current users
