@@ -371,12 +371,12 @@ RUN \
 # disable localhost redirect to bad default IP
     && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/* \
 
-    && service mysql stop && service disable mysql \
-    && service postgresql stop && service disable postgresql \
-    && service redis-server stop && service disable redis-server \
-    && service fail2ban stop && service disable fail2ban \
-    && service nginx stop && service disable nginx \
-    && service apache2 stop && service disable apache2 \
+    && service mysql stop && systemctl disable mysql \
+    && service postgresql stop && systemctl disable postgresql \
+    && service redis-server stop && systemctl disable redis-server \
+    && service fail2ban stop && systemctl disable fail2ban \
+    && service nginx stop && systemctl disable nginx \
+    && service apache2 stop && systemctl disable apache2 \
     && sed -i -e "s/\/var\/lib\/mysql/\/vesta\/var\/lib\/mysql/g" /etc/mysql/my.cnf \
 
 # for letsencrypt
