@@ -426,6 +426,14 @@ RUN \
     && rm -rf /etc/exim4 \
     && ln -s /vesta/etc/exim4 /etc/exim4 \
 
+    && mv /etc/spamassassin   /vesta-start/etc/spamassassin \
+    && rm -rf /etc/spamassassin \
+    && ln -s /vesta/etc/spamassassin /etc/spamassassin \
+
+    && mv /etc/mail   /vesta-start/etc/mail \
+    && rm -rf /etc/mail \
+    && ln -s /vesta/etc/mail /etc/mail \
+
     && mv /etc/redis   /vesta-start/etc/redis \
     && rm -rf /etc/redis \
     && ln -s /vesta/etc/redis /etc/redis \
