@@ -426,6 +426,14 @@ RUN \
     && rm -rf /etc/exim4 \
     && ln -s /vesta/etc/exim4 /etc/exim4 \
 
+    && mv /etc/spamassassin   /vesta-start/etc/spamassassin \
+    && rm -rf /etc/spamassassin \
+    && ln -s /vesta/etc/spamassassin /etc/spamassassin \
+
+    && mv /etc/mail   /vesta-start/etc/mail \
+    && rm -rf /etc/mail \
+    && ln -s /vesta/etc/mail /etc/mail \
+
     && mv /etc/redis   /vesta-start/etc/redis \
     && rm -rf /etc/redis \
     && ln -s /vesta/etc/redis /etc/redis \
@@ -538,4 +546,4 @@ RUN \
 
 VOLUME ["/vesta", "/home", "/backup"]
 
-EXPOSE 22 25 53 54 80 110 443 993 1194 3000 3306 5432 5984 6379 8083 10022 11211 27017
+EXPOSE 22 25 53 54 80 110 143 443 465 587 993 995 1194 3000 3306 5432 5984 6379 8083 10022 11211 27017
