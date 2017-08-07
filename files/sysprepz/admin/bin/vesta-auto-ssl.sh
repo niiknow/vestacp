@@ -22,7 +22,8 @@ if [ -n "$domain" ] ; then
     if [[ $DOMAINIP != $MYIP ]]; then
     	echo "[err] Domain '$domain' IP '$DOMAINIP' does not match Host IP '$MYIP'"
 
-        exit 1
+        # only error message to prevent error in app startup
+        exit 0
     fi
 
     # wait for any web service to start first (nginx, apache, vesta, etc...)
@@ -46,6 +47,13 @@ if [ -n "$domain" ] ; then
         sleep 5
     fi
 
+    if [ ! -f "$cert_src" ]; then
+        echo "[err] cert not found '$cert_src'"
+
+        # only error message to prevent error in app startup
+        exit 0
+    fi
+
     if ! cmp -s $cert_dst $cert_src
     then
         # backup the old cert
@@ -63,8 +71,6 @@ if [ -n "$domain" ] ; then
         # Let the user restart the service by themself
         # service vesta restart &> /dev/null
         # service exim4 restart &> /dev/null
-        echo "[i] Cert file successfullly swapped out.  Please restart vesta, apache2, nginx, and exim4."
+        echo "[i] Cert file successfullly swapped out.  Please restart docker or vesta, apache2, nginx, and exim4."
     fi
-
-    echo "[i] If everything went fine. Your certificate is ready: https://$domain:8083"
 fi
