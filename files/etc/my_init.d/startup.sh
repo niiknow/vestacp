@@ -24,13 +24,8 @@ fi
 # make sure runit services are running across restart
 find /etc/service/ -name "down" -exec rm -rf {} \;
 
-# start incron after restore above
-sv restart incrond
-
-
 chown www-data:www-data /var/ngx_pagespeed_cache
 chmod 750 /var/ngx_pagespeed_cache
-
 
 if [ -f /etc/nginx/nginx.new ]; then
 	mv /etc/nginx/nginx.conf /etc/nginx/nginx.old
