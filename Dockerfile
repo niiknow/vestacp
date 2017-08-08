@@ -185,6 +185,7 @@ RUN \
     && chmod +x /etc/service/sshd/run \
     && chmod +x /etc/init.d/mongod \
     && chmod +x /etc/my_init.d/startup.sh \
+    && mv /sysprepz/admin/bin/vesta-auto-ssl.sh /bin \
 
     && echo "extension=v8js.so" > /etc/php/5.6/mods-available/v8js.ini \
     && ln -sf /etc/php/5.6/mods-available/v8js.ini /etc/php/5.6/apache2/conf.d/20-v8js.ini \

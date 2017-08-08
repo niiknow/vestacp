@@ -42,7 +42,7 @@ echo "[i] running /home/admin/bin/my-startup.sh"
 bash /home/admin/bin/my-startup.sh
 
 # auto ssl on start
-if [ -f /home/admin/bin/vesta-auto-ssl.sh ]; then
-	echo "[i] running /home/admin/bin/vesta-auto-ssl.sh"
-	bash /home/admin/bin/vesta-auto-ssl.sh
+if [ -f /bin/vesta-auto-ssl.sh ]; then
+	echo "[i] running /bin/vesta-auto-ssl.sh"
+	bash /bin/vesta-auto-ssl.sh
 fi
