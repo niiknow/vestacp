@@ -1,0 +1,21 @@
+version: "3.3"
+
+services:
+  vesta:
+    image: niiknow/vestacp:0.8.63
+    container_name: vesta
+    cap_add: ['NET_RAW', 'NET_ADMIN']
+    environment:
+      - "VESTA_DOMAIN=your.vestadomain.com"
+    volumes:
+      - "/opt/vestacp/backup:/backup"
+      - "/opt/vestacp/vesta:/vesta"
+      - "/opt/vestacp/home:/home"
+    ports:
+      - "2222:22"
+      - "80:80"
+      - "443:443"
+      - "8083:8083"
+    labels:
+      - "Vesta Control Panel"
+    restart: unless-stopped
