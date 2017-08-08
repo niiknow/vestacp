@@ -4,7 +4,7 @@
 source /etc/container_environment.sh
 
 VESTA_PATH='/usr/local/vesta'
-domain='$VESTA_DOMAIN'
+domain="$VESTA_DOMAIN"
 user='admin'
 
 # only run if domain has a value
@@ -20,7 +20,7 @@ if [ -n "$domain" ] ; then
 
     # create the website under admin for Letsencrypt SSL
     if [[ $DOMAINIP != $MYIP ]]; then
-    	echo "[err] Domain '$domain' IP '$DOMAINIP' does not match Host IP '$MYIP'"
+        echo "[err] Domain '$domain' IP '$DOMAINIP' does not match Host IP '$MYIP'"
 
         # only error message to prevent error in app startup
         exit 0
@@ -36,11 +36,24 @@ if [ -n "$domain" ] ; then
     cert_dst="/usr/local/vesta/ssl/certificate.crt"
     key_dst="/usr/local/vesta/ssl/certificate.key"
 
-    # if no letsencrypt domain under $user, create one
-    if [ ! -f "$cert_src" ]; then
-    	echo "[i] Creating '$user' website for '$domain'"
+    if [ ! -f "/usr/local/vesta/data/users/$user/ssl/le.conf" ]; then
+        tldomain=`echo $domain | grep -oP '[^.]+\.+[^.]+$'`
+        echo "[i] Creating letsencrypt '$user' with email '$user@$tldomain'"
 
-    	$VESTA_PATH/bin/v-add-letsencrypt-domain '$user' '$domain' '' 'no'
+        $VESTA_PATH/bin/v-add-letsencrypt-user "$user" "$user@$tldomain"
+    fi
+
+    if [ ! -d "/home/$user/web/$domain/" ]; then
+        echo "[i] Creating website '$domain' for '$user'"
+
+        $VESTA_PATH/bin/v-add-web-domain "$user" "$domain" '127.0.0.1' 'no' 'none' ''
+    fi
+
+    # if no letsencrypt cert, create one
+    if [ ! -f "$cert_src" ]; then
+        echo "[i] Creating cert for '$user' domain '$domain'"
+
+        $VESTA_PATH/bin/v-add-letsencrypt-domain "$user" "$domain" '' 'yes'
 
         # wait for letsencrypt to complete
         # a better check would be for the existence of $cert_src with x retries
@@ -61,8 +74,8 @@ if [ -n "$domain" ] ; then
         cp -fn $key_dst "$key_dst.bak"
 
         # link the new cert
-    	ln -sf $cert_src $cert_dst
-    	ln -sf $key_src $key_dst
+        ln -sf $cert_src $cert_dst
+        ln -sf $key_src $key_dst
 
         # Change Permission
         chown root:mail $cert_dst
@@ -73,4 +86,6 @@ if [ -n "$domain" ] ; then
         # service exim4 restart &> /dev/null
         echo "[i] Cert file successfullly swapped out.  Please restart docker or vesta, apache2, nginx, and exim4."
     fi
+else
+    echo "[i] vesta-auto-ssl exit due to empty VESTA_DOMAIN variable"
 fi

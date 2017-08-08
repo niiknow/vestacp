@@ -356,6 +356,9 @@ RUN \
     && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/db.sh --output /usr/local/vesta/func/db.sh \
     && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/rebuild.sh --output /usr/local/vesta/func/rebuild.sh \
 
+# patch sob letsencrypt: https://github.com/serghey-rodin/vesta/issues/1085
+    && sed -i "s/inform perm /inform pem /" /usr/local/vesta/bin/v-add-letsencrypt-user \
+
 # patch psql9.5 backup
     && sed -i -e "s/\-c \-\-inserts \-O \-x \-i \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
     && sed -i -e "s/dbuser/DBUSER/g" /usr/local/vesta/func/rebuild.sh \
