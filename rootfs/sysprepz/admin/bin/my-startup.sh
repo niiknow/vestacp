@@ -9,9 +9,10 @@ cd /etc/init.d/
 
 # the 5 services below are enabled to support mininum default backup job
 && ./apache2 start \
-&& ./mysql start \
+&& ./mysql start
+
 # delete defult postgres admindb if not use, then comment out the line below
-&& ./postgresql start \
+./postgresql start \
 && ./nginx start \
 && ./vesta start
 
