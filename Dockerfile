@@ -53,7 +53,7 @@ RUN \
     && tar -xzf ${NGINX_PAGESPEED_VERSION}.tar.gz \
 
 # get the source
-    && cd ${NGINX_BUILD_DIR}; apt-get source nginx -y \
+    && cd ${NGINX_BUILD_DIR}; apt-get source nginx=${NGINX_VERSION} -y \
     && mv ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.c ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.bak \
 
 # apply patch
@@ -103,11 +103,8 @@ RUN   \
     && echo "nginx hold" | dpkg --set-selections \
     && sed -i -e "s/\"nginx apache2/\"apache2/g" /tmp/vst-install-ubuntu.sh \
 
-# fix mariadb instead of mysql and php7.0 instead of php7.1
+# fix mariadb instead of mysql
     && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
-    && sed -i -e "s/\-php php /\-php php7\.0 /g" /tmp/vst-install-ubuntu.sh \
-    && sed -i -e "s/php\-/php7\.0\-/g" /tmp/vst-install-ubuntu.sh \
-    && sed -i -e "s/libapache2\-mod\-php/libapache2-mod\-php7\.0/g" /tmp/vst-install-ubuntu.sh \
 
 # begin install vesta
     && bash /tmp/vst-install-ubuntu.sh \
@@ -124,26 +121,12 @@ RUN   \
     && service apache2 stop \
 
 # install additional mods
-    && apt-get install -yf --no-install-recommends libapache2-mod-php5.6 libapache2-mod-php7.1 \
-    && a2dismod php5.6 && a2dismod php7.0 && a2dismod php7.1 \
+    && apt-get install -yf --no-install-recommends libapache2-mod-php5.6 libapache2-mod-php7.0 \
 
 # fix v8js reference of json first
     && mv /etc/php/5.6/apache2/conf.d/20-json.ini /etc/php/5.6/apache2/conf.d/15-json.ini \
     && mv /etc/php/5.6/cli/conf.d/20-json.ini /etc/php/5.6/cli/conf.d/15-json.ini \
     && mv /etc/php/5.6/cgi/conf.d/20-json.ini /etc/php/5.6/cgi/conf.d/15-json.ini \
-
-# switch to php7.0 version as default
-    && update-alternatives --set php /usr/bin/php7.0 \
-    && pecl config-set php_ini /etc/php/7.0/cli/php.ini \
-    && pecl config-set ext_dir /usr/lib/php/20151012 \
-    && pecl config-set bin_dir /usr/bin \
-    && pecl config-set php_bin /usr/bin/php7.0 \
-    && pecl config-set php_suffix 7.0 \
-    && a2enmod php7.0 \
-
-# restore php-cgi to php7.0
-    && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
-    && ln -s /usr/bin/php-cgi7.0 /usr/bin/php-cgi \
 
 # install nodejs, memcached, redis-server, openvpn, mongodb, and couchdb
     && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server openvpn mongodb-org php-mongodb couchdb \
@@ -357,7 +340,7 @@ RUN \
     && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/db.sh --output /usr/local/vesta/func/db.sh \
     && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/04d617d756656829fa6c6a0920ca2aeea84f8461/func/rebuild.sh --output /usr/local/vesta/func/rebuild.sh \
 
-# patch sob letsencrypt: https://github.com/serghey-rodin/vesta/issues/1085
+# patch letsencrypt typo: https://github.com/serghey-rodin/vesta/issues/1253
     && sed -i "s/inform perm /inform pem /" /usr/local/vesta/bin/v-add-letsencrypt-user \
 
 # patch psql9.5 backup
