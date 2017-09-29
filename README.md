@@ -3,8 +3,8 @@ The ultimate control panel with docker (thanks lagun4ik for a great start)
 
 What's included?
 * ubuntu 16.04 lts + Vesta 0.9.8-17
-* nginx (proxy) -> apache2 -> php7.0 - high performance and flexible implementation
-* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.1, postgresql 9.5, nodejs 8.x, golang 1.8.3, openvpn, mongodb, couchdb
+* nginx (proxy) -> apache2 -> php7.1 - high performance and flexible implementation
+* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.1, postgresql 9.5, nodejs 8.x, golang 1.9, openvpn, mongodb, couchdb
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
 * DNS, named, dovecot/roundcube, spamassassin, clamav, fail2ban, etc... -- disabled by default
 
@@ -74,7 +74,8 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
-0.9.0 - On Ubuntu 16.04, we've default to php7.0 for a while, as it was the system default and to help ease everyone into php7.x.  Since php7.1 went into LTS last month, it will now be the default.  As you know, this image support 3 different versions of php: 5.6, 7.0, and 7.1.  Default to php7.1 will help usher support for php7.2 as it become available later this year.
+0.9.3 - upgraded to latest nginx-1.13.5, .net core 2.0, and golang 1.9
+0.9.0 - On Ubuntu 16.04, we've defaulted to php7.0 for some time, as it was the ubuntu default.  Since php7.1 are LTS for most php framework, it make sense to have it as the default.  As you know, this image support 3 different versions of php: 5.6, 7.0, and 7.1.  Default to php7.1 will help usher support for php7.2 as it become available later this year.
 
 0.8.54 - add pagespeed and prep for next vesta release.  It has been completely redone in anticipation for next VestaCP release.  In order to upgrade to this image; please perform user backup, download of backup, and restore. It's the same step as you would expect to migrate another server: https://vestacp.com/docs/#how-to-migrate-user-to-another-server 
 

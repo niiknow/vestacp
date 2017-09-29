@@ -4,12 +4,12 @@ MAINTAINER friends@niiknow.org
 
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.8.3 \
-    DOTNET_DOWNLOAD_URL=https://download.microsoft.com/download/D/7/A/D7A9E4E9-5D25-4F0C-B071-210CB8267943/dotnet-ubuntu.16.04-x64.1.1.2.tar.gz  \
+    GOLANG_VERSION=1.9 \
+    DOTNET_DOWNLOAD_URL=https://download.microsoft.com/download/5/F/0/5F0362BD-7D0A-4A9D-9BF9-022C6B15B04D/dotnet-runtime-2.0.0-linux-x64.tar.gz  \
     NGINX_BUILD_DIR=/usr/src/nginx \
-    NGINX_VERSION=1.13.3 \
-    NGINX_PAGESPEED_VERSION=1.12.34.2 \
-    NGINX_PAGESPEED_DIR=/usr/src/nginx/ngx_pagespeed-latest-stable/ \
+    NGINX_VERSION=1.13.5 \
+    NGINX_PAGESPEED_VERSION=1.12.34.3 \
+    NGINX_PSOL_VERSION=1.12.34.2 \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
 
 # start
@@ -44,28 +44,29 @@ RUN \
 # install nginx with pagespeed first so vesta config can override
     && mkdir -p ${NGINX_BUILD_DIR} \
 
-# Load Pagespeed module, PSOL and nginx
     && cd ${NGINX_BUILD_DIR} \
-    && curl -SL https://github.com/pagespeed/ngx_pagespeed/archive/latest-stable.zip  -o ${NGINX_BUILD_DIR}/latest-stable.zip \
-    && unzip latest-stable.zip \
-    && cd ${NGINX_PAGESPEED_DIR} \
-    && curl -SL https://dl.google.com/dl/page-speed/psol/${NGINX_PAGESPEED_VERSION}-x64.tar.gz -o ${NGINX_PAGESPEED_VERSION}.tar.gz \
-    && tar -xzf ${NGINX_PAGESPEED_VERSION}.tar.gz \
-
 # get the source
-    && cd ${NGINX_BUILD_DIR}; apt-get source nginx=${NGINX_VERSION} -y \
+    && apt-get source nginx=${NGINX_VERSION} -y \
     && mv ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.c ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.bak \
 
 # apply patch
     && curl -SL $IMAGE_FILTER_URL --output ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.c \
     && sed -i "s/--with-http_ssl_module/--with-http_ssl_module --with-http_image_filter_module --add-module=\/usr\/src\/nginx\/ngx_pagespeed-latest-stable\//g" ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/debian/rules \
 
+# Load Pagespeed module, PSOL and nginx
+    && curl -SL https://github.com/pagespeed/ngx_pagespeed/archive/latest-stable.zip  -o ${NGINX_BUILD_DIR}/latest-stable.zip \
+    && unzip latest-stable.zip \
+    && cd ngx_pagespeed-latest-stable \
+    && curl -SL https://dl.google.com/dl/page-speed/psol/${NGINX_PSOL_VERSION}-x64.tar.gz -o ${NGINX_PSOL_VERSION}.tar.gz \
+    && tar -xzf ${NGINX_PSOL_VERSION}.tar.gz \
+
 # get build dependencies
-    && cd ${NGINX_BUILD_DIR}; apt-get build-dep nginx -y \
+    && apt-get build-dep nginx -y \
     && cd ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}; dpkg-buildpackage -uc -us -b \
 
+    && cd ${NGINX_BUILD_DIR} \
 # install new nginx package
-    && cd ${NGINX_BUILD_DIR}; dpkg -i nginx_${NGINX_VERSION}-1~xenial_amd64.deb \
+    && dpkg -i nginx_${NGINX_VERSION}-2~xenial_amd64.deb \
 
 # install php
     && apt-get install -yq php5.6-mbstring php5.6-cgi php5.6-cli php5.6-dev php5.6-geoip php5.6-common php5.6-xmlrpc php5.6-sybase \
@@ -93,7 +94,7 @@ RUN \
     && apt-get clean 
 
 # begin VestaCP install
-RUN   \
+RUN \
     cd /tmp \
 
 # begin setup for vesta
