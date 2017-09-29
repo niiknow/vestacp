@@ -132,9 +132,6 @@ RUN \
 # install nodejs, memcached, redis-server, openvpn, mongodb, and couchdb
     && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server openvpn mongodb-org php-mongodb couchdb \
 
-# relink nodejs
-    && ln -sf "$(which nodejs)" /usr/bin/node \
-
 # setting up dotnet, awscli, golang
 # dotnet
     && curl -SL $DOTNET_DOWNLOAD_URL -o /tmp/dotnet.tar.gz \
