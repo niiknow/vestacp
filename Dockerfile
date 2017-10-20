@@ -522,6 +522,9 @@ RUN \
     && chmod 755 /var/ngx_pagespeed_cache \
     && chown www-data:www-data /var/ngx_pagespeed_cache \
 
+# docker specific patching
+    && sed -i -e "s/if (\$dir_name/\/\/if (\$dir_name/g" /usr/local/vesta/web/list/rrd/image.php \
+
 # finish cleaning up
     && rm -rf /backup/.etc \
     && rm -rf /tmp/* \
