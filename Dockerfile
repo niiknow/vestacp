@@ -330,6 +330,9 @@ RUN \
     && sed -i -e "s/ include / include \%home\%\/\%user\%\/web\/\%domain\%\/private\/*.conf;\n    include /g" /usr/local/vesta/data/templates/web/nginx/*.stpl \
     && bash /usr/local/vesta/upd/switch_rpath.sh \
 
+# docker specific patching
+    && sed -i -e "s/if (\$dir_name/\/\/if (\$dir_name/g" /usr/local/vesta/web/list/rrd/image.php \
+
 # increase open file limit for nginx and apache
     && echo "\n\n* soft nofile 800000\n* hard nofile 800000\n\n" >> /etc/security/limits.conf \
 
@@ -521,9 +524,6 @@ RUN \
     && mkdir -p /var/ngx_pagespeed_cache \
     && chmod 755 /var/ngx_pagespeed_cache \
     && chown www-data:www-data /var/ngx_pagespeed_cache \
-
-# docker specific patching
-    && sed -i -e "s/if (\$dir_name/\/\/if (\$dir_name/g" /usr/local/vesta/web/list/rrd/image.php \
 
 # finish cleaning up
     && rm -rf /backup/.etc \

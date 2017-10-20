@@ -75,7 +75,8 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
-0.9.5 - fix graph
+0.9.6 - fix graph
+
 0.9.4 - upgraded to latest nginx-1.13.5, .net core 2.0, and golang 1.9
 
 0.9.0 - On Ubuntu 16.04, we've defaulted to php7.0 for some time, as it was the ubuntu default.  Since php7.1 are LTS for most php framework, it make sense to have it as the default.  As you know, this image support 3 different versions of php: 5.6, 7.0, and 7.1.  Default to php7.1 will help usher support for php7.2 as it become available later this year.
