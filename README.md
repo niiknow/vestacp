@@ -75,6 +75,8 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
+0.9.7 - update nginx-1.13.6, golang 1.9.2, and php7.1 stuff
+
 0.9.6 - fix graph
 
 0.9.4 - upgraded to latest nginx-1.13.5, .net core 2.0, and golang 1.9
