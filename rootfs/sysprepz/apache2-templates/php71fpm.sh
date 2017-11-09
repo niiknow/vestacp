@@ -23,13 +23,14 @@ pm.max_children = 6
 pm.min_spare_servers = 1
 pm.max_spare_servers = 6
 "
-fpm_conf_file="$home_dir/$user/web/$domain/cgi-bin/php$php_version-fpm.conf"
+fpm_conf_file="$home_dir/$user/web/$domain/cgi-bin/php-fpm.conf"
 
 echo "$fpm_conf" > $fpm_conf_file
 chown $user:$user $fpm_conf_file
 chmod -f 751 $fpm_conf_file
 
-# create symbolic link to conf
+# delete old and link new conf
+rm -f /etc/php/*/fpm/pool.d/$domain.conf
 ln -sf $fpm_conf_file /etc/php/$php_version/fpm/pool.d/$domain.conf
 
 exit 0

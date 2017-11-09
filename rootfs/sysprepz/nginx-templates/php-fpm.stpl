@@ -20,9 +20,8 @@ server {
            set $no_cache 1;
         }
 
-        fastcgi_pass  unix:/var/run/vesta-php-fpm-%domain_idn%.sock;
-
         fastcgi_index index.php;
+        fastcgi_pass  unix:/var/run/vesta-php-fpm-%domain_idn%.sock;
         fastcgi_param SCRIPT_FILENAME  $document_root$fastcgi_script_name;
         fastcgi_intercept_errors on;
         include fastcgi_params;
