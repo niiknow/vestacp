@@ -35,4 +35,3 @@ server {
     include %home%/%user%/web/%domain%/private/*.conf;
     include %home%/%user%/conf/web/nginx.%domain%.conf*;
 }
-
