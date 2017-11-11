@@ -13,7 +13,7 @@ user = $user
 group = www-data
 
 listen = /var/run/vesta-php-fpm-$domain.sock
-listen.owner = www-data
+listen.owner = admin
 listen.group = www-data
 listen.mode = 0660
 
@@ -28,7 +28,7 @@ fpm_conf_file="$home_dir/$user/web/$domain/cgi-bin/php-fpm.conf"
 echo "$fpm_conf" > $fpm_conf_file
 chown $user:$user $fpm_conf_file
 chmod -f 751 $fpm_conf_file
-mkdir -p $home_dir/$user/web/$domain/tmp
+mkdir -p $home_dir/$user/web/$domain/tmp/cache
 chown -R $user:www-data $home_dir/$user/web/$domain/tmp
 
 # delete old and link new conf

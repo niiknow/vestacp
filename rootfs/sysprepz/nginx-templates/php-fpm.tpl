@@ -1,4 +1,4 @@
-fastcgi_cache_path %home%/%user%/web/%domain%/tmp/ levels=1:2 keys_zone=nginx_%domain%:10m max_size=5g inactive=45m use_temp_path=off;
+fastcgi_cache_path %home%/%user%/web/%domain%/tmp/cache/ levels=1:2 keys_zone=fpm_%domain%:10m max_size=5g inactive=45m use_temp_path=off;
 
 server {
     listen      %proxy_port%;
@@ -34,8 +34,10 @@ server {
 
             fastcgi_cache_use_stale error timeout invalid_header http_500;
             fastcgi_cache_key $host$request_uri;
-            fastcgi_cache nginx_%domain%;
-            fastcgi_cache_valid 200 30s;
+            fastcgi_cache fpm_%domain%;
+
+            # small amount of cache goes a long way
+            fastcgi_cache_valid 200 1m;
             fastcgi_cache_bypass $no_cache;
             fastcgi_no_cache $no_cache;
         }
@@ -59,6 +61,5 @@ server {
 
     disable_symlinks if_not_owner from=%docroot%;
 
-    include %home%/%user%/web/%domain%/private/*.conf;
     include %home%/%user%/conf/web/nginx.%domain%.conf*;
 }
