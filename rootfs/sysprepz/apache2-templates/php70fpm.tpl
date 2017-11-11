@@ -1,6 +1,6 @@
 
 #
-#<VirtualHost %ip%:%web_ssl_port%>
+#<VirtualHost %ip%:%web_port%>
 # php70fpm
 # ServerName %domain_idn%
 #</VirtualHost>

@@ -35,6 +35,10 @@ chown -R $user:www-data $home_dir/$user/web/$domain/tmp
 rm -f /etc/php/*/fpm/pool.d/$domain.conf
 ln -sf $fpm_conf_file /etc/php/$php_version/fpm/pool.d/$domain.conf
 
+# start if it's not running
+service php$php_version-fpm start || true
+
+# restart if it's already running
 service php$php_version-fpm restart || true
 
 exit 0

@@ -4,6 +4,7 @@ The ultimate control panel with docker (thanks lagun4ik for a great start)
 What's included?
 * ubuntu 16.04 lts + Vesta 0.9.8-17
 * nginx (proxy) -> apache2 -> php7.1 - high performance and flexible implementation
+* added ability to also run php-fpm
 * ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.1, postgresql 9.5, nodejs 8.x, golang 1.9, openvpn, mongodb, couchdb, .net core 2.0 runtime
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
 * DNS, named, dovecot/roundcube, spamassassin, clamav, fail2ban, etc... -- disabled by default
@@ -75,6 +76,8 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
+0.9.15 - add php-fpm
+
 0.9.7 - update nginx-1.13.6, golang 1.9.2, and php7.1 stuff
 
 0.9.6 - fix graph
