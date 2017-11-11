@@ -266,6 +266,11 @@ RUN \
     && sed -i -e "s/^#PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config \
 
 # php stuff - after vesta because of vesta-php installs
+    && sed -i "s/.*always_populate_raw_post_data.*/always_populate_raw_post_data = -1/" /etc/php/5.6/apache2/php.ini \
+    && sed -i "s/.*always_populate_raw_post_data.*/always_populate_raw_post_data = -1/" /etc/php/5.6/cli/php.ini \
+    && sed -i "s/.*always_populate_raw_post_data.*/always_populate_raw_post_data = -1/" /etc/php/5.6/cgi/php.ini \
+    && sed -i "s/.*always_populate_raw_post_data.*/always_populate_raw_post_data = -1/" /etc/php/5.6/fpm/php.ini \
+
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/apache2/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/cli/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.0/cgi/php.ini \
