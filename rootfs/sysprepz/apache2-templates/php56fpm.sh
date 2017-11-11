@@ -36,13 +36,26 @@ chown -R www-data:www-data $home_dir/$user/web/$domain/tmp/cache
 rm -f /etc/php/*/fpm/pool.d/$domain.conf
 ln -sf $fpm_conf_file /etc/php/$php_version/fpm/pool.d/$domain.conf
 
+# restart if it's already running
+ps auxw | grep php/5.6/fpm | grep -v grep > /dev/null
+if [ $? != 0 ]
+then
+  service php5.6-fpm restart || true
+fi
+ps auxw | grep php/7.0/fpm | grep -v grep > /dev/null
+if [ $? != 0 ]
+then
+   service php7.0-fpm restart || true
+fi
+ps auxw | grep php/7.1/fpm | grep -v grep > /dev/null
+if [ $? != 0 ]
+then
+   service php7.1-fpm restart || true
+fi
+
 # start if it's not running
 service php$php_version-fpm start || true
 
-# restart if it's already running
-service php5.6-fpm restart || true
-service php7.0-fpm restart || true
-service php7.1-fpm restart || true
 service nginx restart || true
 
 exit 0
