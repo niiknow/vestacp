@@ -2,11 +2,8 @@ version: "3.3"
 
 services:
   vesta:
-    image: niiknow/vestacp
+    image: niiknow/vestacp:0.9.13
     container_name: vesta
-    cap_add: ['NET_RAW', 'NET_ADMIN']
-    environment:
-      - "VESTA_DOMAIN=your-vesta.panel-dns.com"
     volumes:
       - "/opt/vestacp/backup:/backup"
       - "/opt/vestacp/vesta:/vesta"

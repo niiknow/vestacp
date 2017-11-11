@@ -1,3 +1,5 @@
+fastcgi_cache_path %home%/%user%/web/%domain%/tmp/ levels=1:2 keys_zone=nginx_%domain%:10m max_size=5g inactive=45m use_temp_path=off;
+
 server {
     listen      %proxy_port%;
     server_name %domain_idn% %alias_idn%;
@@ -20,7 +22,7 @@ server {
             }
 
             if ($http_cookie ~ (comment_author_.*|wordpress_logged_in.*|wp-postpass_.*)) {
-               set $no_cache 1;
+                set $no_cache 1;
             }
 
             include         /etc/nginx/fastcgi_params;
@@ -32,8 +34,8 @@ server {
 
             fastcgi_cache_use_stale error timeout invalid_header http_500;
             fastcgi_cache_key $host$request_uri;
-            fastcgi_cache site_diskcached;
-            fastcgi_cache_valid 200 1m;
+            fastcgi_cache nginx_%domain%;
+            fastcgi_cache_valid 200 30s;
             fastcgi_cache_bypass $no_cache;
             fastcgi_no_cache $no_cache;
         }
