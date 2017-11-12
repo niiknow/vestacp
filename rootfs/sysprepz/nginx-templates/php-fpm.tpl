@@ -4,11 +4,16 @@ server {
     listen      %proxy_port%;
     server_name %domain_idn% %alias_idn%;
     
-    root        %docroot%;
     index       index.php index.html index.htm;
     access_log  /var/log/%web_system%/domains/%domain%.log combined;
     access_log  /var/log/%web_system%/domains/%domain%.bytes bytes;
     error_log   /var/log/%web_system%/domains/%domain%.error.log error;
+
+    set $site "%docroot%/public";
+    if (!-d %docroot%/public) {
+        set $site "%docroot%";
+    }
+    root        $site;
 
     location / { 
         location ~* ^.+\.(jpeg|jpg|png|gif|bmp|ico|svg|css|js)$ {

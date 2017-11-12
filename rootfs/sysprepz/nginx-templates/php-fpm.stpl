@@ -5,11 +5,16 @@ server {
     ssl_certificate      %ssl_pem%;
     ssl_certificate_key  %ssl_key%;
 
-    root        %docroot%;
     index       index.php index.html index.htm;
     access_log  /var/log/%web_system%/domains/%domain%.log combined;
     access_log  /var/log/%web_system%/domains/%domain%.bytes bytes;
     error_log   /var/log/%web_system%/domains/%domain%.error.log error;
+
+    set $site "%docroot%/public";
+    if (!-d %docroot%/public) {
+        set $site "%docroot%";
+    }
+    root        $site;
 
     location / { 
         location ~* ^.+\.(jpeg|jpg|png|gif|bmp|ico|svg|css|js)$ {
