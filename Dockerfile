@@ -244,12 +244,15 @@ RUN \
 # initialize ips for docker support
     && cd /usr/local/vesta/data/ips && mv * 127.0.0.1 \
     && cd /etc/apache2/conf.d \
-    && sed -i -e "s/172.*.*.*:80/127.0.0.1:80/g" * && sed -i -- "s/172.*.*.*:8443/127.0.0.1:8443/g" * \
+    && sed -i -e "s/172.*.*.*:80/127.0.0.1:80/g" * \
+    && sed -i -e "s/172.*.*.*:8443/127.0.0.1:8443/g" * \
     && cd /etc/nginx/conf.d \
-    && sed -i -e "s/172.*.*.*:80;/80;/g" * && sed -i -e "s/172.*.*.*:8080/127.0.0.1:8080/g" * \
+    && sed -i -e "s/172.*.*.*:80/127.0.0.1:80/g" * \
+    && sed -i -e "s/172.*.*.*:8080/127.0.0.1:8080/g" * \
     && mv 172.*.*.*.conf 127.0.0.1.conf \
     && cd /home/admin/conf/web \
-    && sed -i -e "s/172.*.*.*:80;/80;/g" * && sed -i -e "s/172.*.*.*:8080/127.0.0.1:8080/g" * \
+    && sed -i -e "s/172.*.*.*:80;/80;/g" * \
+    && sed -i -e "s/172.*.*.*:8080/127.0.0.1:8080/g" * \
 
 # patch default website
     && cd "$(dirname "$(find /home/admin/web/* -type d -name public_html)")" \
