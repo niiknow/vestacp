@@ -76,6 +76,8 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
+0.9.26 - update nginx-1.13.6 and nodejs 8 lts (boron)
+
 0.9.15 - add php-fpm
 
 0.9.7 - update nginx-1.13.6, golang 1.9.2, and php7.1 stuff
