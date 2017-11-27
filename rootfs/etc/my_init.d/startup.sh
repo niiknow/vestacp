@@ -2,7 +2,7 @@
 
 export TERM=xterm
 
-if [ -z "`ls /vesta --hide='lost+found'`" ]
+if [ -z "`ls /vesta/etc --hide='lost+found'`" ]
 then
     rsync -a /vesta-start/* /vesta
     rsync -a /sysprepz/home/* /home
