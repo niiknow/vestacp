@@ -28,22 +28,19 @@ fpm_conf_file="$home_dir/$user/web/$domain/cgi-bin/php$php_version-fpm.conf"
 # remove old conf
 rm -f $home_dir/$user/web/$domain/cgi-bin/php*-fpm.conf
 
-# restart all fpm
-ps auxw | grep php/5.6/fpm | grep -v grep > /dev/null
-if [ $? != 0 ]
-then
-  service php5.6-fpm restart || true
-fi
-ps auxw | grep php/7.0/fpm | grep -v grep > /dev/null
-if [ $? != 0 ]
-then
-   service php7.0-fpm restart || true
-fi
-ps auxw | grep php/7.1/fpm | grep -v grep > /dev/null
-if [ $? != 0 ]
-then
-   service php7.1-fpm restart || true
-fi
+# restart any *running* php fpm found with ps -uaxw
+# otherwise, simply use: 
+# find /etc/init.d/ -name 'php*-fpm*' -type f -exec basename {} \; | xargs -I{} service {} restart || true
+phpfpms="5.6:7.0:7.1:7.2:8.0"
+set -f                      # avoid globbing (expansion of *).
+iphpfpm=(${phpfpms//:/ })
+for i in "${!iphpfpm[@]}"
+do
+  if ps auxw | grep php/${iphpfpm[i]}/fpm | grep -v grep > /dev/null
+  then
+    service php${iphpfpm[i]}-fpm restart || true
+  fi
+done
 
 rm -f /var/run/vesta-php-fpm-$domain.sock || true
 
@@ -57,7 +54,6 @@ chown -R www-data:www-data $home_dir/$user/web/$domain/tmp/cache
 # delete old and link new conf
 rm -f /etc/php/*/fpm/pool.d/$domain.conf
 ln -sf $fpm_conf_file /etc/php/$php_version/fpm/pool.d/$domain.conf
-
 
 # start if it's not running
 service php$php_version-fpm start || true

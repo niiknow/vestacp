@@ -561,6 +561,13 @@ RUN \
     && chmod 755 /var/ngx_pagespeed_cache \
     && chown www-data:www-data /var/ngx_pagespeed_cache \
 
+# update nginx for vesta
+    && mv /usr/local/vesta/nginx/sbin /usr/local/vesta/nginx/sbin-bak \
+    && mkdir -p /usr/local/vesta/nginx/sbin \
+    && ln -s /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx \
+    && ln -s /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx.old \
+    && ln -s /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx-vesta \
+
 # finish cleaning up
     && rm -rf /backup/.etc \
     && rm -rf /tmp/* \
