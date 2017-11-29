@@ -416,15 +416,23 @@ RUN \
       /etc/redis/redis.conf \
     && sed -i -e "s/\/etc\/redis/\/vesta\/etc\/redis/g" /etc/init.d/redis-server \
 
-    && mkdir -p /vesta-start/etc \
-    && mkdir -p /vesta-start/var/lib \
-    && mkdir -p /vesta-start/local \
+# update nginx for vesta
+    && mv /usr/local/vesta/nginx/sbin /usr/local/vesta/nginx/sbin-bak \
+    && mkdir -p /usr/local/vesta/nginx/sbin \
+    && ln -s /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx \
+    && ln -s /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx.old \
+    && ln -s /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx-vesta \
 
 # disable php*admin and roundcube by default, backup the config first - see README.md    
     && mkdir -p /etc/apache2/conf-d \
     && rsync -a /etc/apache2/conf.d/* /etc/apache2/conf-d \
     && rm -f /etc/apache2/conf.d/php*.conf \
     && rm -f /etc/apache2/conf.d/roundcube.conf \
+
+# begin folder redirections
+    && mkdir -p /vesta-start/etc \
+    && mkdir -p /vesta-start/var/lib \
+    && mkdir -p /vesta-start/local \
 
     && mv /etc/apache2 /vesta-start/etc/apache2 \
     && rm -rf /etc/apache2 \
@@ -560,13 +568,6 @@ RUN \
     && mkdir -p /var/ngx_pagespeed_cache \
     && chmod 755 /var/ngx_pagespeed_cache \
     && chown www-data:www-data /var/ngx_pagespeed_cache \
-
-# update nginx for vesta
-    && mv /usr/local/vesta/nginx/sbin /usr/local/vesta/nginx/sbin-bak \
-    && mkdir -p /usr/local/vesta/nginx/sbin \
-    && ln -s /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx \
-    && ln -s /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx.old \
-    && ln -s /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx-vesta \
 
 # finish cleaning up
     && rm -rf /backup/.etc \
