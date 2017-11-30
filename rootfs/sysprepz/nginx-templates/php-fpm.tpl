@@ -15,7 +15,10 @@ server {
     }
     root        $site;
 
-    location / { 
+    location / {
+        # allow for forcing ssl if necessary
+        include %docroot%/ngin*.conf;
+
         location ~* ^.+\.(jpeg|jpg|png|gif|bmp|ico|svg|css|js)$ {
             expires     max;
         }
@@ -46,7 +49,6 @@ server {
             fastcgi_cache_bypass $no_cache;
             fastcgi_no_cache $no_cache;
         }
-
     }
 
     error_page  403 /error/404.html;
