@@ -9,6 +9,7 @@ user='admin'
 
 # only run if domain has a value
 if [ -n "$domain" ] ; then
+
     # too often, user did not setup DNS host to IP correctly, so we should validate first
     # issue is easier fix by the user than getting blocked by Letsencrypt server
     #
@@ -16,7 +17,11 @@ if [ -n "$domain" ] ; then
 
     # get the ip
     DOMAINIP=$( dig +short ${domain}  | grep -v "\.$" | head -n 1 )
-    MYIP=$( dig +short myip.opendns.com @resolver1.opendns.com | grep -v "\.$" | head -n 1 )
+
+    # only run if the variable is empty
+    if [ -z "$MYIP"] ; then
+        MYIP=$( dig +short myip.opendns.com @resolver1.opendns.com | grep -v "\.$" | head -n 1 )
+    fi
 
     # create the website under admin for Letsencrypt SSL
     if [[ $DOMAINIP != $MYIP ]]; then
