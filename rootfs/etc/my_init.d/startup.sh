@@ -2,8 +2,7 @@
 
 export TERM=xterm
 
-if [ -z "`ls /vesta/etc --hide='lost+found'`" ]
-then
+if [ ! -f /home/admin/bin/my-startup.sh ]; then
     echo "[i] running for the 1st time"
     rsync --update -raz --progress /vesta-start/* /vesta
     rsync --update -raz --progress /sysprepz/home/* /home
@@ -35,7 +34,7 @@ if [ -f /etc/nginx/nginx.new ]; then
 	mv /etc/nginx/nginx.new /etc/nginx/nginx.conf
 fi
 
-if [[ -f /etc/fail2ban/jail.new ]]; then
+if [ -f /etc/fail2ban/jail.new ]; then
     echo "[i] init fail2ban"
     mv /etc/fail2ban/jail.local /etc/fail2ban/jail-local.bak
     mv /etc/fail2ban/jail.new /etc/fail2ban/jail.local
