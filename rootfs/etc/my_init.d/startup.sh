@@ -4,8 +4,8 @@ export TERM=xterm
 
 if [ ! -f /home/admin/bin/my-startup.sh ]; then
     echo "[i] running for the 1st time"
-    rsync --update -raz --progress /vesta-start/* /vesta
-    rsync --update -raz --progress /sysprepz/home/* /home
+    rsync --update -raz /vesta-start/* /vesta
+    rsync --update -raz /sysprepz/home/* /home
 
 # save some bytes, you can do it later
 #    rm -rf /sysprepz
