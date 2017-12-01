@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   vesta:
-    image: niiknow/vestacp:0.9.13
+    image: niiknow/vestacp:0.9.27
     container_name: vesta
     volumes:
       - "/opt/vestacp/backup:/backup"
