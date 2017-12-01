@@ -38,8 +38,12 @@ if [[ -f /etc/fail2ban/jail.new ]]; then
 fi
 
 # starting Vesta
-echo "[i] running /home/admin/bin/my-startup.sh"
-bash /home/admin/bin/my-startup.sh
+if [ -f /home/admin/bin/my-startup.sh ]; then
+    echo "[i] running /home/admin/bin/my-startup.sh"
+    bash /home/admin/bin/my-startup.sh
+else
+    echo "[err] unable to locate /home/admin/bin/my-startup.sh"
+fi
 
 # auto ssl on start
 if [ -f /bin/vesta-auto-ssl.sh ]; then
