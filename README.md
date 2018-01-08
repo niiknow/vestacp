@@ -2,7 +2,7 @@
 The ultimate control panel with docker (thanks lagun4ik for a great start)
 
 What's included?
-* ubuntu 16.04 lts + Vesta 0.9.8-17
+* ubuntu 16.04 lts + Vesta 0.9.8-18
 * nginx (proxy) -> apache2 -> php7.1 - high performance and flexible implementation
 * added ability to also run php-fpm
 * ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.1, postgresql 9.5, nodejs 8.x, golang 1.9, openvpn, mongodb, couchdb, .net core 2.0 runtime
@@ -42,7 +42,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] To enable iptables firewall, run docker with: --cap-add=NET_ADMIN --cap-add=NET_RAW
 
 ### misc/tested/verified
-- [x] ssh/sftp, nginx, apache2, php7.0 + v8js 
+- [x] ssh/sftp, nginx, apache2, php7.1 + v8js 
 - [x] log viewing in Vesta
 - [x] backup and restore
 - [x] Vesta FileManager
@@ -57,7 +57,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [ ] java, dotnet
 - [ ] openvpn
 - [x] nginx pagespeed module
-- [x] multiple php{5.6,7.0,7.1} fcgi templates
+- [x] multiple php{5.6,7.0,7.1,7.2} fcgi and fpm templates
 - [x] redirect awstats
 
 ### known issues
@@ -76,6 +76,8 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
+1.0.7 - introducing vesta 0.9.8-18
+
 1.0.0 - introducing the recently released php7.2
 
 0.9.27 - update nginx-1.13.7 and nodejs 8 lts (boron)
