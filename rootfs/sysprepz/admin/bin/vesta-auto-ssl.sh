@@ -37,6 +37,7 @@ if [ -n "$hostname" ]; then
 
     cd /usr/local/vesta/bin
     /usr/local/vesta/bin/v-update-host-certificate $user $hostname
+    exit 0
 else
     echo "[i] vesta-auto-ssl exit due to empty VESTA_DOMAIN variable"
 fi

@@ -15,3 +15,5 @@ sleep 5
 /usr/local/vesta/bin/v-restart-mail
 /usr/local/vesta/bin/v-restart-service dovecot
 /usr/local/vesta/bin/v-restart-service vesta
+
+exit 0
