@@ -40,7 +40,7 @@ RUN \
 
 # update
     && apt-get update && apt-get -y --no-install-recommends upgrade \
-    && apt-get install -y --no-install-recommends libpcre3-dev libssl-dev dpkg-dev libgd-dev \
+    && apt-get install -y --no-install-recommends libpcre3-dev libssl-dev dpkg-dev libgd-dev iproute \
 
 # install nginx with pagespeed first so vesta config can override
     && mkdir -p ${NGINX_BUILD_DIR} \
@@ -122,7 +122,7 @@ RUN \
         --vsftpd no --proftpd no \
         --named yes --exim yes --dovecot yes \
         --spamassassin yes --clamav yes \
-        --iptables no --fail2ban no \
+        --iptables yes --fail2ban yes \
         --mysql yes --postgresql yes --remi yes \
         --quota no --password MakeItSo18 \
         -y no -f \
@@ -470,6 +470,13 @@ RUN \
       -e 's:# maxmemory-policy \(.*\)$:maxmemory-policy allkeys-lru:' \
       /etc/redis/redis.conf \
     && sed -i -e "s/\/etc\/redis/\/vesta\/etc\/redis/g" /etc/init.d/redis-server \
+
+# update nginx for vesta
+    && mv /usr/local/vesta/nginx/sbin /usr/local/vesta/nginx/sbin-bak \
+    && mkdir -p /usr/local/vesta/nginx/sbin \
+    && cp /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx \
+    && cp /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx.old \
+    && cp /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx-vesta \
 
 # disable php*admin and roundcube by default, backup the config first - see README.md    
     && mkdir -p /etc/apache2/conf-d \
