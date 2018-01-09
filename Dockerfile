@@ -432,20 +432,18 @@ RUN \
 # increase open file limit for nginx and apache
     && echo "\n\n* soft nofile 800000\n* hard nofile 800000\n\n" >> /etc/security/limits.conf \
 
-# patch letsencrypt typo: https://github.com/serghey-rodin/vesta/issues/1253
-    && sed -i "s/inform perm /inform pem /" /usr/local/vesta/bin/v-add-letsencrypt-user \
-
 # patch psql9.5 backup
     && sed -i -e "s/\-c \-\-inserts \-O \-x \-i \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
     && sed -i -e "s/dbuser/DBUSER/g" /usr/local/vesta/func/rebuild.sh \
     && sed -i -e "s/ROLE \$DBUSER/ROLE \$DBUSER WITH LOGIN/g" /usr/local/vesta/func/rebuild.sh \
 
-# https://github.com/serghey-rodin/vesta/issues/1009
-    && sed -i -e "s/unzip/unzip \-o/g" /usr/local/vesta/bin/v-extract-fs-archive \
-
 # apache stuff
     && echo "\nServerName localhost\n" >> /etc/apache2/apache2.conf \
     && a2enmod headers \
+
+# download new auto host ssl
+    && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/master/bin/v-update-host-certificate --output /usr/local/vesta/bin/v-update-host-certificate \
+    && chmod +x /usr/local/vesta/bin/v-update-host-certificate \
 
 # disable localhost redirect to bad default IP
     && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/* \
