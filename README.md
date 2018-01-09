@@ -7,7 +7,7 @@ What's included?
 * added ability to also run php-fpm
 * ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.1, postgresql 9.5, nodejs 8.x, golang 1.9, openvpn, mongodb, couchdb, .net core 2.0 runtime
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
-* DNS, named, dovecot/roundcube, spamassassin, clamav, fail2ban, etc... -- disabled by default
+* DNS, named, dovecot/roundcube, spamassassin, clamav, etc... -- disabled by default
 * vesta panel SSL (LE-issued) for mail and control panel - provide $VESTA_DOMAIN environment variable
 
 Run this image:
@@ -39,7 +39,6 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] AWS CLI has been installed to simplify your backup lifestyle.  You just need to setup a cron on VestaCP.
 - [x] Update *index.html* to remove reference to VestaCP from default site for security.
 - [x] **Dovecot/roundcube email, phpmyadmin, phppgadmin, and DNS services** are disabled by default.  Look at /home/admin/bin/my-startup.sh for instruction on how to re-enable these services.
-- [x] To enable iptables firewall, run docker with: --cap-add=NET_ADMIN --cap-add=NET_RAW
 
 ### misc/tested/verified
 - [x] ssh/sftp, nginx, apache2, php7.1 + v8js 
@@ -76,7 +75,7 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
-1.0.7 - introducing vesta 0.9.8-18
+1.0.7 - introducing vesta 0.9.8-18, please run */bin/vesta-update.sh* after update to this image to update Vesta.
 
 1.0.0 - introducing the recently released php7.2
 

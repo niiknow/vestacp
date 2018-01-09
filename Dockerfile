@@ -122,7 +122,7 @@ RUN \
         --vsftpd no --proftpd no \
         --named yes --exim yes --dovecot yes \
         --spamassassin yes --clamav yes \
-        --iptables yes --fail2ban yes \
+        --iptables no --fail2ban no \
         --mysql yes --postgresql yes --remi yes \
         --quota no --password MakeItSo18 \
         -y no -f \
