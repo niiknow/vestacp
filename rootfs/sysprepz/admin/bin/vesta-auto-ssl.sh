@@ -35,6 +35,7 @@ if [ -n "$hostname" ]; then
     # since letsencrypt need to hit and validate
     sleep 5
 
+    cd /usr/local/vesta/bin
     /usr/local/vesta/bin/v-update-host-certificate $user $hostname
 else
     echo "[i] vesta-auto-ssl exit due to empty VESTA_DOMAIN variable"
