@@ -6,6 +6,7 @@ source /etc/container_environment.sh
 VESTA_PATH='/usr/local/vesta'
 hostname="$VESTA_DOMAIN"
 user='admin'
+export PATH=$PATH:/usr/local/vesta/bin
 
 # only run if hostname has a value
 if [ -n "$hostname" ]; then
@@ -35,8 +36,7 @@ if [ -n "$hostname" ]; then
     # since letsencrypt need to hit and validate
     sleep 5
 
-    cd /usr/local/vesta/bin
-    /usr/local/vesta/bin/v-update-host-certificate $user $hostname
+    v-update-host-certificate $user $hostname
     exit 0
 else
     echo "[i] vesta-auto-ssl exit due to empty VESTA_DOMAIN variable"
