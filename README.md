@@ -75,6 +75,12 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
+1.0.12 - starting from this version, we upgraded to MariaDB 10.2, please login as root and run the command:
+```
+# mysql_upgrade --verbose -u root -p
+```
+And finish by restarting the docker container.
+
 1.0.8 - introducing vesta 0.9.8-18, update to this docker image then run */bin/vesta-update.sh* to update Vesta.
 
 1.0.0 - introducing the recently released php7.2
