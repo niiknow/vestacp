@@ -187,6 +187,22 @@ RUN \
     && pecl config-set php_bin /usr/bin/php7.1 \
     && pecl config-set php_suffix 7.1 \
 
+    && ln -sf /etc/php/7.0/mods-available/igbinary.ini /etc/php/7.0/apache2/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.0/mods-available/igbinary.ini /etc/php/7.0/cli/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.0/mods-available/igbinary.ini /etc/php/7.0/cgi/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.0/mods-available/igbinary.ini /etc/php/7.0/fpm/conf.d/15-igbinary.ini \
+
+    && ln -sf /etc/php/7.1/mods-available/igbinary.ini /etc/php/7.1/apache2/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.1/mods-available/igbinary.ini /etc/php/7.1/cli/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.1/mods-available/igbinary.ini /etc/php/7.1/cgi/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.1/mods-available/igbinary.ini /etc/php/7.1/fpm/conf.d/15-igbinary.ini \
+
+    && ln -sf /etc/php/7.2/mods-available/igbinary.ini /etc/php/7.2/apache2/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.2/mods-available/igbinary.ini /etc/php/7.2/cli/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.2/mods-available/igbinary.ini /etc/php/7.2/cgi/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.2/mods-available/igbinary.ini /etc/php/7.2/fpm/conf.d/15-igbinary.ini \
+
+
     && echo "extension=v8js.so" > /etc/php/5.6/mods-available/v8js.ini \
     && ln -sf /etc/php/5.6/mods-available/v8js.ini /etc/php/5.6/apache2/conf.d/20-v8js.ini \
     && ln -sf /etc/php/5.6/mods-available/v8js.ini /etc/php/5.6/cli/conf.d/20-v8js.ini \
@@ -238,28 +254,28 @@ RUN \
 
 
     && echo "extension=couchbase.so" > /etc/php/5.6/mods-available/couchbase.ini \
-    && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/apache2/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/cli/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/cgi/conf.d/20-couchbase.ini \
+    && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/apache2/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/cli/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/cgi/conf.d/30-couchbase.ini \
     && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/fpm/conf.d/20-couchbase.ini \
 
     && echo "extension=couchbase.so" > /etc/php/7.0/mods-available/couchbase.ini \
-    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/apache2/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/cli/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/cgi/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/fpm/conf.d/20-couchbase.ini \
+    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/apache2/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/cli/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/cgi/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/fpm/conf.d/30-couchbase.ini \
 
     && echo "extension=couchbase.so" > /etc/php/7.1/mods-available/couchbase.ini \
-    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/apache2/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cli/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cgi/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/fpm/conf.d/20-couchbase.ini \
+    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/apache2/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cli/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cgi/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/fpm/conf.d/30-couchbase.ini \
 
     && echo "extension=couchbase.so" > /etc/php/7.2/mods-available/couchbase.ini \
-    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/apache2/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/cli/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/cgi/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/fpm/conf.d/20-couchbase.ini \
+    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/apache2/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/cli/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/cgi/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/fpm/conf.d/30-couchbase.ini \
 
 # performance tweaks
     && chmod 0755 /etc/init.d/disable-transparent-hugepages \
