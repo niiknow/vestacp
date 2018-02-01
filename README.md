@@ -75,9 +75,10 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
-1.0.12 - starting from this version, we upgraded to MariaDB 10.2, please login as root and run the command:
+1.1.0 - starting from this version, we upgraded to MariaDB 10.2, please login as root and run the command:
 ```
 # mysql_upgrade --verbose -u root -p
+# service mysql restart
 ```
 And finish by restarting the docker container.
 
