@@ -6,3 +6,7 @@ rsync --update -raz --progress --exclude 'data' --exclude 'log' --exclude 'conf'
 rsync --update -raz --progress /vesta-start/local/vesta/data/templates /usr/local/vesta/data/templates
 
 rsync --update -raz --progress --exclude 'conf.d' /vesta-start/etc/nginx /etc/nginx
+
+# update php conf
+rm -rf /vesta/etc/php/*
+rsync --update -raz --progress /vesta-start/etc/php/ /vesta/etc/php/
