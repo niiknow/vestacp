@@ -187,16 +187,20 @@ RUN \
     && pecl config-set php_bin /usr/bin/php7.1 \
     && pecl config-set php_suffix 7.1 \
 
+
+    && echo "extension=igbinary.so" > /etc/php/7.0/mods-available/igbinary.ini \
     && ln -sf /etc/php/7.0/mods-available/igbinary.ini /etc/php/7.0/apache2/conf.d/15-igbinary.ini \
     && ln -sf /etc/php/7.0/mods-available/igbinary.ini /etc/php/7.0/cli/conf.d/15-igbinary.ini \
     && ln -sf /etc/php/7.0/mods-available/igbinary.ini /etc/php/7.0/cgi/conf.d/15-igbinary.ini \
     && ln -sf /etc/php/7.0/mods-available/igbinary.ini /etc/php/7.0/fpm/conf.d/15-igbinary.ini \
 
+    && echo "extension=igbinary.so" > /etc/php/7.1/mods-available/igbinary.ini \
     && ln -sf /etc/php/7.1/mods-available/igbinary.ini /etc/php/7.1/apache2/conf.d/15-igbinary.ini \
     && ln -sf /etc/php/7.1/mods-available/igbinary.ini /etc/php/7.1/cli/conf.d/15-igbinary.ini \
     && ln -sf /etc/php/7.1/mods-available/igbinary.ini /etc/php/7.1/cgi/conf.d/15-igbinary.ini \
     && ln -sf /etc/php/7.1/mods-available/igbinary.ini /etc/php/7.1/fpm/conf.d/15-igbinary.ini \
 
+    && echo "extension=igbinary.so" > /etc/php/7.2/mods-available/igbinary.ini \
     && ln -sf /etc/php/7.2/mods-available/igbinary.ini /etc/php/7.2/apache2/conf.d/15-igbinary.ini \
     && ln -sf /etc/php/7.2/mods-available/igbinary.ini /etc/php/7.2/cli/conf.d/15-igbinary.ini \
     && ln -sf /etc/php/7.2/mods-available/igbinary.ini /etc/php/7.2/cgi/conf.d/15-igbinary.ini \
@@ -449,6 +453,7 @@ RUN \
 
 # patch psql9.5 backup
     && sed -i -e "s/\-c \-\-inserts \-O \-x \-i \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
+    && sed -i -e "s/\-c \-\-inserts \-O \-x \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
     && sed -i -e "s/dbuser/DBUSER/g" /usr/local/vesta/func/rebuild.sh \
     && sed -i -e "s/ROLE \$DBUSER/ROLE \$DBUSER WITH LOGIN/g" /usr/local/vesta/func/rebuild.sh \
 
