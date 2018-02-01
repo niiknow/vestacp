@@ -1,11 +1,10 @@
-FROM niiknow/docker-hostingbase:1.0.0
+FROM niiknow/docker-hostingbase:1.0.3
 
 MAINTAINER friends@niiknow.org
 
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.9.2 \
-    DOTNET_DOWNLOAD_URL=https://download.microsoft.com/download/5/F/0/5F0362BD-7D0A-4A9D-9BF9-022C6B15B04D/dotnet-runtime-2.0.0-linux-x64.tar.gz  \
+    GOLANG_VERSION=1.9.3 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_VERSION=1.13.8 \
     NGINX_PAGESPEED_VERSION=1.12.34.3 \
@@ -73,11 +72,6 @@ RUN \
     && dpkg -i nginx_${NGINX_VERSION}-1~xenial_amd64.deb \
 
 # install php
-    && apt-get install -yq php7.2-mbstring php7.2-cgi php7.2-cli php7.2-dev php7.2-geoip php7.2-common php7.2-xmlrpc php7.2-sybase \
-        php7.2-curl php7.2-enchant php7.2-imap php7.2-xsl php7.2-mysql php7.2-mysqlnd php7.2-pspell php7.2-gd php7.2-zip \
-        php7.2-tidy php7.2-opcache php7.2-json php7.2-bz2 php7.2-pgsql php7.2-readline php7.2-imagick \
-        php7.2-intl php7.2-sqlite3 php7.2-ldap php7.2-xml php7.2-redis php7.2-dev php7.2-fpm \
-
     && apt-get install -yq php5.6-mbstring php5.6-cgi php5.6-cli php5.6-dev php5.6-geoip php5.6-common php5.6-xmlrpc php5.6-sybase \
         php5.6-curl php5.6-enchant php5.6-imap php5.6-xsl php5.6-mysql php5.6-mysqlnd php5.6-pspell php5.6-gd php5.6-zip \
         php5.6-tidy php5.6-opcache php5.6-json php5.6-bz2 php5.6-pgsql php5.6-mcrypt php5.6-readline php5.6-imagick \
@@ -92,6 +86,11 @@ RUN \
         php7.1-curl php7.1-enchant php7.1-imap php7.1-xsl php7.1-mysql php7.1-mysqlnd php7.1-pspell php7.1-gd php7.1-zip \
         php7.1-tidy php7.1-opcache php7.1-json php7.1-bz2 php7.1-pgsql php7.1-mcrypt php7.1-readline php7.1-imagick \
         php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-dev php7.1-fpm php7.1-sodium \
+
+    && apt-get install -yq php7.2-mbstring php7.2-cgi php7.2-cli php7.2-dev php7.2-geoip php7.2-common php7.2-xmlrpc php7.2-sybase \
+        php7.2-curl php7.2-enchant php7.2-imap php7.2-xsl php7.2-mysql php7.2-mysqlnd php7.2-pspell php7.2-gd php7.2-zip \
+        php7.2-tidy php7.2-opcache php7.2-json php7.2-bz2 php7.2-pgsql php7.2-readline php7.2-imagick \
+        php7.2-intl php7.2-sqlite3 php7.2-ldap php7.2-xml php7.2-redis php7.2-dev php7.2-fpm \
 
 # put back old source list for vesta
     && rm -f /etc/apt/sources.list && mv /etc/apt/sources.list.bak /etc/apt/sources.list \
@@ -130,24 +129,32 @@ RUN \
 # begin apache stuff
     && service apache2 stop && service vesta stop \
 
-# install additional mods
-    && apt-get install -yf --no-install-recommends libapache2-mod-php5.6 libapache2-mod-php7.0 libapache2-mod-php7.2 \
+# default fcgi and php to 7.1
+    && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
+    && ln -s /usr/bin/php-cgi7.0 /usr/bin/php-cgi \
+    && update-alternatives --set php /usr/bin/php7.1 \
+    && update-alternatives --set phar /usr/bin/phar7.1 \
+    && update-alternatives --set phar.phar /usr/bin/phar.phar7.1 \
+    && pecl config-set php_ini /etc/php/7.1/cli/php.ini \
+    && pecl config-set ext_dir /usr/lib/php/20160303 \
+    && pecl config-set php_bin /usr/bin/php7.1 \
+    && pecl config-set php_suffix 7.1 \
+
+# install additional mods since 7.2 became default in the php repo
+    && apt-get install -yf --no-install-recommends libapache2-mod-php5.6 libapache2-mod-php7.0 \
+       libapache2-mod-php7.1 \
 
 # fix v8js reference of json first
     && mv /etc/php/5.6/apache2/conf.d/20-json.ini /etc/php/5.6/apache2/conf.d/15-json.ini \
     && mv /etc/php/5.6/cli/conf.d/20-json.ini /etc/php/5.6/cli/conf.d/15-json.ini \
     && mv /etc/php/5.6/cgi/conf.d/20-json.ini /etc/php/5.6/cgi/conf.d/15-json.ini \
+    && mv /etc/php/5.6/fpm/conf.d/20-json.ini /etc/php/5.6/fpm/conf.d/15-json.ini \
 
-# install nodejs, memcached, redis-server, openvpn, mongodb, and couchdb
-    && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server openvpn mongodb-org php-mongodb couchdb \
+# install nodejs, memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
+    && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server \
+        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1.4 \
 
-# setting up dotnet, awscli, golang
-# dotnet
-    && curl -SL $DOTNET_DOWNLOAD_URL -o /tmp/dotnet.tar.gz \
-    && mkdir -p /usr/share/dotnet \
-    && tar -zxf /tmp/dotnet.tar.gz -C /usr/share/dotnet \
-    && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet \
-
+# setting upawscli, golang
 # awscli
     && curl -O https://bootstrap.pypa.io/get-pip.py \
     && python get-pip.py \
@@ -177,16 +184,24 @@ RUN \
     && chmod +x /etc/my_init.d/startup.sh \
     && mv /sysprepz/admin/bin/vesta-*.sh /bin \
 
-# default fcgi and php to 7.1
-    && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
-    && ln -s /usr/bin/php-cgi7.0 /usr/bin/php-cgi \
-    && update-alternatives --set php /usr/bin/php7.1 \
-    && update-alternatives --set phar /usr/bin/phar7.1 \
-    && update-alternatives --set phar.phar /usr/bin/phar.phar7.1 \
-    && pecl config-set php_ini /etc/php/7.1/cli/php.ini \
-    && pecl config-set ext_dir /usr/lib/php/20160303 \
-    && pecl config-set php_bin /usr/bin/php7.1 \
-    && pecl config-set php_suffix 7.1 \
+    && echo "extension=igbinary.so" > /etc/php/7.0/mods-available/igbinary.ini \
+    && ln -sf /etc/php/7.0/mods-available/igbinary.ini /etc/php/7.0/apache2/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.0/mods-available/igbinary.ini /etc/php/7.0/cli/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.0/mods-available/igbinary.ini /etc/php/7.0/cgi/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.0/mods-available/igbinary.ini /etc/php/7.0/fpm/conf.d/15-igbinary.ini \
+
+    && echo "extension=igbinary.so" > /etc/php/7.1/mods-available/igbinary.ini \
+    && ln -sf /etc/php/7.1/mods-available/igbinary.ini /etc/php/7.1/apache2/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.1/mods-available/igbinary.ini /etc/php/7.1/cli/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.1/mods-available/igbinary.ini /etc/php/7.1/cgi/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.1/mods-available/igbinary.ini /etc/php/7.1/fpm/conf.d/15-igbinary.ini \
+
+    && echo "extension=igbinary.so" > /etc/php/7.2/mods-available/igbinary.ini \
+    && ln -sf /etc/php/7.2/mods-available/igbinary.ini /etc/php/7.2/apache2/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.2/mods-available/igbinary.ini /etc/php/7.2/cli/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.2/mods-available/igbinary.ini /etc/php/7.2/cgi/conf.d/15-igbinary.ini \
+    && ln -sf /etc/php/7.2/mods-available/igbinary.ini /etc/php/7.2/fpm/conf.d/15-igbinary.ini \
+
 
     && echo "extension=v8js.so" > /etc/php/5.6/mods-available/v8js.ini \
     && ln -sf /etc/php/5.6/mods-available/v8js.ini /etc/php/5.6/apache2/conf.d/20-v8js.ini \
@@ -239,28 +254,28 @@ RUN \
 
 
     && echo "extension=couchbase.so" > /etc/php/5.6/mods-available/couchbase.ini \
-    && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/apache2/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/cli/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/cgi/conf.d/20-couchbase.ini \
+    && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/apache2/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/cli/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/cgi/conf.d/30-couchbase.ini \
     && ln -sf /etc/php/5.6/mods-available/couchbase.ini /etc/php/5.6/fpm/conf.d/20-couchbase.ini \
 
     && echo "extension=couchbase.so" > /etc/php/7.0/mods-available/couchbase.ini \
-    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/apache2/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/cli/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/cgi/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/fpm/conf.d/20-couchbase.ini \
+    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/apache2/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/cli/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/cgi/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.0/mods-available/couchbase.ini /etc/php/7.0/fpm/conf.d/30-couchbase.ini \
 
     && echo "extension=couchbase.so" > /etc/php/7.1/mods-available/couchbase.ini \
-    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/apache2/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cli/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cgi/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/fpm/conf.d/20-couchbase.ini \
+    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/apache2/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cli/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cgi/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/fpm/conf.d/30-couchbase.ini \
 
     && echo "extension=couchbase.so" > /etc/php/7.2/mods-available/couchbase.ini \
-    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/apache2/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/cli/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/cgi/conf.d/20-couchbase.ini \
-    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/fpm/conf.d/20-couchbase.ini \
+    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/apache2/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/cli/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/cgi/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/fpm/conf.d/30-couchbase.ini \
 
 # performance tweaks
     && chmod 0755 /etc/init.d/disable-transparent-hugepages \
@@ -434,6 +449,7 @@ RUN \
 
 # patch psql9.5 backup
     && sed -i -e "s/\-c \-\-inserts \-O \-x \-i \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
+    && sed -i -e "s/\-c \-\-inserts \-O \-x \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
     && sed -i -e "s/dbuser/DBUSER/g" /usr/local/vesta/func/rebuild.sh \
     && sed -i -e "s/ROLE \$DBUSER/ROLE \$DBUSER WITH LOGIN/g" /usr/local/vesta/func/rebuild.sh \
 
