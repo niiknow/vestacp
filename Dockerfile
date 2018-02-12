@@ -465,13 +465,6 @@ RUN \
       /etc/redis/redis.conf \
     && sed -i -e "s/\/etc\/redis/\/vesta\/etc\/redis/g" /etc/init.d/redis-server \
 
-# update nginx for vesta
-    && mv /usr/local/vesta/nginx/sbin /usr/local/vesta/nginx/sbin-bak \
-    && mkdir -p /usr/local/vesta/nginx/sbin \
-    && cp /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx \
-    && cp /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx.old \
-    && cp /usr/sbin/nginx /usr/local/vesta/nginx/sbin/nginx-vesta \
-
 # disable php*admin and roundcube by default, backup the config first - see README.md    
     && mkdir -p /etc/apache2/conf-d \
     && rsync -a /etc/apache2/conf.d/* /etc/apache2/conf-d \
