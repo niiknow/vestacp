@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
     GOLANG_VERSION=1.9.3 \
     NGINX_BUILD_DIR=/usr/src/nginx \
+    NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.31 \
     NGINX_VERSION=1.13.8 \
     NGINX_PAGESPEED_VERSION=1.12.34.3 \
     NGINX_PSOL_VERSION=1.12.34.2 \
@@ -30,6 +31,17 @@ RUN \
     && usermod -d /var/lib/mongodb -a -G nogroup mongodb \
     && usermod -d /var/lib/redis redis \
 
+# build nginx set misc
+    && curl -sL "https://github.com/simpl/ngx_devel_kit/archive/v$NGINX_DEVEL_KIT_VERSION.tar.gz" -o dev-kit.tar.gz \
+    && mkdir -p /usr/src/nginx/ngx_devel_kit \
+    && tar -xof dev-kit.tar.gz -C /usr/src/nginx/ngx_devel_kit --strip-components=1 \
+    && rm dev-kit.tar.gz \
+
+    && curl -sL "https://github.com/openresty/set-misc-nginx-module/archive/v$NGINX_SET_MISC_MODULE_VERSION.tar.gz" -o ngx-misc.tar.gz \
+    && mkdir -p /usr/src/nginx/set-misc-nginx-module \
+    && tar -xof ngx-misc.tar.gz -C /usr/src/nginx/set-misc-nginx-module --strip-components=1 \
+    && rm ngx-misc.tar.gz \
+
 # add nginx repo
     && curl -s https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && cp /etc/apt/sources.list /etc/apt/sources.list.bak \
@@ -49,14 +61,15 @@ RUN \
     && apt-get source nginx=${NGINX_VERSION} -y \
     && mv ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.c ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.bak \
 
+
 # apply patch
     && curl -SL $IMAGE_FILTER_URL --output ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.c \
-    && sed -i "s/--with-http_ssl_module/--with-http_ssl_module --with-http_image_filter_module --add-module=\/usr\/src\/nginx\/ngx_pagespeed-latest-stable/g" ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/debian/rules \
+    && sed -i "s/--with-http_ssl_module/--with-http_ssl_module --with-http_image_filter_module --add-module=\/usr\/src\/nginx\/ngx_devel_kit --add-module=\/usr\/src\/nginx\/set-misc-nginx-module --add-module=\/usr\/src\/nginx\/ngx_pagespeed-latest-stable/g" ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/debian/rules \
 
 # Load Pagespeed module, PSOL and nginx
-    && curl -SL https://github.com/pagespeed/ngx_pagespeed/archive/latest-stable.zip  -o ${NGINX_BUILD_DIR}/latest-stable.zip \
+    && curl -SL https://github.com/pagespeed/ngx_pagespeed/archive/v${NGINX_PAGESPEED_VERSION}-stable.zip -o ${NGINX_BUILD_DIR}/latest-stable.zip \
     && unzip latest-stable.zip \
-    && mv incubator-pagespeed-ngx-latest-stable ngx_pagespeed-latest-stable \
+    && mv incubator-pagespeed-ngx-${NGINX_PAGESPEED_VERSION}-stable ngx_pagespeed-latest-stable \
     && cd ngx_pagespeed-latest-stable \
     && curl -SL https://dl.google.com/dl/page-speed/psol/${NGINX_PSOL_VERSION}-x64.tar.gz -o ${NGINX_PSOL_VERSION}.tar.gz \
     && tar -xzf ${NGINX_PSOL_VERSION}.tar.gz \
@@ -130,7 +143,7 @@ RUN \
 
 # default fcgi and php to 7.1
     && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
-    && ln -s /usr/bin/php-cgi7.0 /usr/bin/php-cgi \
+    && ln -s /usr/bin/php-cgi7.1 /usr/bin/php-cgi \
     && update-alternatives --set php /usr/bin/php7.1 \
     && update-alternatives --set phar /usr/bin/phar7.1 \
     && update-alternatives --set phar.phar /usr/bin/phar.phar7.1 \
