@@ -42,6 +42,8 @@ RUN \
     && tar -xof ngx-misc.tar.gz -C /usr/src/nginx/set-misc-nginx-module --strip-components=1 \
     && rm ngx-misc.tar.gz \
 
+    && add-apt-repository -r 'deb [arch=amd64,i386] http://nyc2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu xenial main' \
+
 # add nginx repo
     && curl -s https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && cp /etc/apt/sources.list /etc/apt/sources.list.bak \
@@ -125,7 +127,7 @@ RUN \
     && sed -i -e "s/\"nginx apache2/\"apache2/g" /tmp/vst-install-ubuntu.sh \
 
 # fix mariadb instead of mysql
-    && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
+#    && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
 
 # begin install vesta
     && bash /tmp/vst-install-ubuntu.sh \
