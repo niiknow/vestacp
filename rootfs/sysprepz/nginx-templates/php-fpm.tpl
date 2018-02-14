@@ -19,6 +19,8 @@ server {
         # allow for forcing ssl if necessary
         include %docroot%/ngin*.conf;
 
+        try_files $uri $uri/ /index.php?$query_string;
+
         location ~* ^.+\.(jpeg|jpg|png|gif|bmp|ico|svg|css|js)$ {
             expires     max;
         }
