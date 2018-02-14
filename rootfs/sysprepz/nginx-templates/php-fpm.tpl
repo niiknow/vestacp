@@ -16,6 +16,8 @@ server {
     root        $site;
 
     location / {
+        try_files $uri $uri/ /index.php?$query_string;
+        
         # allow for forcing ssl if necessary
         include %docroot%/ngin*.conf;
 
