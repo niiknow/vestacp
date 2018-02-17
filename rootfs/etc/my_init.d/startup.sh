@@ -6,7 +6,9 @@ if [ ! -f /home/admin/bin/my-startup.sh ]; then
     echo "[i] running for the 1st time"
     rsync --update -raz /vesta-start/* /vesta
     rsync --update -raz /sysprepz/home/* /home
-
+# work around for AUFS bug
+# as per https://github.com/docker/docker/issues/783#issuecomment-56013588
+    mkdir /etc/ssl/private-copy; mv /etc/ssl/private/* /etc/ssl/private-copy/; rm -r /etc/ssl/private; mv /etc/ssl/private-copy /etc/ssl/private; chmod -R 0700 /etc/ssl/private; chown -R postgres /etc/ssl/private
 # save some bytes, you can do it later
 #    rm -rf /sysprepz
 #    rm -rf /vesta-start
