@@ -1,15 +1,15 @@
-FROM niiknow/docker-hostingbase:1.0.3
+FROM niiknow/docker-hostingbase:1.0.8
 
 MAINTAINER friends@niiknow.org
 
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.9.3 \
+    GOLANG_VERSION=1.10 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.31 \
-    NGINX_VERSION=1.13.8 \
-    NGINX_PAGESPEED_VERSION=1.12.34.3 \
-    NGINX_PSOL_VERSION=1.12.34.2 \
+    NGINX_VERSION=1.13.9 \
+    NGINX_PAGESPEED_VERSION=1.13.35.2 \
+    NGINX_PSOL_VERSION=1.13.35.2 \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
 
 # start
@@ -52,7 +52,7 @@ RUN \
 
 # update
     && apt-get update && apt-get -y --no-install-recommends upgrade \
-    && apt-get install -y --no-install-recommends libpcre3-dev libssl-dev dpkg-dev libgd-dev iproute \
+    && apt-get install -y --no-install-recommends libpcre3-dev libssl-dev dpkg-dev libgd-dev iproute uuid-dev \
 
 # install nginx with pagespeed first so vesta config can override
     && mkdir -p ${NGINX_BUILD_DIR} \
@@ -69,7 +69,7 @@ RUN \
     && sed -i "s/--with-http_ssl_module/--with-http_ssl_module --with-http_image_filter_module --add-module=\/usr\/src\/nginx\/ngx_devel_kit --add-module=\/usr\/src\/nginx\/set-misc-nginx-module --add-module=\/usr\/src\/nginx\/ngx_pagespeed-latest-stable/g" ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/debian/rules \
 
 # Load Pagespeed module, PSOL and nginx
-    && curl -SL https://github.com/pagespeed/ngx_pagespeed/archive/v${NGINX_PAGESPEED_VERSION}-stable.zip -o ${NGINX_BUILD_DIR}/latest-stable.zip \
+    && curl -SL https://github.com/apache/incubator-pagespeed-ngx/archive/v${NGINX_PAGESPEED_VERSION}-stable.zip -o latest-stable.zip \
     && unzip latest-stable.zip \
     && mv incubator-pagespeed-ngx-${NGINX_PAGESPEED_VERSION}-stable ngx_pagespeed-latest-stable \
     && cd ngx_pagespeed-latest-stable \
@@ -166,7 +166,7 @@ RUN \
 
 # install nodejs, memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
     && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server \
-        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1.4 \
+        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1.101 \
 
 # setting upawscli, golang
 # awscli
@@ -474,7 +474,6 @@ RUN \
     && sed -i -e 's:^save:# save:g' \
       -e 's:^bind:# bind:g' \
       -e 's:^logfile:# logfile:' \
-      -e 's:daemonize yes:daemonize no:' \
       -e 's:# maxmemory \(.*\)$:maxmemory 256mb:' \
       -e 's:# maxmemory-policy \(.*\)$:maxmemory-policy allkeys-lru:' \
       /etc/redis/redis.conf \

@@ -5,7 +5,7 @@ What's included?
 * ubuntu 16.04 lts + Vesta 0.9.8-18
 * nginx (proxy) -> apache2 -> php-fcgi - high performance and flexible implementation
 * added ability to also run php-fpm
-* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.1, postgresql 9.5, nodejs 8.x, golang 1.9, openvpn, mongodb, couchdb, .net core 2.0 runtime
+* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.5, nodejs 8.x, golang 1.10, openvpn, mongodb, couchdb, .net core 2.0 runtime
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
 * DNS, named, dovecot/roundcube, spamassassin, clamav, etc... -- disabled by default
 * vesta panel SSL (LE-issued) for mail and control panel - provide $VESTA_DOMAIN environment variable
@@ -41,7 +41,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] **Dovecot/roundcube email, phpmyadmin, phppgadmin, and DNS services** are disabled by default.  Look at /home/admin/bin/my-startup.sh for instruction on how to re-enable these services.
 
 ### misc/tested/verified
-- [x] ssh/sftp, nginx, apache2, php7.1 + v8js 
+- [x] ssh/sftp, nginx, apache2, php7.0+ & v8js 
 - [x] log viewing in Vesta
 - [x] backup and restore
 - [x] Vesta FileManager
@@ -75,12 +75,17 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
-1.1.0 - starting from this version, we upgraded to MariaDB 10.2, please login as root and run the command:
+1.1.9 - Update to be more secure and compliance.  A bunch of security issues discovered during the holidays were patched by various vendors including cpu (meltdown & spectre) and .net core issues:
+
 ```
-# mysql_upgrade --verbose -u root -p
-# service mysql restart
+- php 5.6 v8js no longer supported due to security issues resulting in older v8 deprecation.
+- update nginx to 1.13.9 - rebuilt with latest ngx_pagespeed
+- update golang 1.10
+- update to dotnet-sdk-2.1.101
+- update from 3.4 to 3.6 for mongodb
 ```
-And finish by restarting the docker container.
+
+1.1.0 - starting from this version, we upgraded to MariaDB 10.2.
 
 1.0.8 - introducing vesta 0.9.8-18, update to this docker image then run */bin/vesta-update.sh* to update Vesta.
 
