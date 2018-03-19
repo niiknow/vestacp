@@ -1,22 +1,19 @@
-FROM niiknow/docker-hostingbase:1.0.3
+FROM niiknow/docker-hostingbase:1.0.8
 
 MAINTAINER friends@niiknow.org
 
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.9.3 \
+    GOLANG_VERSION=1.10 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.31 \
-    NGINX_VERSION=1.13.8 \
-    NGINX_PAGESPEED_VERSION=1.12.34.3 \
-    NGINX_PSOL_VERSION=1.12.34.2 \
+    NGINX_VERSION=1.13.9 \
+    NGINX_PAGESPEED_VERSION=1.13.35.2 \
+    NGINX_PSOL_VERSION=1.13.35.2 \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
 
-# start
 RUN \
     cd /tmp \
-
-# add our user and group first to make sure their IDs get assigned consistently
     && echo "nginx mysql bind clamav ssl-cert dovecot dovenull Debian-exim postgres debian-spamd epmd couchdb memcache mongodb redis" | xargs -n1 groupadd -K GID_MIN=100 -K GID_MAX=999 ${g} \
     && echo "nginx nginx mysql mysql bind bind clamav clamav dovecot dovecot dovenull dovenull Debian-exim Debian-exim postgres postgres debian-spamd debian-spamd epmd epmd couchdb couchdb memcache memcache mongodb mongodb redis redis" | xargs -n2 useradd -d /nonexistent -s /bin/false -K UID_MIN=100 -K UID_MAX=999 -g ${g} \
     && usermod -d /var/lib/mysql mysql \
@@ -30,92 +27,58 @@ RUN \
     && usermod -d /var/lib/couchdb -s /bin/bash couchdb \
     && usermod -d /var/lib/mongodb -a -G nogroup mongodb \
     && usermod -d /var/lib/redis redis \
-
-# build nginx set misc
     && curl -sL "https://github.com/simpl/ngx_devel_kit/archive/v$NGINX_DEVEL_KIT_VERSION.tar.gz" -o dev-kit.tar.gz \
     && mkdir -p /usr/src/nginx/ngx_devel_kit \
     && tar -xof dev-kit.tar.gz -C /usr/src/nginx/ngx_devel_kit --strip-components=1 \
     && rm dev-kit.tar.gz \
-
     && curl -sL "https://github.com/openresty/set-misc-nginx-module/archive/v$NGINX_SET_MISC_MODULE_VERSION.tar.gz" -o ngx-misc.tar.gz \
     && mkdir -p /usr/src/nginx/set-misc-nginx-module \
     && tar -xof ngx-misc.tar.gz -C /usr/src/nginx/set-misc-nginx-module --strip-components=1 \
     && rm ngx-misc.tar.gz \
-
-    && add-apt-repository -r 'deb [arch=amd64,i386] http://nyc2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu xenial main' \
-
-# add nginx repo
     && curl -s https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && cp /etc/apt/sources.list /etc/apt/sources.list.bak \
     && echo "deb http://nginx.org/packages/mainline/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
     && echo "deb-src http://nginx.org/packages/mainline/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
-
-# update
     && apt-get update && apt-get -y --no-install-recommends upgrade \
-    && apt-get install -y --no-install-recommends libpcre3-dev libssl-dev dpkg-dev libgd-dev iproute \
-
-# install nginx with pagespeed first so vesta config can override
+    && apt-get install -y --no-install-recommends libpcre3-dev libssl-dev dpkg-dev libgd-dev iproute uuid-dev \
     && mkdir -p ${NGINX_BUILD_DIR} \
-
     && cd ${NGINX_BUILD_DIR} \
-    
-# get the source
     && apt-get source nginx=${NGINX_VERSION} -y \
     && mv ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.c ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.bak \
-
-
-# apply patch
     && curl -SL $IMAGE_FILTER_URL --output ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/src/http/modules/ngx_http_image_filter_module.c \
     && sed -i "s/--with-http_ssl_module/--with-http_ssl_module --with-http_image_filter_module --add-module=\/usr\/src\/nginx\/ngx_devel_kit --add-module=\/usr\/src\/nginx\/set-misc-nginx-module --add-module=\/usr\/src\/nginx\/ngx_pagespeed-latest-stable/g" ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}/debian/rules \
-
-# Load Pagespeed module, PSOL and nginx
-    && curl -SL https://github.com/pagespeed/ngx_pagespeed/archive/v${NGINX_PAGESPEED_VERSION}-stable.zip -o ${NGINX_BUILD_DIR}/latest-stable.zip \
+    && curl -SL https://github.com/apache/incubator-pagespeed-ngx/archive/v${NGINX_PAGESPEED_VERSION}-stable.zip -o latest-stable.zip \
     && unzip latest-stable.zip \
     && mv incubator-pagespeed-ngx-${NGINX_PAGESPEED_VERSION}-stable ngx_pagespeed-latest-stable \
     && cd ngx_pagespeed-latest-stable \
     && curl -SL https://dl.google.com/dl/page-speed/psol/${NGINX_PSOL_VERSION}-x64.tar.gz -o ${NGINX_PSOL_VERSION}.tar.gz \
     && tar -xzf ${NGINX_PSOL_VERSION}.tar.gz \
-
-# get build dependencies
     && apt-get build-dep nginx -y \
     && cd ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}; dpkg-buildpackage -uc -us -b \
-
     && cd ${NGINX_BUILD_DIR} \
-
-# install new nginx package
     && dpkg -i nginx_${NGINX_VERSION}-1~xenial_amd64.deb \
-
-# install php
     && apt-get install -yq php5.6-mbstring php5.6-cgi php5.6-cli php5.6-dev php5.6-geoip php5.6-common php5.6-xmlrpc php5.6-sybase \
         php5.6-curl php5.6-enchant php5.6-imap php5.6-xsl php5.6-mysql php5.6-mysqlnd php5.6-pspell php5.6-gd php5.6-zip \
         php5.6-tidy php5.6-opcache php5.6-json php5.6-bz2 php5.6-pgsql php5.6-mcrypt php5.6-readline php5.6-imagick \
         php5.6-intl php5.6-sqlite3 php5.6-ldap php5.6-xml php5.6-redis php5.6-dev php5.6-fpm php5.6-soap \
-
     && apt-get install -yq php7.0-mbstring php7.0-cgi php7.0-cli php7.0-dev php7.0-geoip php7.0-common php7.0-xmlrpc php7.0-sybase \
         php7.0-curl php7.0-enchant php7.0-imap php7.0-xsl php7.0-mysql php7.0-mysqlnd php7.0-pspell php7.0-gd php7.0-zip \
         php7.0-tidy php7.0-opcache php7.0-json php7.0-bz2 php7.0-pgsql php7.0-mcrypt php7.0-readline php7.0-imagick \
         php7.0-intl php7.0-sqlite3 php7.0-ldap php7.0-xml php7.0-redis php7.0-dev php7.0-fpm php7.0-sodium php7.0-soap \
-
     && apt-get install -yq php7.1-mbstring php7.1-cgi php7.1-cli php7.1-dev php7.1-geoip php7.1-common php7.1-xmlrpc php7.1-sybase \
         php7.1-curl php7.1-enchant php7.1-imap php7.1-xsl php7.1-mysql php7.1-mysqlnd php7.1-pspell php7.1-gd php7.1-zip \
         php7.1-tidy php7.1-opcache php7.1-json php7.1-bz2 php7.1-pgsql php7.1-mcrypt php7.1-readline php7.1-imagick \
         php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-dev php7.1-fpm php7.1-sodium php7.1-soap \
-
     && apt-get install -yq php7.2-mbstring php7.2-cgi php7.2-cli php7.2-dev php7.2-geoip php7.2-common php7.2-xmlrpc php7.2-sybase \
         php7.2-curl php7.2-enchant php7.2-imap php7.2-xsl php7.2-mysql php7.2-mysqlnd php7.2-pspell php7.2-gd php7.2-zip \
         php7.2-tidy php7.2-opcache php7.2-json php7.2-bz2 php7.2-pgsql php7.2-readline php7.2-imagick \
         php7.2-intl php7.2-sqlite3 php7.2-ldap php7.2-xml php7.2-redis php7.2-dev php7.2-fpm php7.2-soap \
-
-# put back old source list for vesta
     && rm -f /etc/apt/sources.list && mv /etc/apt/sources.list.bak /etc/apt/sources.list \
-
-# finish cleaning up
     && rm -rf /usr/src/nginx \
     && rm -rf /tmp/* \
     && apt-get -yf autoremove \
     && apt-get clean 
 
-# begin VestaCP install
 RUN \
     cd /tmp \
 
@@ -127,7 +90,7 @@ RUN \
     && sed -i -e "s/\"nginx apache2/\"apache2/g" /tmp/vst-install-ubuntu.sh \
 
 # fix mariadb instead of mysql
-#    && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
+    && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
 
 # begin install vesta
     && bash /tmp/vst-install-ubuntu.sh \
@@ -166,7 +129,7 @@ RUN \
 
 # install nodejs, memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
     && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server \
-        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1.4 \
+        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1.101 \
 
 # setting upawscli, golang
 # awscli
@@ -191,6 +154,7 @@ COPY rootfs/. /
 
 RUN \
     cd /tmp \
+
 # tweaks
     && chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/service/sshd/run \
@@ -474,7 +438,6 @@ RUN \
     && sed -i -e 's:^save:# save:g' \
       -e 's:^bind:# bind:g' \
       -e 's:^logfile:# logfile:' \
-      -e 's:daemonize yes:daemonize no:' \
       -e 's:# maxmemory \(.*\)$:maxmemory 256mb:' \
       -e 's:# maxmemory-policy \(.*\)$:maxmemory-policy allkeys-lru:' \
       /etc/redis/redis.conf \
