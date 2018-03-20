@@ -3,56 +3,56 @@ enabled  = true
 filter   = sshd
 action   = vesta[name=SSH]
 logpath  = /var/log/auth.log
-maxretry = 6
-bantime = 600
+maxretry = 10
+bantime = 1200
 
 [vsftpd-iptables]
 enabled  = false
 filter   = vsftpd
 action   = vesta[name=FTP]
 logpath  = /var/log/vsftpd.log
-maxretry = 6
-bantime = 600
+maxretry = 10
+bantime = 1200
 
 [exim-iptables]
 enabled = true
 filter  = exim-vesta
 action  = vesta[name=MAIL]
 logpath = /var/log/exim4/mainlog
-maxretry = 6
-bantime = 600
+maxretry = 10
+bantime = 1200
 
 [dovecot-iptables]
 enabled = true
 filter  = dovecot-vesta
 action  = vesta[name=MAIL]
 logpath = /var/log/dovecot.log
-maxretry = 6
-bantime = 600
+maxretry = 10
+bantime = 1200
 
 [mysqld-iptables]
 enabled  = true
 filter   = mysqld-auth
 action   = vesta[name=DB]
 logpath  = /var/log/mysql/error.log
-maxretry = 6
-bantime = 600
+maxretry = 10
+bantime = 1200
 
 [postgresql-iptables]
 enabled  = true
 filter   = postgresql-auth
 action   = vesta[name=DB]
-logpath  = /var/log/postgresql/postgresql-9.5-main.log
-maxretry = 6
-bantime = 600
+logpath  = /var/log/postgresql/postgresql-9.6-main.log
+maxretry = 10
+bantime = 1200
 
 [vesta-iptables]
 enabled = true
 filter  = vesta
 action  = vesta[name=VESTA]
 logpath = /var/log/vesta/auth.log
-maxretry = 4
-bantime = 600
+maxretry = 6
+bantime = 1200
 
 [apache-overflows]
 enabled  = true
@@ -60,6 +60,7 @@ action   = vesta[name=WEB]
 filter   = apache-overflows
 logpath  = /var/log/apache2/domains/*.error.log
 maxretry = 6
+bantime = 1200
 
 [apache-badbots]
 enabled  = true
@@ -67,19 +68,20 @@ action   = vesta[name=WEB]
 filter   = apache-badbots
 logpath  = /var/log/apache2/domains/*.error.log
 maxretry = 6
+bantime = 1200
 
 [roundcube-iptables]
 enabled  = true
 filter   = roundcube-vesta
 action   = vesta[name=WEB]
 logpath  = /var/log/roundcube/errors
-maxretry = 4
-bantime = 600
+maxretry = 6
+bantime = 1200
 
 [phppgadmin-iptables]
 enabled  = false
 filter   = phppgadmin-auth
 action   = vesta[name=WEB]
 logpath  = /var/log/apache2/domains/*.error.log
-maxretry = 4
-bantime = 600
+maxretry = 6
+bantime = 1200
