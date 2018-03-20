@@ -90,7 +90,7 @@ RUN \
     && curl -SL https://vestacp.com/pub/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
 
 # put nginx on hold so it doesn't get updates with apt-get upgrade, also remove from vesta apt-get
-    && echo "nginx hold" | dpkg --set-selections \
+    && apt-mark hold nginx postgresql-10 postgresql-client-10 postgresql-doc-10 postgresql-contrib \
     && sed -i -e "s/\"nginx apache2/\"apache2/g" /tmp/vst-install-ubuntu.sh \
 
 # fix mariadb instead of mysql
@@ -98,7 +98,7 @@ RUN \
 
 # fix postgres-9.6 instead of 9.5
     && sed -i -e "s/postgresql /postgresql\-9\.6 /g" /tmp/vst-install-ubuntu.sh \
-    && sed -i -e "s/postgresql\-constrib/postgresql\-contrib\-9\.6/g" /tmp/vst-install-ubuntu.sh \
+    && sed -i -e "s/postgresql\-contrib/postgresql\-contrib\-9\.6 postgresql\-client\-9\.6/g" /tmp/vst-install-ubuntu.sh \
 
 # begin install vesta
     && bash /tmp/vst-install-ubuntu.sh \
