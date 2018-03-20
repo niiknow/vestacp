@@ -17,11 +17,10 @@ listen.owner = $user
 listen.group = www-data
 listen.mode = 0660
 
-pm = dynamic
-pm.start_servers = 1
-pm.max_children = 6
-pm.min_spare_servers = 1
-pm.max_spare_servers = 6
+pm = ondemand
+pm.max_children = 5
+pm.process_idle_timeout = 10s
+pm.max_requests = 2000
 "
 fpm_conf_file="$home_dir/$user/web/$domain/cgi-bin/php$php_version-fpm.conf"
 
