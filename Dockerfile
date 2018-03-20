@@ -27,6 +27,9 @@ RUN \
     && usermod -d /var/lib/couchdb -s /bin/bash couchdb \
     && usermod -d /var/lib/mongodb -a -G nogroup mongodb \
     && usermod -d /var/lib/redis redis \
+    && add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main" \
+    && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - \
+    && add-apt-repository ppa:ubuntugis/ubuntugis-unstable \
     && curl -sL "https://github.com/simpl/ngx_devel_kit/archive/v$NGINX_DEVEL_KIT_VERSION.tar.gz" -o dev-kit.tar.gz \
     && mkdir -p /usr/src/nginx/ngx_devel_kit \
     && tar -xof dev-kit.tar.gz -C /usr/src/nginx/ngx_devel_kit --strip-components=1 \
@@ -93,6 +96,10 @@ RUN \
 # fix mariadb instead of mysql
 #    && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
 
+# fix postgres-9.6 instead of 9.5
+    && sed -i -e "s/postgresql /postgresql\-9\.6 /g" /tmp/vst-install-ubuntu.sh \
+    && sed -i -e "s/postgresql\-constrib/postgresql\-contrib\-9\.6/g" /tmp/vst-install-ubuntu.sh \
+
 # begin install vesta
     && bash /tmp/vst-install-ubuntu.sh \
         --nginx yes --apache yes --phpfpm no \
@@ -119,8 +126,9 @@ RUN \
     && pecl config-set php_suffix 7.1 \
 
 # install additional mods since 7.2 became default in the php repo
-    && apt-get install -yf --no-install-recommends libapache2-mod-php5.6 libapache2-mod-php7.0 \
-       libapache2-mod-php7.1 \
+    && apt-get install -yf --no-install-recommends libapache2-mod-php5.6 libapache2-mod-php7.0 libapache2-mod-php7.1 \
+        postgresql-9.6-postgis-2.3 postgresql-9.6-pgrouting postgis postgis-gui postgresql-9.6-pgaudit \
+        postgresql-9.6-repack \
 
 # fix v8js reference of json first
     && mv /etc/php/5.6/apache2/conf.d/20-json.ini /etc/php/5.6/apache2/conf.d/15-json.ini \
@@ -273,10 +281,10 @@ RUN \
     && cd /tmp \
 
 # increase postgresql limit to support at least 8gb ram
-    && sed -i -e "s/^max_connections = 100/max_connections = 300/g" /etc/postgresql/9.5/main/postgresql.conf \
-    && sed -i -e "s/^shared_buffers = 128MB/shared_buffers = 2048MB/g" /etc/postgresql/9.5/main/postgresql.conf \
-    && sed -i -e "s/%q%u@%d '/%q%u@%d %r '/g" /etc/postgresql/9.5/main/postgresql.conf \
-    && sed -i -e "s/^#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/9.5/main/postgresql.conf \
+    && sed -i -e "s/^max_connections = 100/max_connections = 300/g" /etc/postgresql/9.6/main/postgresql.conf \
+    && sed -i -e "s/^shared_buffers = 128MB/shared_buffers = 2048MB/g" /etc/postgresql/9.6/main/postgresql.conf \
+    && sed -i -e "s/%q%u@%d '/%q%u@%d %r '/g" /etc/postgresql/9.6/main/postgresql.conf \
+    && sed -i -e "s/^#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/9.6/main/postgresql.conf \
     && sed -i -e "s/^#PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config \
 
 # php stuff - after vesta because of vesta-php installs
