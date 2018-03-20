@@ -5,7 +5,7 @@ What's included?
 * ubuntu 16.04 lts + Vesta 0.9.8-18
 * nginx (proxy) -> apache2 -> php-fcgi - high performance and flexible implementation
 * added ability to also run php-fpm
-* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.5, nodejs 8.x, golang 1.10, openvpn, mongodb, couchdb, .net core 2.0 runtime
+* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 8.x, golang 1.10, openvpn, mongodb, couchdb, .net core 2.0 runtime
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
 * DNS, named, dovecot/roundcube, spamassassin, clamav, etc... -- disabled by default
 * vesta panel SSL (LE-issued) for mail and control panel - provide $VESTA_DOMAIN environment variable
@@ -51,7 +51,6 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] Redis, Memcached
 - [x] nodejs, golang
 - [x] MariaDB/MySQL, Postgresql, Mongodb
-- [x] Fix postgresql backup and restore issue ref - https://github.com/serghey-rodin/vesta/issues/913
 - [x] add incron to monitor and immediately backup /etc/{passwd,shadow,gshadow,group}
 - [ ] java, dotnet
 - [ ] openvpn
@@ -75,7 +74,9 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
-1.1.9 - Update to be more secure and compliance.  A bunch of security issues discovered during the holidays were patched by various vendors including cpu (meltdown & spectre) and .net core issues:
+1.3.0 - Update to postgresql-9.6, add pgaudit and postgis geo extension.
+
+1.2.1 - Update to be more secure and compliance.  A bunch of security issues discovered during the holidays were patched by various vendors including cpu (meltdown & spectre) and .net core issues:
 
 ```
 - php 5.6 v8js no longer supported due to security issues resulting in older v8 deprecation.

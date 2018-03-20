@@ -126,7 +126,8 @@ RUN \
 
 # install additional mods since 7.2 became default in the php repo
     && apt-get install -yf --no-install-recommends libapache2-mod-php5.6 libapache2-mod-php7.0 libapache2-mod-php7.1 \
-        postgresql-9.6-postgis-2.3 postgresql-9.6-pgrouting postgis postgis-gui \
+        postgresql-9.6-postgis-2.3 postgresql-9.6-pgrouting postgis postgis-gui postgresql-9.6-pgaudit \
+        postgresql-9.6-repack \
 
 # fix v8js reference of json first
     && mv /etc/php/5.6/apache2/conf.d/20-json.ini /etc/php/5.6/apache2/conf.d/15-json.ini \
