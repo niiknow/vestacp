@@ -74,6 +74,14 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
+1.3.1 - upgrade documentation.  
+
+```
+- If you're using postgresql 9.5 then you want to backup all your users and then restore them on the new docker using vesta panel.  
+
+- If you're not using postgresql, then ssh as admin and run 'sudo bash /bin/vesta-update.shell' to upgrade everything.  As always, it is best to backup all your users.
+```
+
 1.3.0 - **Breaking Changes**: update to postgresql-9.6, add pgaudit and postgis geo extension.  This is the most popular postgresql version that also work best with postgis.  Make sure you have all your postgresql databases backuped before updating to this version.
 
 1.2.1 - Update to be more secure and compliance.  A bunch of security issues discovered during the holidays were patched by various vendors including cpu (meltdown & spectre) and .net core issues:

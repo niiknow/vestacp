@@ -10,3 +10,9 @@ rsync --update -raz --progress --exclude 'conf.d' /vesta-start/etc/nginx /etc/ng
 # update php conf
 rm -rf /vesta/etc/php/*
 rsync --update -raz --progress /vesta-start/etc/php/ /vesta/etc/php/
+
+if [ ! -d "/var/lib/postgresql/9.6/" ]; then
+    echo "[i] add postgresql 9.6"
+    rsync --update -raz /vesta-start/var/lib/postgresql/9.6/* /vesta/var/lib/postgresql/9.6
+    rsync --update -raz /vesta-start/etc/postgresql/9.6/* /vesta/etc/postgresql/9.6
+fi
