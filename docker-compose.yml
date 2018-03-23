@@ -13,6 +13,14 @@ services:
       - "80:80"
       - "443:443"
       - "8083:8083"
+    privileged: true
+    ulimits:
+      nproc: 65535
+      nofile:
+    soft: 20000
+      hard: 40000
+    sysctls:
+      net.core.somaxconn: '511'
     labels:
       - "Vesta Control Panel"
     restart: unless-stopped
