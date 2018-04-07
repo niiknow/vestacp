@@ -1,13 +1,13 @@
-FROM niiknow/docker-hostingbase:1.0.8
+FROM niiknow/docker-hostingbase:1.0.12
 
 MAINTAINER friends@niiknow.org
 
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.10 \
+    GOLANG_VERSION=1.10.1 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.31 \
-    NGINX_VERSION=1.13.9 \
+    NGINX_VERSION=1.13.11 \
     NGINX_PAGESPEED_VERSION=1.13.35.2 \
     NGINX_PSOL_VERSION=1.13.35.2 \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
@@ -137,7 +137,7 @@ RUN \
 
 # install nodejs, memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
     && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server \
-        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1.101 \
+        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1.103 \
 
 # setting upawscli, golang
 # awscli
@@ -169,12 +169,6 @@ RUN \
     && chmod +x /etc/init.d/mongod \
     && chmod +x /etc/my_init.d/startup.sh \
     && mv /sysprepz/admin/bin/vesta-*.sh /bin \
-
-    && echo "extension=v8js.so" > /etc/php/5.6/mods-available/v8js.ini \
-    && ln -sf /etc/php/5.6/mods-available/v8js.ini /etc/php/5.6/apache2/conf.d/20-v8js.ini \
-    && ln -sf /etc/php/5.6/mods-available/v8js.ini /etc/php/5.6/cli/conf.d/20-v8js.ini \
-    && ln -sf /etc/php/5.6/mods-available/v8js.ini /etc/php/5.6/cgi/conf.d/20-v8js.ini \
-    && ln -sf /etc/php/5.6/mods-available/v8js.ini /etc/php/5.6/fpm/conf.d/20-v8js.ini \
 
     && echo "extension=v8js.so" > /etc/php/7.0/mods-available/v8js.ini \
     && ln -sf /etc/php/7.0/mods-available/v8js.ini /etc/php/7.0/apache2/conf.d/20-v8js.ini \
