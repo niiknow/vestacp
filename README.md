@@ -2,7 +2,7 @@
 The ultimate control panel with docker (thanks lagun4ik for a great start)
 
 What's included?
-* ubuntu 16.04 lts + Vesta 0.9.8-18
+* ubuntu 16.04 lts + Vesta 0.9.8-20
 * nginx (proxy) -> apache2 -> php-fcgi - high performance and flexible implementation
 * added ability to also run php-fpm
 * ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 8.x, golang 1.10, openvpn, mongodb, couchdb, .net core 2.0 runtime
@@ -52,11 +52,11 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] nodejs, golang
 - [x] MariaDB/MySQL, Postgresql, Mongodb
 - [x] add incron to monitor and immediately backup /etc/{passwd,shadow,gshadow,group}
-- [ ] java, dotnet
-- [ ] openvpn
 - [x] nginx pagespeed module
 - [x] multiple php{5.6,7.0,7.1,7.2} fcgi and fpm templates
 - [x] redirect awstats
+- [ ] java, dotnet
+- [ ] openvpn
 
 ### known issues
 - [ ] MariaDB password is not saved across backup and restore.  After you restore, go to VESTA DB admin UI and update the password.
@@ -74,6 +74,8 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
+1.3.3 - update to 0.9.8-20
+
 1.3.1 - upgrade documentation.  
 
 ```
