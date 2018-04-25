@@ -97,8 +97,7 @@ RUN \
 #    && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
 
 # fix postgres-9.6 instead of 9.5
-    && sed -i -e "s/postgresql /postgresql\-9\.6 /g" /tmp/vst-install-ubuntu.sh \
-    && sed -i -e "s/postgresql\-contrib/postgresql\-contrib\-9\.6 postgresql\-client\-9\.6/g" /tmp/vst-install-ubuntu.sh \
+    && sed -i -e "s/postgresql postgresql\-contrib /postgresql\-9\.6 postgresql\-contrib\-9\.6 postgresql\-client\-9\.6 /g" /tmp/vst-install-ubuntu.sh \
 
 # begin install vesta
     && bash /tmp/vst-install-ubuntu.sh \
@@ -252,6 +251,7 @@ RUN \
  
 # secure ssh
     && sed -i -e "s/PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd_config \
+    && sed -i -e "s/^#PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config \
 
 # initialize ips for docker support
     && cd /usr/local/vesta/data/ips && mv * 127.0.0.1 \
@@ -266,20 +266,11 @@ RUN \
     && sed -i -e "s/172.*.*.*:80;/80;/g" * \
     && sed -i -e "s/172.*.*.*:8080/127.0.0.1:8080/g" * \
 
-# patch default website
-    && cd "$(dirname "$(find /home/admin/web/* -type d -name public_html)")" \
-    && sed -i -e "s/vestacp/nginx/g" public_html/index.html \
-    && sed -i -e "s/VESTA/NGINX/g" public_html/index.html \
-    && sed -i -e "s/vestacp/nginx/g" public_shtml/index.html \
-    && sed -i -e "s/VESTA/NGINX/g" public_shtml/index.html \
     && cd /tmp \
 
-# increase postgresql limit to support at least 8gb ram
-    && sed -i -e "s/^max_connections = 100/max_connections = 300/g" /etc/postgresql/9.6/main/postgresql.conf \
-    && sed -i -e "s/^shared_buffers = 128MB/shared_buffers = 2048MB/g" /etc/postgresql/9.6/main/postgresql.conf \
+# postgres patch for this docker
     && sed -i -e "s/%q%u@%d '/%q%u@%d %r '/g" /etc/postgresql/9.6/main/postgresql.conf \
     && sed -i -e "s/^#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/9.6/main/postgresql.conf \
-    && sed -i -e "s/^#PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config \
 
 # php stuff - after vesta because of vesta-php installs
     && sed -i "s/.*always_populate_raw_post_data.*/always_populate_raw_post_data = -1/" /etc/php/5.6/apache2/php.ini \
