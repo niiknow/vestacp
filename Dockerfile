@@ -4,10 +4,10 @@ LABEL maintainer="noogen <friends@niiknow.org>"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.10.1 \
+    GOLANG_VERSION=1.10.3 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.31 \
-    NGINX_VERSION=1.13.11 \
+    NGINX_VERSION=1.13.12 \
     NGINX_PAGESPEED_VERSION=1.13.35.2 \
     NGINX_PSOL_VERSION=1.13.35.2 \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
@@ -90,7 +90,7 @@ RUN \
 
 # put nginx on hold so it doesn't get updates with apt-get upgrade, also remove from vesta apt-get
     && apt-mark hold nginx postgresql-10 postgresql-client-10 postgresql-doc-10 postgresql-contrib \
-    && sed -i -e "s/\"nginx apache2/\"apache2/g" /tmp/vst-install-ubuntu.sh \
+    && sed -i -e "s/mysql\-server nginx/mysql-server/g" /tmp/vst-install-ubuntu.sh \
 
 # fix mariadb instead of mysql
     && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \

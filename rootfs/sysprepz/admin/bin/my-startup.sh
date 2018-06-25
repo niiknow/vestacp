@@ -8,13 +8,13 @@ cd /etc/init.d/
 ./disable-transparent-hugepages defaults
 
 # the 5 services below are enabled to support mininum default backup job
-./apache2 start \
-&& ./mysql start
+./apache2 start
+./mysql start
 
 # delete defult postgres admindb if not use, then comment out the line below
-./postgresql start \
-&& ./nginx start \
-&& ./vesta start
+./postgresql start
+./nginx start
+./vesta start
 
 # && ./exim4 start \
 # && ./dovecot start \
