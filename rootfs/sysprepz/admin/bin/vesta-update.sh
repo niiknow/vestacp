@@ -16,3 +16,7 @@ if [ ! -d "/var/lib/postgresql/9.6/" ]; then
     rsync --update -raz /vesta-start/var/lib/postgresql/9.6/* /vesta/var/lib/postgresql/9.6
     rsync --update -raz /vesta-start/etc/postgresql/9.6/* /vesta/etc/postgresql/9.6
 fi
+
+# restart vesta after update
+rm -f /var/run/vesta-php.sock
+service vesta restart

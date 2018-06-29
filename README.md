@@ -74,8 +74,10 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
-1.3.6 - update nginx to 1.14 stable release
-1.3.5 - update to 0.9.8-22
+1.3.6 - update nginx to 1.14 stable release, update dotnet
+
+1.3.5 - update to 0.9.8-22 - REMINDER: if your server has not autoupdate to 0.9.8-22, please do so or update to this release.  There is a serious security issue in 0.9.8-20.
+
 1.3.3 - update to 0.9.8-20
 
 1.3.1 - upgrade documentation.  
