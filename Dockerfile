@@ -101,6 +101,7 @@ RUN \
 
 # fix postgres-9.6 instead of 9.5
     && sed -i -e "s/postgresql postgresql\-contrib /postgresql\-9\.6 postgresql\-contrib\-9\.6 postgresql\-client\-9\.6 /g" /tmp/vst-install-ubuntu.sh \
+    && echo "echo \$vpass > /root/.my.pass" >> /tmp/vst-install-ubuntu.sh \
 
 # begin install vesta
     && bash /tmp/vst-install-ubuntu.sh \
@@ -430,7 +431,7 @@ RUN \
 
 # for letsencrypt
     && touch /usr/local/vesta/data/queue/letsencrypt.pipe \
-    
+
 # setup redis like memcache
     && sed -i -e 's:^save:# save:g' \
       -e 's:^bind:# bind:g' \
