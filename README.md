@@ -58,9 +58,6 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [ ] java, dotnet
 - [ ] openvpn
 
-### known issues
-- [ ] MariaDB password is not saved across backup and restore.  After you restore, go to VESTA DB admin UI and update the password.
-
 ### your todo
 - [ ] I recommend the following:
 
