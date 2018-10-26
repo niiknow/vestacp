@@ -26,7 +26,10 @@ services:
       - "Vesta Control Panel"
     restart: always
 
-# note, set hostname for auto ssl on the panel
+# Note, set hostname for auto ssl on the panel, it also
+# help with valid IP for SMTP email validation among
+# other things.
+# 
 # also note, I set the port to 9088 above on purpose
-# if you want, change it back to 8083
+# You can of course change it back to 8083
 # it help with security to change to a different port
