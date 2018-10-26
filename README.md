@@ -71,6 +71,8 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
+*^1.4.0 - in this update, we remove support for php5.6 and 7.0 as it no longer officially support/end of life (EOL) by the end of this year: http://php.net/supported-versions.php There is no excuse, you know this day was coming.  ** this is just a preview of upcoming version message/notice**
+
 1.3.9 - update to 0.9.8-23, see security bulleton/notice in forum here: https://forum.vestacp.com/viewtopic.php?f=10&t=17795  The panel should have auto-updated, we're just updating the build for new user convenience.
 
 1.3.6 - update nginx to 1.14 stable release, update dotnet
