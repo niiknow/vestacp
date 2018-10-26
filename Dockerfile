@@ -141,7 +141,7 @@ RUN \
 
 # install nodejs, memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
     && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server \
-        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1.403 \
+        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1 \
 
 # setting upawscli, golang
 # awscli
