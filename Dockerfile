@@ -4,7 +4,7 @@ LABEL maintainer="noogen <friends@niiknow.org>"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.10.3 \
+    GOLANG_VERSION=1.10.4 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.31 \
     NGINX_VERSION=1.14.0 \
@@ -91,7 +91,7 @@ RUN \
     cd /tmp \
 
 # begin setup for vesta
-    && curl -SL https://vestacp.com/pub/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
+    && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/master/install/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
 
 # put nginx on hold so it doesn't get updates with apt-get upgrade, also remove from vesta apt-get
     && apt-mark hold nginx postgresql-10 postgresql-client-10 postgresql-doc-10 postgresql-contrib \
@@ -142,7 +142,7 @@ RUN \
 
 # install nodejs, memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
     && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server \
-        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1.200 \
+        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1 \
 
 # setting upawscli, golang
 # awscli

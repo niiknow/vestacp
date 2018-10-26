@@ -2,20 +2,20 @@
 The ultimate control panel with docker (thanks lagun4ik for a great start)
 
 What's included?
-* ubuntu 16.04 lts + Vesta 0.9.8-22
+* ubuntu 16.04 lts + Vesta 0.9.8-23
 * nginx (proxy) -> apache2 -> php-fcgi - high performance and flexible implementation
 * added ability to also run php-fpm
 * ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 8.x, golang 1.10, openvpn, mongodb, couchdb, .net core 2.0 runtime
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
 * DNS, named, dovecot/roundcube, spamassassin, clamav, etc... -- disabled by default
-* vesta panel SSL (LE-issued) for mail and control panel - provide $VESTA_DOMAIN environment variable
+* vesta panel SSL (LE-issued) for mail and control panel - provide $HOSTNAME environment variable
 
 Run this image:
 ```
 mkdir -p /opt/vestacp/{vesta,home,backup}
 
 docker run -d --restart=always \
--p 2222:22 -p 80:80 -p 443:443 -p 3306:3306 -p 5432:5432 -p 8083:8083 \
+-p 2222:22 -p 80:80 -p 443:443 -p 9088:8083 \
 -v /opt/vestacp/vesta:/vesta -v /opt/vestacp/home:/home -v /opt/vestacp/backup:/backup \
 niiknow/vestacp
 ```
@@ -58,9 +58,6 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [ ] java, dotnet
 - [ ] openvpn
 
-### known issues
-- [ ] MariaDB password is not saved across backup and restore.  After you restore, go to VESTA DB admin UI and update the password.
-
 ### your todo
 - [ ] I recommend the following:
 
@@ -74,6 +71,12 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
+*^1.4.0 - in this update, we remove support for php5.6 and 7.0 as it no longer officially support/end of life (EOL) by the end of this year: http://php.net/supported-versions.php There is no excuse, you know this day was coming.  ** this is just a preview of upcoming version message/notice**
+
+1.3.10 - finalizing stuff to get ready for 1.4.0
+
+1.3.9 - update to 0.9.8-23, see security bulleton/notice in forum here: https://forum.vestacp.com/viewtopic.php?f=10&t=17795  The panel should have auto-updated, we're just updating the build for new user convenience.
+
 1.3.6 - update nginx to 1.14 stable release, update dotnet
 
 1.3.5 - update to 0.9.8-22 - REMINDER: if your server has not autoupdate to 0.9.8-22, please do so or update to this release.  There is a serious security issue in 0.9.8-20.
