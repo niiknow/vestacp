@@ -16,7 +16,7 @@ server {
     root        $site;
 
     location / {
-        # allow for forcing ssl if necessary
+        # allow for custom handling or forcing ssl if necessary
         include %docroot%/sngin*.conf;
 
         try_files $uri $uri/ /index.php$is_args$args;
@@ -62,7 +62,7 @@ server {
 
     include /etc/nginx/location_optmz_php.conf;
 
-    disable_symlinks if_not_owner from=%docroot%;
+    disable_symlinks if_not_owner from=%home%/%user%/web/%domain%;
 
     include %home%/%user%/web/%domain%/private/*.conf;
     include %home%/%user%/conf/web/nginx.%domain%.conf*;

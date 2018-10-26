@@ -5,23 +5,34 @@ domain="$2"
 ip="$3"
 home_dir="$4"
 docroot="$5"
-php_version="7.0"
+php_version="7.3"
 
 fpm_conf="
 [$domain]
-user = $user
-group = www-data
-
 listen = /var/run/vesta-php-fpm-$domain.sock
+listen.allowed_clients = 127.0.0.1
+
+user = $user
+group = $user
+
 listen.owner = $user
 listen.group = www-data
-listen.mode = 0660
 
-pm = dynamic
-pm.start_servers = 1
-pm.max_children = 6
-pm.min_spare_servers = 1
-pm.max_spare_servers = 6
+pm = ondemand
+pm.max_children = 4
+pm.max_requests = 4000
+pm.process_idle_timeout = 10s
+pm.status_path = /status
+
+php_admin_value[upload_tmp_dir] = /home/$user/tmp
+php_admin_value[session.save_path] = /home/$user/tmp
+php_admin_value[open_basedir] = $docroot:/home/$user/tmp
+
+env[HOSTNAME] = $HOSTNAME
+env[PATH] = /usr/local/bin:/usr/bin:/bin
+env[TMP] = /home/$user/tmp
+env[TMPDIR] = /home/$user/tmp
+env[TEMP] = /home/$user/tmp
 "
 fpm_conf_file="$home_dir/$user/web/$domain/cgi-bin/php-fpm.conf"
 
@@ -31,7 +42,7 @@ rm -f $home_dir/$user/web/$domain/cgi-bin/php*-fpm.conf
 # restart any *running* php fpm found with ps -uaxw
 # otherwise, simply use: 
 # find /etc/init.d/ -name 'php*-fpm*' -type f -exec basename {} \; | xargs -I{} service {} restart || true
-phpfpms="5.6:7.0:7.1:7.2:8.0"
+phpfpms="7.1:7.2:7.3"
 set -f                      # avoid globbing (expansion of *).
 iphpfpm=(${phpfpms//:/ })
 for i in "${!iphpfpm[@]}"

@@ -1,8 +1,8 @@
 
-#<VirtualHost %ip%:%web_port%>
+#<VirtualHost %ip%:%web_ssl_port%>
 #
 #    ServerName %domain_idn%
-#    # php56fpm
+#    # php72fpm
 #    DocumentRoot %sdocroot%
 #    <Location />
 #        Deny from all
