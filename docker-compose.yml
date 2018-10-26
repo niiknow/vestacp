@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3"
 
 services:
   vesta:
@@ -10,7 +10,7 @@ services:
       - "/opt/vestacp/vesta:/vesta"
       - "/opt/vestacp/home:/home"
     ports:
-      - "2222:22"
+      - "3322:22"
       - "80:80"
       - "443:443"
       - "9088:8083"

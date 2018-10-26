@@ -5,7 +5,7 @@ What's included?
 * ubuntu 16.04 lts + Vesta 0.9.8-23
 * nginx (proxy) -> apache2 -> php-fcgi - high performance and flexible implementation
 * added ability to also run php-fpm
-* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 8.x, golang 1.10, openvpn, mongodb, couchdb, .net core 2.0 runtime
+* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 8.x, golang 1.13, openvpn, mongodb, couchdb, .net core 2.1 runtime
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
 * DNS, named, dovecot/roundcube, spamassassin, clamav, etc... -- disabled by default
 * vesta panel SSL (LE-issued) for mail and control panel - provide $HOSTNAME environment variable
@@ -15,7 +15,7 @@ Run this image:
 mkdir -p /opt/vestacp/{vesta,home,backup}
 
 docker run -d --restart=always \
--p 2222:22 -p 80:80 -p 443:443 -p 9088:8083 \
+-p 3322:22 -p 80:80 -p 443:443 -p 9088:8083 \
 -v /opt/vestacp/vesta:/vesta -v /opt/vestacp/home:/home -v /opt/vestacp/backup:/backup \
 niiknow/vestacp
 ```
@@ -31,7 +31,7 @@ niiknow/vestacp
 Login: admin Password: MakeItSo18
 
 ## SSH for FTP
-FTP was not installed on purpose because it's not secure.  Use SFTP instead on the 2222 port.  Disable ssh if you don't really need it and use the Vesta FileManager plugin.  Also, make sure you change the user shell in the Vesta panel in order to use ssh.
+FTP was not installed on purpose because it's not secure.  Use SFTP instead on the 3322 port.  Disable ssh if you don't really need it and use the Vesta FileManager plugin.  Also, make sure you change the user shell in the Vesta panel in order to use ssh.
 
 ## todo/done
 - [x] redirected customizable config folders to /vesta, exclude /home.  Home has been setup to be it's own volume.  Do not try to redirect the home folder.  It's like opening a big can of worms.  There are all kind of breaking issues with having home as a symbolic link: Vesta FileManager breaking, Apache and Nginx breaking, SSL breaking, and so on...
@@ -41,7 +41,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] **Dovecot/roundcube email, phpmyadmin, phppgadmin, and DNS services** are disabled by default.  Look at /home/admin/bin/my-startup.sh for instruction on how to re-enable these services.
 
 ### misc/tested/verified
-- [x] ssh/sftp, nginx, apache2, php7.0+ & v8js 
+- [x] ssh/sftp, nginx, apache2, php7.1+ & v8js 
 - [x] log viewing in Vesta
 - [x] backup and restore
 - [x] Vesta FileManager
@@ -53,7 +53,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] MariaDB/MySQL, Postgresql, Mongodb
 - [x] add incron to monitor and immediately backup /etc/{passwd,shadow,gshadow,group}
 - [x] nginx pagespeed module
-- [x] multiple php{5.6,7.0,7.1,7.2} fcgi and fpm templates
+- [x] multiple php{7.1,7.2} fcgi and fpm templates
 - [x] redirect awstats
 - [ ] java, dotnet
 - [ ] openvpn
@@ -71,7 +71,7 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
-*^1.4.0 - in this update, we remove support for php5.6 and 7.0 as it no longer officially support/end of life (EOL) by the end of this year: http://php.net/supported-versions.php There is no excuse, you know this day was coming.  ** this is just a preview of upcoming version message/notice**
+1.4.0 - in this update, we remove support for php5.6 and 7.0 as it no longer officially support/end of life (EOL) by the end of this year: http://php.net/supported-versions.php There is no excuse.  You know this day was coming.  PHP 7.3 has not release so it's not yet available but templates were added to prep for 7.3 release at the end of the year.  We will also switch from nodejs 8.x to nodejs 10.x once it go into LTS at the end of this month.
 
 1.3.10 - finalizing stuff to get ready for 1.4.0
 
