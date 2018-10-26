@@ -5,7 +5,7 @@ What's included?
 * ubuntu 16.04 lts + Vesta 0.9.8-23
 * nginx (proxy) -> apache2 -> php-fcgi - high performance and flexible implementation
 * added ability to also run php-fpm
-* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 8.x, golang 1.13, openvpn, mongodb, couchdb, .net core 2.1 runtime
+* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 8.x, golang 1.11, openvpn, mongodb, couchdb, .net core 2.1 runtime
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
 * DNS, named, dovecot/roundcube, spamassassin, clamav, etc... -- disabled by default
 * vesta panel SSL (LE-issued) for mail and control panel - provide $HOSTNAME environment variable
@@ -71,7 +71,11 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
-1.4.0 - in this update, we remove support for php5.6 and 7.0 as it no longer officially support/end of life (EOL) by the end of this year: http://php.net/supported-versions.php There is no excuse.  You know this day was coming.  PHP 7.3 has not release so it's not yet available but templates were added to prep for 7.3 release at the end of the year.  We will also switch from nodejs 8.x to nodejs 10.x once it go into LTS at the end of this month.
+1.4.0 - Major release!  In this update, we remove support for php5.6 and 7.0 as it will no longer officially supported/at end of life (EOL): http://php.net/supported-versions.php  There is no excuse.  You know this day was coming.  
+
+* PHP 7.3 has not release so it's not yet available, but templates were added to prep for 7.3 release at the end of the year.  We will also switch from nodejs 8.x to nodejs 10.x once it go into LTS at the end of this month.
+
+* This release also default php to 7.2 and switch to golang 1.11.1
 
 1.3.10 - finalizing stuff to get ready for 1.4.0
 

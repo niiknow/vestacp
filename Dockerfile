@@ -4,7 +4,7 @@ LABEL maintainer="noogen <friends@niiknow.org>"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.10.4 \
+    GOLANG_VERSION=1.11.1 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.31 \
     NGINX_VERSION=1.14.0 \
@@ -107,17 +107,6 @@ RUN \
 # begin apache stuff
     && service apache2 stop && service vesta stop \
 
-# default fcgi and php to 7.1
-    && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
-    && ln -s /usr/bin/php-cgi7.1 /usr/bin/php-cgi \
-    && update-alternatives --set php /usr/bin/php7.1 \
-    && update-alternatives --set phar /usr/bin/phar7.1 \
-    && update-alternatives --set phar.phar /usr/bin/phar.phar7.1 \
-    && pecl config-set php_ini /etc/php/7.1/cli/php.ini \
-    && pecl config-set ext_dir /usr/lib/php/20160303 \
-    && pecl config-set php_bin /usr/bin/php7.1 \
-    && pecl config-set php_suffix 7.1 \
-
 # install additional mods since 7.2 became default in the php repo
     && apt-get install -yf --no-install-recommends libapache2-mod-php7.1 \
         postgresql-9.6-postgis-2.3 postgresql-9.6-pgrouting postgis postgis-gui postgresql-9.6-pgaudit \
@@ -126,6 +115,17 @@ RUN \
 # install nodejs, memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
     && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server \
         openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1 \
+
+# make sure we default fcgi and php to 7.2
+    && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
+    && ln -s /usr/bin/php-cgi7.2 /usr/bin/php-cgi \
+    && update-alternatives --set php /usr/bin/php7.2 \
+    && update-alternatives --set phar /usr/bin/phar7.2 \
+    && update-alternatives --set phar.phar /usr/bin/phar.phar7.2 \
+    && pecl config-set php_ini /etc/php/7.2/cli/php.ini \
+    && pecl config-set ext_dir /usr/lib/php/20170718 \
+    && pecl config-set php_bin /usr/bin/php7.2 \
+    && pecl config-set php_suffix 7.2 \
 
 # setting upawscli, golang
 # awscli
