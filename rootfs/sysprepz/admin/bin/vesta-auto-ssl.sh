@@ -94,5 +94,5 @@ if [[ $domain == *[\.]* ]]; then
         echo "[i] Cert file successfullly swapped out.  Please restart docker or vesta, apache2, nginx, and exim4."
     fi
 else
-    echo "[i] vesta-auto-ssl exit due to invalid/default docker hostname: $HOSTNAME"
+    echo "[i] vesta-auto-ssl exit due to invalid/default docker hostname: $domain"
 fi
