@@ -1,4 +1,4 @@
-FROM niiknow/docker-hostingbase:1.1.0
+FROM niiknow/docker-hostingbase:1.1.1
 
 LABEL maintainer="noogen <friends@niiknow.org>"
 
