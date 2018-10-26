@@ -1,10 +1,11 @@
 #!/bin/bash
 
+domain="$HOSTNAME"
+
 # get environment variables
 source /etc/container_environment.sh
 
 VESTA_PATH='/usr/local/vesta'
-domain="$HOSTNAME"
 user='admin'
 
 # only run if hostname is valid, regex check if it has a period
