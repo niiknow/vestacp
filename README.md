@@ -8,7 +8,7 @@ What's included?
 * ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 8.x, golang 1.10, openvpn, mongodb, couchdb, .net core 2.0 runtime
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
 * DNS, named, dovecot/roundcube, spamassassin, clamav, etc... -- disabled by default
-* vesta panel SSL (LE-issued) for mail and control panel - provide $VESTA_DOMAIN environment variable
+* vesta panel SSL (LE-issued) for mail and control panel - provide $HOSTNAME environment variable
 
 Run this image:
 ```

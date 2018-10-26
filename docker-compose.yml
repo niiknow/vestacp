@@ -4,6 +4,7 @@ services:
   vesta:
     image: niiknow/vestacp
     container_name: vesta
+    hostname: yourcpanelhostname.com
     volumes:
       - "/opt/vestacp/backup:/backup"
       - "/opt/vestacp/vesta:/vesta"
@@ -12,7 +13,7 @@ services:
       - "2222:22"
       - "80:80"
       - "443:443"
-      - "8083:8083"
+      - "9088:8083"
     privileged: true
     ulimits:
       nproc: 65535
@@ -23,4 +24,9 @@ services:
       net.core.somaxconn: '511'
     labels:
       - "Vesta Control Panel"
-    restart: unless-stopped
+    restart: always
+
+# note, set hostname for auto ssl on the panel
+# also note, I set the port to 9088 above on purpose
+# if you want, change it back to 8083
+# it help with security to change to a different port

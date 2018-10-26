@@ -4,11 +4,12 @@
 source /etc/container_environment.sh
 
 VESTA_PATH='/usr/local/vesta'
-domain="$VESTA_DOMAIN"
+domain="$HOSTNAME"
 user='admin'
 
-# only run if domain has a value
-if [ -n "$domain" ]; then
+# only run if hostname is valid, regex check if it has a period
+# default docker installation is some random string
+if [[ $domain == *[\.]* ]]; then
 
     # too often, user did not setup DNS host to IP correctly, so we should validate first
     # issue is easier fix by the user than getting blocked by Letsencrypt server
@@ -92,5 +93,5 @@ if [ -n "$domain" ]; then
         echo "[i] Cert file successfullly swapped out.  Please restart docker or vesta, apache2, nginx, and exim4."
     fi
 else
-    echo "[i] vesta-auto-ssl exit due to empty VESTA_DOMAIN variable"
+    echo "[i] vesta-auto-ssl exit due to invalid/default docker hostname: $HOSTNAME"
 fi
