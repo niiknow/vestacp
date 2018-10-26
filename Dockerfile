@@ -90,7 +90,7 @@ RUN \
     cd /tmp \
 
 # begin setup for vesta
-    && curl -SL https://vestacp.com/pub/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
+    && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/master/install/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
 
 # put nginx on hold so it doesn't get updates with apt-get upgrade, also remove from vesta apt-get
     && apt-mark hold nginx postgresql-10 postgresql-client-10 postgresql-doc-10 postgresql-contrib \
