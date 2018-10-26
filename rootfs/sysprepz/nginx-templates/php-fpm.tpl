@@ -17,40 +17,34 @@ server {
 
     location / {
         # allow for forcing ssl if necessary
-        include %docroot%/ngin*.conf;
+        include %docroot%/sngin*.conf;
 
-        try_files $uri $uri/ /index.php?$query_string;
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
 
-        location ~* ^.+\.(jpeg|jpg|png|gif|bmp|ico|svg|css|js)$ {
-            expires     max;
+    location ~ \.php$ {
+        try_files $uri /index.php =404;
+
+        if ($http_cookie ~ (comment_author_.*|wordpress_logged_in.*|wp-postpass_.*)) {
+            set $no_cache 1;
         }
 
-        location ~ [^/]\.php(/|$) {
-            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            if (!-f $document_root$fastcgi_script_name) {
-                return  404;
-            }
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass app:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
 
-            if ($http_cookie ~ (comment_author_.*|wordpress_logged_in.*|wp-postpass_.*)) {
-                set $no_cache 1;
-            }
+        fastcgi_intercept_errors on;
 
-            include         /etc/nginx/fastcgi_params;
+        fastcgi_cache_use_stale error timeout invalid_header http_500;
+        fastcgi_cache_key $host$request_uri;
+        fastcgi_cache fpm_%domain%;
 
-            fastcgi_index index.php;
-            fastcgi_pass  unix:/var/run/vesta-php-fpm-%domain_idn%.sock;
-            fastcgi_param SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-            fastcgi_intercept_errors on;
-
-            fastcgi_cache_use_stale error timeout invalid_header http_500;
-            fastcgi_cache_key $host$request_uri;
-            fastcgi_cache fpm_%domain%;
-
-            # small amount of cache goes a long way
-            fastcgi_cache_valid 200 1m;
-            fastcgi_cache_bypass $no_cache;
-            fastcgi_no_cache $no_cache;
-        }
+        # small amount of cache goes a long way
+        fastcgi_cache_valid 200 1m;
+        fastcgi_cache_bypass $no_cache;
+        fastcgi_no_cache $no_cache;
     }
 
     error_page  403 /error/404.html;
