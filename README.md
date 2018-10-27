@@ -4,11 +4,12 @@ The ultimate control panel with docker (thanks lagun4ik for a great start)
 What's included?
 * ubuntu 16.04 lts + Vesta 0.9.8-23
 * nginx (proxy) -> apache2 -> php-fcgi - high performance and flexible implementation
-* added ability to also run [php-fpm](https://github.com/niiknow/vestacp/blob/master/docs/php-fpm.md)
 * ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 8.x, golang 1.11, openvpn, mongodb, couchdb, .net core 2.1 runtime
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
 * DNS, named, dovecot/roundcube, spamassassin, clamav, etc... -- disabled by default
 * vesta panel SSL (LE-issued) for mail and control panel - provide $HOSTNAME environment variable
+* added ability to also run [php-fpm](https://github.com/niiknow/vestacp/blob/master/docs/php-fpm.md)
+![](https://raw.githubusercontent.com/niiknow/vestacp/master/docs/images/php-fpm.png?raw=true)
 
 Run this image:
 ```
@@ -55,7 +56,6 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] nginx pagespeed module
 - [x] redirect awstats
 - [x] multiple php{7.1,7.2} fcgi and fpm templates
-https://github.com/niiknow/vestacp/blob/master/docs/images/php-fpm.png
 
 ### your todo
 - [ ] I recommend the following:
