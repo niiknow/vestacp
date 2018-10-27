@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# save HOSTNAME
-export XHOSTNAME="$HOSTNAME"
 export TERM=xterm
 MYPASS=
 
@@ -57,9 +55,8 @@ fi
 
 # auto ssl on start
 if [ -f /bin/vesta-auto-ssl.sh ]; then
-	echo "[i] running /bin/vesta-auto-ssl.sh"
-    export HOSTNAME="$XHOSTNAME"
-	bash /bin/vesta-auto-ssl.sh
+    echo "[i] running /bin/vesta-auto-ssl.sh"
+    bash /bin/vesta-auto-ssl.sh
 fi
 
 if [ ! -z "$MYPASS" ]; then
