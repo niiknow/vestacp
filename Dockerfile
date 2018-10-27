@@ -1,7 +1,5 @@
-FROM niiknow/docker-hostingbase:1.1.2
-
+FROM niiknow/docker-hostingbase:1.2.3
 LABEL maintainer="noogen <friends@niiknow.org>"
-
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
     GOLANG_VERSION=1.11.1 \
@@ -12,8 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     NGINX_PSOL_VERSION=1.13.35.2 \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
 
-RUN \
-    cd /tmp \
+RUN cd /tmp \
     && echo "nginx mysql bind clamav ssl-cert dovecot dovenull Debian-exim postgres debian-spamd epmd couchdb memcache mongodb redis" | xargs -n1 groupadd -K GID_MIN=100 -K GID_MAX=999 ${g} \
     && echo "nginx nginx mysql mysql bind bind clamav clamav dovecot dovecot dovenull dovenull Debian-exim Debian-exim postgres postgres debian-spamd debian-spamd epmd epmd couchdb couchdb memcache memcache mongodb mongodb redis redis" | xargs -n2 useradd -d /nonexistent -s /bin/false -K UID_MIN=100 -K UID_MAX=999 -g ${g} \
     && usermod -d /var/lib/mysql mysql \
@@ -43,6 +40,7 @@ RUN \
     && echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
     && echo "deb-src http://nginx.org/packages/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
     && apt-get update && apt-get -y --no-install-recommends upgrade \
+    && curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - \
     && apt-get install -y --no-install-recommends libpcre3-dev libssl-dev dpkg-dev libgd-dev iproute uuid-dev \
     && mkdir -p ${NGINX_BUILD_DIR} \
     && cd ${NGINX_BUILD_DIR} \
@@ -60,24 +58,23 @@ RUN \
     && cd ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}; dpkg-buildpackage -uc -us -b \
     && cd ${NGINX_BUILD_DIR} \
     && dpkg -i nginx_${NGINX_VERSION}-1~xenial_amd64.deb \
-    && apt-get install -yq php7.1-mbstring php7.1-cgi php7.1-cli php7.1-dev php7.1-geoip php7.1-common php7.1-xmlrpc php7.1-sybase \
-        php7.1-curl php7.1-enchant php7.1-imap php7.1-xsl php7.1-mysql php7.1-mysqlnd php7.1-pspell php7.1-gd php7.1-zip \
+    && apt-get install -yq php7.1-mbstring php7.1-cgi php7.1-cli php7.1-dev php7.1-geoip php7.1-common php7.1-xmlrpc php7.1-sybase php7.1-curl \
+        php7.1-enchant php7.1-imap php7.1-xsl php7.1-mysql php7.1-mysqli php7.1-mysqlnd php7.1-pspell php7.1-gd php7.1-zip \
         php7.1-tidy php7.1-opcache php7.1-json php7.1-bz2 php7.1-pgsql php7.1-mcrypt php7.1-readline php7.1-imagick \
-        php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-dev php7.1-fpm php7.1-sodium php7.1-soap \
-        php7.1-bcmath \
-    && apt-get install -yq php7.2-mbstring php7.2-cgi php7.2-cli php7.2-dev php7.2-geoip php7.2-common php7.2-xmlrpc php7.2-sybase \
-        php7.2-curl php7.2-enchant php7.2-imap php7.2-xsl php7.2-mysql php7.2-mysqlnd php7.2-pspell php7.2-gd php7.2-zip \
+        php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-dev php7.1-fpm php7.1-sodium \
+        php7.1-soap php7.1-bcmath php7.1-fileinfo php7.1-xdebug php7.1-exif php7.1-tokenizer \
+    && apt-get install -yq php7.2-mbstring php7.2-cgi php7.2-cli php7.2-dev php7.2-geoip php7.2-common php7.2-xmlrpc php7.2-sybase php7.2-curl \
+        php7.2-enchant php7.2-imap php7.2-xsl php7.2-mysql php7.2-mysqli php7.2-mysqlnd php7.2-pspell php7.2-gd php7.2-zip \
         php7.2-tidy php7.2-opcache php7.2-json php7.2-bz2 php7.2-pgsql php7.2-readline php7.2-imagick \
-        php7.2-intl php7.2-sqlite3 php7.2-ldap php7.2-xml php7.2-redis php7.2-dev php7.2-fpm php7.2-soap \
-        php7.2-bcmath \
+        php7.2-intl php7.2-sqlite3 php7.2-ldap php7.2-xml php7.2-redis php7.2-dev php7.2-fpm \
+        php7.2-soap php7.2-bcmath php7.2-fileinfo php7.2-xdebug php7.2-exif php7.2-tokenizer \
     && rm -f /etc/apt/sources.list && mv /etc/apt/sources.list.bak /etc/apt/sources.list \
     && rm -rf /usr/src/nginx \
     && rm -rf /tmp/* \
     && apt-get -yf autoremove \
     && apt-get clean 
 
-RUN \
-    cd /tmp \
+RUN cd /tmp \
 
 # begin setup for vesta
     && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/master/install/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
@@ -114,7 +111,8 @@ RUN \
 
 # install nodejs, memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
     && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server \
-        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1 \
+        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1 poppler-utils ghostscript \
+        libgs-dev imagemagick \
 
 # make sure we default fcgi and php to 7.2
     && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
@@ -127,8 +125,7 @@ RUN \
     && pecl config-set php_bin /usr/bin/php7.2 \
     && pecl config-set php_suffix 7.2 \
 
-# setting upawscli, golang
-# awscli
+# setting upawscli, golang, and awscli
     && curl -O https://bootstrap.pypa.io/get-pip.py \
     && python get-pip.py \
     && pip install awscli \
@@ -148,8 +145,7 @@ RUN \
 
 COPY rootfs/. /
 
-RUN \
-    cd /tmp \
+RUN cd /tmp \
 
 # tweaks
     && chmod +x /etc/init.d/dovecot \
@@ -301,7 +297,7 @@ RUN \
 # increase open file limit for nginx and apache
     && echo "\n\n* soft nofile 800000\n* hard nofile 800000\n\n" >> /etc/security/limits.conf \
 
-# patch psql9.5 backup
+# patch psql9.5+ backup
     && sed -i -e "s/\-c \-\-inserts \-O \-x \-i \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
     && sed -i -e "s/\-c \-\-inserts \-O \-x \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
     && sed -i -e "s/dbuser/DBUSER/g" /usr/local/vesta/func/rebuild.sh \
@@ -317,7 +313,6 @@ RUN \
 
 # disable localhost redirect to bad default IP
     && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/* \
-
     && service mysql stop && systemctl disable mysql \
     && service postgresql stop && systemctl disable postgresql \
     && service redis-server stop && systemctl disable redis-server \
