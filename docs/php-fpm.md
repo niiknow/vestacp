@@ -1,15 +1,15 @@
 # php-pfm templates
-There are two parts to the php-fpm templates: fpm config and nginx.  On the nginx side, you have two options: `php-fpm` or `custom`
+There are two config to the php-fpm templates: fpm and nginx.  On the nginx side, you have two options: `php-fpm` or `custom`
 
 ![](https://raw.githubusercontent.com/niiknow/vestacp/master/docs/images/php-fpm.png?raw=true)
 
 ## nginx
-`php-fpm` template is optimize for majority of framework including concrete5, laravel, and/or worpdress.  Outside of that, you have use the `custom` template.  See some examples below.
+`php-fpm` template is optimize for majority of framework including concrete5, laravel, and/or wordpress.  Outside of that, you have use the `custom` template.  See some examples below.
 
 - - -
 `custom` template with [ActiveCollab](https://activecollab.com/)
-1. Choose `custom` as your nginx template and php7xfpm template for APACHE2, don't worry, it's not really Apache2, it's really is fpm config just using the same UI as APACHE2.
-2. Add a file: /home/{user}/web/{website.example.com}/private/custom.conf
+1. Choose `custom` as your nginx template and php7xfpm template for APACHE2.  Don't worry, it's not really Apache2.  It's is fpm config just re-using the same UI as APACHE2.
+2. Add a file: `/home/{user}/web/{website.example.com}/private/custom.conf`
 
 ```
     index       proxy.php;
@@ -66,15 +66,16 @@ There are two parts to the php-fpm templates: fpm config and nginx.  On the ngin
 
 ```
 
-Remember to replace {user} and {website.example.com} with approprivate value.
+Remember to replace `{user}` and `{website.example.com}` with appropriate/valid value.
 
 - - -
 **Note**: `custom` template can be use with anything, not just for PHP.
 
-`custom` template for [Gogs](https://gogs.io/) (self-hosted git written in Golang) or any kind of service that you want to nginx proxy_pass to nodejs, dotnet, etc...
+`custom` template for [Gogs](https://gogs.io/) (self-hosted git written in Golang) or any kind of service that you want to nginx proxy_pass such as service running with nodejs, dotnet, etc...
 
 1. Choose `custom` as your nginx template and `default` for APACHE2.
-2. Add a file: /home/{user}/web/{website.example.com}/private/custom.conf
+2. Add a file: `/home/{user}/web/{website.example.com}/private/custom.conf`
+
 ```
 location / {
    # force https-redirects if not http
@@ -96,7 +97,8 @@ location @fallback {
 include /etc/nginx/location_optmz_php.conf;
 ```
 
-This assume that you're running Gogs web on port 10080 so it proxy to that port.  Your gogs app.ini may look like so:
+This assume that you're running Gogs Web on port 10080 so we proxy that port.  Your gogs `app.ini` may look like so:
+
 ```
 $ cat app.ini
 APP_NAME = Your Git Service
