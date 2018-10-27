@@ -25,15 +25,30 @@ server {
     location ~ \.php$ {
         try_files $uri /index.php =404;
 
+        # only cache GET request
+        if ($request_method != GET) {
+            set $no_cache 1;
+        }
+
+        # don't cache uris containing the following segments
+        if ($request_uri ~* "api/|site/|admin/|dashboard/|cms/|/wp-admin/|wp-.*.php|sitemap.?.xml|xmlrpc.php|/feed/") {
+            set $no_cache 1;
+        }
+
+        # don't cache with these cookies
         if ($http_cookie ~ (comment_author_.*|wordpress_logged_in.*|wp-postpass_.*)) {
             set $no_cache 1;
         }
 
+        # include default fastcgi_params
+        include fastcgi_params;
+
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:/var/run/vesta-php-fpm-%domain_idn%.sock;
         fastcgi_index index.php;
+
+        # override default fastcgi_params
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        include fastcgi_params;
 
         fastcgi_intercept_errors on;
 
@@ -54,12 +69,7 @@ server {
     location /error/ {
         alias   %home%/%user%/web/%domain%/document_errors/;
     }
-
-    location /vstats/ {
-        alias   %home%/%user%/web/%domain%/stats/;
-        include %home%/%user%/web/%domain%/stats/auth.conf*;
-    }
-
+    
     include /etc/nginx/location_optmz_php.conf;
 
     disable_symlinks if_not_owner from=%home%/%user%/web/%domain%;
