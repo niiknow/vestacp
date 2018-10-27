@@ -71,7 +71,8 @@ Remember to replace {user} and {website.example.com} with approprivate value.
 - - -
 **Note**: `custom` template can be use with anything, not just for PHP.
 
-`custom` template for [Gogs](https://gogs.io/)
+`custom` template for [Gogs](https://gogs.io/) (self-hosted git written in Golang) or any kind of service that you want to nginx proxy_pass to nodejs, dotnet, etc...
+
 1. Choose `custom` as your nginx template and `default` for APACHE2.
 2. Add a file: /home/{user}/web/{website.example.com}/private/custom.conf
 ```
@@ -93,6 +94,72 @@ location @fallback {
 }
 
 include /etc/nginx/location_optmz_php.conf;
+```
+
+This assume that you're running Gogs web on port 10080 so it proxy to that port.  Your gogs app.ini may look like so:
+```
+$ cat app.ini
+APP_NAME = Your Git Service
+RUN_USER = {user}
+RUN_MODE = prod
+
+[database]
+DB_TYPE  = sqlite3
+HOST     = none
+NAME     = none
+USER     = none
+PASSWD   = 
+SSL_MODE = disable
+PATH     = /home/{user}/gogs/data/gogs.db
+
+[repository]
+ROOT = /home/{user}/gogs-repos
+
+[server]
+DOMAIN           = git.example.com
+HTTP_PORT        = 10080
+ROOT_URL         = https://git.example.com/
+DISABLE_SSH      = false
+START_SSH_SERVER = true
+SSH_DOMAIN       = %(DOMAIN)s
+SSH_LISTEN_HOST  = 0.0.0.0
+SSH_PORT         = 22
+SSH_LISTEN_PORT  = 10022
+OFFLINE_MODE     = false
+CERT_FILE        = custom/https/cert.pem
+KEY_FILE         = custom/https/key.pem
+ENABLE_GZIP      = true
+LANDING_PAGE     = home
+
+[mailer]
+ENABLED          = true
+HELO_HOSTNAME    = git.example.com
+HOST             = smtp.gmail.com:587
+USER             = git@example.com
+PASSWD           = your-email-password
+
+[service]
+REGISTER_EMAIL_CONFIRM = false
+ENABLE_NOTIFY_MAIL     = true
+DISABLE_REGISTRATION   = false
+ENABLE_CAPTCHA         = true
+REQUIRE_SIGNIN_VIEW    = true
+
+[picture]
+DISABLE_GRAVATAR        = false
+ENABLE_FEDERATED_AVATAR = false
+
+[session]
+PROVIDER = file
+
+[log]
+MODE      = file
+LEVEL     = Info
+ROOT_PATH = /home/{user}/gogs/log
+
+[security]
+INSTALL_LOCK = true
+SECRET_KEY   = 32AdfjlkksjdfA
 ```
 
 - - -
