@@ -1,11 +1,13 @@
 # php-pfm templates
 There are two parts to the php-fpm templates: fpm config and nginx.  On the nginx side, you have two options: php-fpm or custom.
 
+![](https://raw.githubusercontent.com/niiknow/vestacp/master/docs/images/php-fpm.png?raw=true)
+
 ## nginx
 `php-fpm` template is optimize for majority of framework including concrete5, laravel, and/or worpdress.  Outside of that, you have use the `custom` template.  See some examples below.
 
-Custom template with [ActiveCollab](https://activecollab.com/)
-1. Choose `custom` as your nginx template
+`custom` template with [ActiveCollab](https://activecollab.com/)
+1. Choose `custom` as your nginx template and php7xfpm template for APACHE2, don't worry, it's not really Apache2, it's really is fpm config just using the same UI as APACHE2.
 2. Add a file: /home/{user}/web/{website.example.com}/private/custom.conf
 
 ```
@@ -32,6 +34,11 @@ Custom template with [ActiveCollab](https://activecollab.com/)
     }
 
     location ~ \.php$ {
+        # force https-redirects if not http
+        if ($scheme = http) {
+           return 301 https://$server_name$request_uri;
+        }
+
         fastcgi_pass unix:/var/run/vesta-php-fpm-{website.example.com}.sock;
         include /etc/nginx/fastcgi_params;
 
@@ -52,11 +59,6 @@ Custom template with [ActiveCollab](https://activecollab.com/)
         alias   /home/{user}/web/{website.example.com}/document_errors/;
     }
 
-    location /vstats/ {
-        alias   /home/{user}/web/{website.example.com}/stats/;
-        include /home/{user}/web/{website.example.com}/stats/auth.conf*;
-    }
-
     include /etc/nginx/location_optmz_php.conf;
 
     disable_symlinks if_not_owner from=/home/{user}/web/{website.example.com};
@@ -64,3 +66,29 @@ Custom template with [ActiveCollab](https://activecollab.com/)
 ```
 
 Remember to replace {user} and {website.example.com} with approprivate value.
+
+**Note**: `custom` template can be use with anything, not just for PHP.
+
+`custom` template for [Gogs](https://gogs.io/)
+1. Choose `custom` as your nginx template and `default` for APACHE2.
+2. Add a file: /home/{user}/web/{website.example.com}/private/custom.conf
+```
+location / {
+   # force https-redirects if not http
+   if ($scheme = http) {
+      return 301 https://$server_name$request_uri;
+   }
+
+   proxy_pass      http://127.0.0.1:10080;
+}
+
+location /error/ {
+   alias   /home/{user}/web/{website.example.com}/document_errors/;
+}
+
+location @fallback {
+   proxy_pass      http://127.0.0.1:10080;
+}
+
+include /etc/nginx/location_optmz_php.conf;
+```
