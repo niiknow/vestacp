@@ -5,7 +5,8 @@ rsync --update -ahp --progress --exclude 'data' --exclude 'log' --exclude 'conf'
 
 rsync --update -ahp --progress /vesta-start/local/vesta/data/templates/ /usr/local/vesta/data/templates/
 
-rsync --update -ahp --progress --exclude 'conf.d' /vesta-start/etc/ /etc/
+# comment out -- too much overriding to run
+# rsync --update -ahp --progress --exclude 'conf.d' --exclude 'mysql' vesta-start/etc/ /etc/
 
 # update php conf
 rm -rf /vesta/etc/php/*

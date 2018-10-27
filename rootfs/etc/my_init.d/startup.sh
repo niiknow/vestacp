@@ -42,16 +42,6 @@ if [ -f /etc/fail2ban/jail.new ]; then
     mv /etc/fail2ban/jail.new /etc/fail2ban/jail.local
 fi
 
-# auto-upgrade
-if [ -f /etc/apache2/mods-enabled/php7.0.conf ] || [ -f /etc/apache2/mods-enabled/php7.1.conf ]; then
-    echo "[i] running auto-upgrade"
-    bash /bin/vesta-update.sh
-
-    a2dismod php7.0 || true
-    a2dismod php7.1 || true
-    a2enmod php7.2 || true
-fi
-
 # make sure runit services are running across restart
 find /etc/service/ -name "down" -exec rm -rf {} \;
 

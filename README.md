@@ -77,6 +77,8 @@ Enjoy!!!
 
 * This release also default php to 7.2 and switch to golang 1.11.1
 
+* I've made some attempts in 1.4.x to provide auto-upgrade with rsync but there were hickups along the way that I find may not work perfectly for everyone.  Therefore, as this is a Major upgrade (consider it like a fresh install), I would suggest to perform user backup, download of backup, and restore. It's the same step as you would expect to migrate another server: https://vestacp.com/docs/#how-to-migrate-user-to-another-server 
+
 1.3.10 - finalizing stuff to get ready for 1.4.0
 
 1.3.9 - update to 0.9.8-23, see security bulleton/notice in forum here: https://forum.vestacp.com/viewtopic.php?f=10&t=17795  The panel should have auto-updated, we're just updating the build for new user convenience.
