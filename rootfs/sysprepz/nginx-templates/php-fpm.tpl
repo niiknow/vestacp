@@ -16,7 +16,7 @@ server {
     root        $site;
 
     location / {
-        # allow for custom handling or forcing ssl if necessary
+        # allow for custom handling
         include %docroot%/sngin*.conf;
 
         try_files $uri $uri/ /index.php$is_args$args;
@@ -46,7 +46,7 @@ server {
         fastcgi_cache_bypass $no_cache;
         fastcgi_no_cache $no_cache;
     }
-
+    
     error_page  403 /error/404.html;
     error_page  404 /error/404.html;
     error_page  500 502 503 504 /error/50x.html;
