@@ -165,4 +165,10 @@ SECRET_KEY   = 32AdfjlkksjdfA
 ```
 
 - - -
+`phpfcgi7x` with `default` nginx template - use this if you need to work with .htaccess file.  Let say you unzip Laravel into the `/home/{user}/web/{website.example.com}/lara-app` folder, then you want to create a symbolic link to `public_html` folder like so:
+```
+ln -s lara-app/public public_html
+```
+
+- - -
 
