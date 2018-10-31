@@ -94,14 +94,14 @@ http {
     proxy_cache_path            /var/cache/nginx/site levels=1:2 keys_zone=site_diskcached:10m max_size=5g inactive=45m use_temp_path=off;
     proxy_cache_path            /var/cache/nginx/disk levels=1:2 keys_zone=my_diskcached:50m max_size=7g inactive=7d use_temp_path=off;
 
-    proxy_cache_key             $host$request_uri;
+    proxy_cache_key             $scheme$host$request_uri;
     proxy_temp_path             /var/cache/nginx/temp;
     proxy_ignore_headers        Vary Expires Set-Cookie Cache-Control;
     proxy_pass_request_headers  on;
     underscores_in_headers      on;
 
     proxy_cache_min_uses        2;
-    proxy_cache                 site_diskcached;
+    #proxy_cache                 site_diskcached;
     proxy_ssl_server_name       on;
     proxy_intercept_errors      on;
 

@@ -18,8 +18,8 @@ services:
     ulimits:
       nproc: 65535
       nofile:
-    soft: 20000
-    hard: 40000
+        soft: 20000
+        hard: 40000
     sysctls:
       net.core.somaxconn: '511'
     labels:
