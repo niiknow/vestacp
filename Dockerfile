@@ -40,7 +40,7 @@ RUN cd /tmp \
     && echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
     && echo "deb-src http://nginx.org/packages/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
     && apt-get update && apt-get -y --no-install-recommends upgrade \
-    && curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - \
+    && curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
     && apt-get install -y --no-install-recommends libpcre3-dev libssl-dev dpkg-dev libgd-dev iproute uuid-dev \
     && mkdir -p ${NGINX_BUILD_DIR} \
     && cd ${NGINX_BUILD_DIR} \
