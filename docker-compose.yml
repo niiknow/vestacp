@@ -4,6 +4,7 @@ services:
   vesta:
     image: niiknow/vestacp
     container_name: vesta
+    cap_add: ['NET_RAW', 'NET_ADMIN']
     hostname: yourcpanelhostname.com
     volumes:
       - "/opt/vestacp/backup:/backup"
@@ -14,7 +15,6 @@ services:
       - "80:80"
       - "443:443"
       - "9088:8083"
-    privileged: true
     ulimits:
       nproc: 65535
       nofile:
