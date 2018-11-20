@@ -14,7 +14,7 @@ server {
     if (!-d %docroot%/public) {
         set $site "%docroot%";
     }
-    root        $site;
+    root $site;
 
     location / {
         # allow for custom handling

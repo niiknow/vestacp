@@ -13,8 +13,6 @@ if [ ! -f /home/admin/bin/my-startup.sh ]; then
 # save some bytes, you can do it later
 #    rm -rf /sysprepz
 #    rm -rf /vesta-start
-
-    MYPASS=$(</root/.my.pass)
 fi
 
 # restore current users
@@ -57,9 +55,5 @@ fi
 if [ -f /bin/vesta-auto-ssl.sh ]; then
     echo "[i] running /bin/vesta-auto-ssl.sh"
     bash /bin/vesta-auto-ssl.sh
-fi
-
-if [ ! -z "$MYPASS" ]; then
-    ./home/admin/bin/mysqlinit.sh $MYPASS
 fi
 

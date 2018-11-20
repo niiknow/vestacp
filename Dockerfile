@@ -2,7 +2,7 @@ FROM niiknow/docker-hostingbase:1.2.3
 LABEL maintainer="noogen <friends@niiknow.org>"
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.11.1 \
+    GOLANG_VERSION=1.11.2 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.31 \
     NGINX_VERSION=1.14.1 \
@@ -68,6 +68,9 @@ RUN cd /tmp \
         php7.2-tidy php7.2-opcache php7.2-json php7.2-bz2 php7.2-pgsql php7.2-readline php7.2-imagick \
         php7.2-intl php7.2-sqlite3 php7.2-ldap php7.2-xml php7.2-redis php7.2-dev php7.2-fpm \
         php7.2-soap php7.2-bcmath php7.2-fileinfo php7.2-xdebug php7.2-exif php7.2-tokenizer \
+
+# put nginx on hold so it doesn't get updates with apt-get upgrade, also remove from vesta apt-get
+    && apt-mark hold nginx postgresql-11 postgresql-client-11 postgresql-doc-11 postgresql-contrib \
     && rm -f /etc/apt/sources.list && mv /etc/apt/sources.list.bak /etc/apt/sources.list \
     && rm -rf /usr/src/nginx \
     && rm -rf /tmp/* \
@@ -75,20 +78,15 @@ RUN cd /tmp \
     && apt-get clean 
 
 RUN cd /tmp \
-
 # begin setup for vesta
-    && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/master/install/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
-
-# put nginx on hold so it doesn't get updates with apt-get upgrade, also remove from vesta apt-get
-    && apt-mark hold nginx postgresql-10 postgresql-client-10 postgresql-doc-10 postgresql-contrib \
+    && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/a1b3aa3a8432b72842fe13ee77a892d2bba2b022/install/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
     && sed -i -e "s/mysql\-server nginx/mysql-server/g" /tmp/vst-install-ubuntu.sh \
 
 # fix mariadb instead of mysql
     && sed -i -e "s/mysql\-/mariadb\-/g" /tmp/vst-install-ubuntu.sh \
 
 # fix postgres-9.6 instead of 9.5
-    && sed -i -e "s/postgresql postgresql\-contrib /postgresql\-9\.6 postgresql\-contrib\-9\.6 postgresql\-client\-9\.6 /g" /tmp/vst-install-ubuntu.sh \
-    && echo "echo \$vpass > /root/.my.pass" >> /tmp/vst-install-ubuntu.sh \
+    && sed -i -e "s/postgresql postgresql-contrib /postgresql\-9\.6 postgresql\-contrib\-9\.6 postgresql\-client\-9\.6 /g" /tmp/vst-install-ubuntu.sh \
 
 # begin install vesta
     && bash /tmp/vst-install-ubuntu.sh \
