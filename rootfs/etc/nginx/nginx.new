@@ -101,7 +101,6 @@ http {
     underscores_in_headers      on;
 
     proxy_cache_min_uses        2;
-    #proxy_cache                 site_diskcached;
     proxy_ssl_server_name       on;
     proxy_intercept_errors      on;
 

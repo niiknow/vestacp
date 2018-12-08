@@ -70,6 +70,8 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
+1.5.2 - with php7.3 support.
+
 1.4.0 - Major release!  In this update, we remove support for php5.6 and 7.0 as it will no longer officially supported/at end of life (EOL): http://php.net/supported-versions.php  There is no excuse.  You know this day was coming.  
 
 * PHP 7.3 has not release so it's not yet available, but templates were added to prep for 7.3 release at the end of the year.  We will also switch from nodejs 8.x to nodejs 10.x once it go into LTS at the end of this month.
