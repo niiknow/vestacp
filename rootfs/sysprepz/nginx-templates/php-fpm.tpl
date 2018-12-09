@@ -15,9 +15,13 @@ server {
     }
     root $site;
 
+    if ($request_method != GET) {
+        set $no_cache 1;
+    }
+
     location / {
         # allow for custom handling
-        include %docroot%/sngin*.conf;
+        include %docroot%/ngin*.conf;
 
         try_files $uri $uri/ /index.php$is_args$args;
     }
@@ -30,21 +34,10 @@ server {
         }
 
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/vesta-php-fpm-%domain_idn%.sock;
+        fastcgi_pass  unix:/var/run/vesta-php-fpm-%domain_idn%.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
-
-        fastcgi_intercept_errors on;
-
-        fastcgi_cache_use_stale error timeout invalid_header http_500;
-        fastcgi_cache_key $host$request_uri;
-        fastcgi_cache fpm_%domain%;
-
-        # small amount of cache goes a long way
-        fastcgi_cache_valid 200 1m;
-        fastcgi_cache_bypass $no_cache;
-        fastcgi_no_cache $no_cache;
     }
     
     error_page  403 /error/404.html;

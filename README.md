@@ -39,7 +39,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] Use incrond to watch /etc/{passwd,shadow,gshadow,group} and sync to /backup/.etc so remember to attach the backup volume if you want to save password across restart.
 - [x] AWS CLI has been installed to simplify your backup lifestyle.  You just need to setup a cron on VestaCP.
 - [x] Update *index.html* to remove reference to VestaCP from default site for security.
-- [x] **Dovecot/roundcube email, phpmyadmin, phppgadmin, and DNS services** are disabled by default.  Look at /home/admin/bin/my-startup.sh for instruction on how to re-enable these services.
+- [x] **Dovecot/roundcube email, phpmyadmin, phppgadmin, and DNS services** are disabled by default.  Look at /home/admin/bin/my-startup.sh for instruction on how to re-enable these services.  Remember to restart your container after updating my-startup.sh.
 
 ### misc/tested/verified
 - [x] ssh/sftp, nginx, apache2, php7.1+ & v8js 
@@ -70,6 +70,8 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
+1.5.2 - with php7.3 support.
+
 1.4.0 - Major release!  In this update, we remove support for php5.6 and 7.0 as it will no longer officially supported/at end of life (EOL): http://php.net/supported-versions.php  There is no excuse.  You know this day was coming.  
 
 * PHP 7.3 has not release so it's not yet available, but templates were added to prep for 7.3 release at the end of the year.  We will also switch from nodejs 8.x to nodejs 10.x once it go into LTS at the end of this month.
