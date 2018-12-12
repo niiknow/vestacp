@@ -26,9 +26,12 @@ There are two config to the php-fpm templates: fpm and nginx.  On the nginx side
         rewrite ^/proxy.php$ /proxy.php last;
         rewrite ^/api/v([0-9]*)/(.*)$ /api.php?path_info=$2&api_version=$1 last;
         rewrite ^$ /router.php last;
-        rewrite ^(.*) /router.php?path_info=$1 last;
     }
 
+    location / {
+        rewrite ^(.*) /router.php?path_info=$1 last;
+    }
+    
     location ~* \.(ico|css|js|gif|jpe?g|png)(\?[0-9]+)?$ {
         expires max;
         log_not_found off;
@@ -47,9 +50,6 @@ There are two config to the php-fpm templates: fpm and nginx.  On the nginx side
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 
         fastcgi_intercept_errors on;
-        if (!-e $request_filename) {
-            rewrite ^(.*) /router.php?path_info=$1 last;
-        }
     }
 
     error_page  403 /error/404.html;

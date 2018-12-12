@@ -75,7 +75,7 @@ RUN cd /tmp \
         php7.3-soap php7.3-bcmath php7.3-fileinfo php7.3-xdebug php7.3-exif php7.3-tokenizer \
 
 # put nginx on hold so it doesn't get updates with apt-get upgrade, also remove from vesta apt-get
-    && apt-mark hold nginx postgresql-11 postgresql-client-11 postgresql-doc-11 postgresql-contrib \
+    && apt-mark hold nginx \
     && rm -f /etc/apt/sources.list && mv /etc/apt/sources.list.bak /etc/apt/sources.list \
     && rm -rf /usr/src/nginx \
     && rm -rf /tmp/* \
@@ -109,8 +109,8 @@ RUN cd /tmp \
 
 # install additional mods since 7.2 became default in the php repo
     && apt-get install -yf --no-install-recommends libapache2-mod-php7.1 libapache2-mod-php7.2 libapache2-mod-php7.3 \
-        postgresql-9.6-postgis-2.3 postgresql-9.6-pgrouting postgis postgis-gui postgresql-9.6-pgaudit \
-        postgresql-9.6-repack \
+        postgresql-9.6-postgis-2.4 postgresql-9.6-pgrouting postgis postgis-gui postgresql-9.6-pgaudit \
+        postgresql-9.6-postgis-2.4-scripts postgresql-9.6-repack \
 
 # install nodejs, memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
     && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server \
