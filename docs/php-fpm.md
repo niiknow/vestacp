@@ -18,7 +18,17 @@ There are two config to the php-fpm templates: fpm and nginx.  On the nginx side
 
     root "/home/{user}/web/{website.example.com}/public_html/public";
 
+    set $can_rewrite 0;
+
     if (!-e $request_filename) {
+        set $can_rewrite 1;
+    }
+
+    if ($uri ~ ".well-known") {
+        set $can_rewrite 0;
+    }
+
+    if ($can_rewrite = 1) {
         rewrite ^/assets/(.*)$ /assets/$1 last;
         rewrite ^/avatars/(.*)$ /avatars/$1 last;
         rewrite ^/wallpapers/(.*)$ /wallpapers/$1 last;
@@ -26,15 +36,16 @@ There are two config to the php-fpm templates: fpm and nginx.  On the nginx side
         rewrite ^/proxy.php$ /proxy.php last;
         rewrite ^/api/v([0-9]*)/(.*)$ /api.php?path_info=$2&api_version=$1 last;
         rewrite ^$ /router.php last;
+        rewrite ^(.*) /router.php?path_info=$1 last;
     }
 
     location / {
-        rewrite ^(.*) /router.php?path_info=$1 last;
-    }
-    
-    location ~* \.(ico|css|js|gif|jpe?g|png)(\?[0-9]+)?$ {
-        expires max;
-        log_not_found off;
+        rewrite ^/verify-existence$ /verify.php last;
+        rewrite ^/proxy.php$ /proxy.php last;
+        rewrite ^/api/v([0-9]*)/(.*)$ /api.php?path_info=$2&api_version=$1 last;
+        rewrite ^/$ /router.php last;
+
+        try_files $uri $uri/ /router.php?path_info=$uri&$args;
     }
 
     location ~ \.php$ {
