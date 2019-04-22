@@ -1,0 +1,122 @@
+server {
+    listen      %proxy_ssl_port% ssl;
+    server_name %domain_idn% %alias_idn%;
+
+    ssl_certificate      %ssl_pem%;
+    ssl_certificate_key  %ssl_key%;
+
+    index       index.php index.html index.htm;
+    access_log  /var/log/%web_system%/domains/%domain%.log combined;
+    access_log  /var/log/%web_system%/domains/%domain%.bytes bytes;
+    error_log   /var/log/%web_system%/domains/%domain%.error.log error;
+
+    set $site "%docroot%/public";
+    if (!-d %docroot%/public) {
+        set $site "%docroot%";
+    }
+    root $site;
+
+    # captures wp-login and xmlrpc requests and set rate limit
+    location ~ (wp-login|xmlrpc)\.php {
+        limit_req zone=flood burst=5 nodelay;
+        limit_req_status 444;
+
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass            unix:/var/run/vesta-php-fpm-%domain_idn%.sock;
+        fastcgi_index           index.php;
+        fastcgi_param           SCRIPT_FILENAME $document_root$fastcgi_script_name;
+
+        include fastcgi_params;
+    }
+
+    # only cache GET method
+    if ($request_method != GET) {
+        set $no_cache 1;
+    }
+
+    # don't cache when there are query string
+    if ($query_string != "") {
+        set $skip_cache 1;
+    }
+
+    # Don't cache uris containing the following segments
+    if ($request_uri ~* "(/wp-admin/|/xmlrpc.php|/wp-(app|cron|login|register|mail).php|wp-.*.php|/feed/|index.php|wp-comments-popup.php|wp-links-opml.php|wp-locations.php|sitemap(_index)?.xml|[a-z0-9_-]+-sitemap([0-9]+)?.xml)") {
+        set $no_cache 1;
+    }   
+
+    # Don't use the cache for logged in users or recent commenters
+    if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wordpress_no_cache|wordpress_logged_in") {
+        set $no_cache 1;
+    } 
+
+    location / {
+        # allow for custom handling
+        include %docroot%/ngin*.conf;
+
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    location ~ \.php$ {
+        try_files $uri /index.php =404;
+
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass            unix:/var/run/vesta-php-fpm-%domain_idn%.sock;
+        fastcgi_index           index.php;
+        fastcgi_param           SCRIPT_FILENAME $document_root$fastcgi_script_name;
+
+        include fastcgi_params;
+
+        fastcgi_cache_bypass    $no_cache;
+        fastcgi_no_cache        $no_cache;
+        fastcgi_cache           fpm_%domain%;
+        fastcgi_cache_valid     404     1m;
+        fastcgi_cache_valid     200     45m;
+    }
+
+    location ~ /purge-cache(/.*) {
+        fastcgi_cache_purge fpm_%domain% "$real_scheme$request_method$host$1";
+    }
+
+    location ~ /\.|wp-config\.php { 
+        deny all;
+        log_not_found off;
+        access_log off;
+        expires max;
+    }
+
+    # Deny access to any files with a .php extension in the uploads directory
+    location /wp-content/uploads {
+        location ~ \.php$ {
+            deny all;
+        }
+    }
+    location ~* /(?:uploads|files)/.*\.php$ {
+        deny all;
+    }
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+        expires max;
+        access_log off;
+        log_not_found off;
+    }
+
+    error_page  403 /error/404.html;
+    error_page  404 /error/404.html;
+    error_page  500 502 503 504 /error/50x.html;
+
+    location /error/ {
+        alias   %home%/%user%/web/%domain%/document_errors/;
+    }
+
+    location /vstats/ {
+        alias   %home%/%user%/web/%domain%/stats/;
+        include %home%/%user%/web/%domain%/stats/auth.conf*;
+    }
+
+    include /etc/nginx/location_optmz_php.conf;
+
+    disable_symlinks if_not_owner from=%home%/%user%/web/%domain%;
+
+    include %home%/%user%/web/%domain%/private/*.conf;
+    include %home%/%user%/conf/web/snginx.%domain%.conf*;
+}
