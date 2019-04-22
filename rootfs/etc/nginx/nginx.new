@@ -60,6 +60,14 @@ http {
     gzip_disable        "MSIE [1-6]\.";
 
 
+    # Sets a $real_scheme variable whose value is the scheme passed by the load
+    # balancer in X-Forwarded-Proto (if any), defaulting to $scheme.
+    # Similar to how the HttpRealIp module treats X-Forwarded-For.
+    map $http_x_forwarded_proto $real_scheme {
+        default $http_x_forwarded_proto;
+        ''          $scheme;
+    }
+
     # Proxy settings
     proxy_http_version          1.1;
     proxy_redirect              off; # not what you think - it simply cancel default nginx behavior
@@ -71,7 +79,7 @@ http {
     proxy_set_header            Host              $host;
     proxy_set_header            X-Real-IP         $remote_addr;
     proxy_set_header            X-Forwarded-For   $proxy_add_x_forwarded_for;
-    proxy_set_header            X-Forwarded-Proto $scheme;
+    proxy_set_header            X-Forwarded-Proto $real_scheme;
 
     proxy_set_header            Upgrade $http_upgrade;
     proxy_set_header            Connection $http_connection;
@@ -94,7 +102,7 @@ http {
     proxy_cache_path            /var/cache/nginx/site levels=1:2 keys_zone=site_diskcached:10m max_size=5g inactive=45m use_temp_path=off;
     proxy_cache_path            /var/cache/nginx/disk levels=1:2 keys_zone=my_diskcached:50m max_size=7g inactive=7d use_temp_path=off;
 
-    proxy_cache_key             $scheme$host$request_uri;
+    proxy_cache_key             "$real_scheme$request_method$host$request_uri";
     proxy_temp_path             /var/cache/nginx/temp;
     proxy_ignore_headers        Vary Expires Set-Cookie Cache-Control;
     proxy_pass_request_headers  on;
@@ -107,7 +115,16 @@ http {
 
     # set mininum cache valid to 60 seconds, a small amount goes a long way
     proxy_cache_valid           any 60s;
-    proxy_cache_use_stale       error timeout invalid_header updating http_500 http_502 http_503 http_504;    
+    proxy_cache_use_stale       updating error timeout invalid_header http_500;    
+
+
+    # create bruceforce/flood rate limit
+    limit_req_zone              $binary_remote_addr zone=flood:15m rate=5r/s;
+
+
+    # create fastcgi cache defaults
+    fastcgi_cache_use_stale     updating error timeout invalid_header http_500;
+    fastcgi_cache_key           "$real_scheme$request_method$host$request_uri";
 
 
     # File cache settings
