@@ -2,7 +2,7 @@ FROM niiknow/docker-hostingbase:1.3.0
 LABEL maintainer="noogen <friends@niiknow.org>"
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.11.2 \
+    GOLANG_VERSION=1.12.4 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.31 \
     NGINX_VERSION=1.14.2 \
@@ -11,6 +11,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
 
 RUN cd /tmp \
+    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 91FA4AD5 \
+    && add-apt-repository ppa:deadsnakes/ppa \
     && echo "nginx mysql bind clamav ssl-cert dovecot dovenull Debian-exim postgres debian-spamd epmd couchdb memcache mongodb redis" | xargs -n1 groupadd -K GID_MIN=100 -K GID_MAX=999 ${g} \
     && echo "nginx nginx mysql mysql bind bind clamav clamav dovecot dovecot dovenull dovenull Debian-exim Debian-exim postgres postgres debian-spamd debian-spamd epmd epmd couchdb couchdb memcache memcache mongodb mongodb redis redis" | xargs -n2 useradd -d /nonexistent -s /bin/false -K UID_MIN=100 -K UID_MAX=999 -g ${g} \
     && usermod -d /var/lib/mysql mysql \
@@ -109,13 +111,13 @@ RUN cd /tmp \
 
 # install additional mods since 7.2 became default in the php repo
     && apt-get install -yf --no-install-recommends libapache2-mod-php7.1 libapache2-mod-php7.2 libapache2-mod-php7.3 \
-        postgresql-9.6-postgis-2.4 postgresql-9.6-pgrouting postgis postgis-gui postgresql-9.6-pgaudit \
-        postgresql-9.6-postgis-2.4-scripts postgresql-9.6-repack \
+        postgresql-9.6-postgis-2.5 postgresql-9.6-pgrouting postgis postgis-gui postgresql-9.6-pgaudit \
+        postgresql-9.6-postgis-2.5-scripts postgresql-9.6-repack \
 
 # install nodejs, memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
     && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server \
-        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.1 poppler-utils ghostscript \
-        libgs-dev imagemagick \
+        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.2 poppler-utils ghostscript \
+        libgs-dev imagemagick python3.7 \
 
 # make sure we default fcgi and php to 7.2
     && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
@@ -123,9 +125,9 @@ RUN cd /tmp \
     && /usr/bin/switch-php.sh "7.2" \
 
 # setting upawscli, golang, and awscli
-    && curl -O https://bootstrap.pypa.io/get-pip.py \
-    && python get-pip.py \
-    && pip install awscli \
+    && curl -sS "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" \
+    && python3 get-pip.py \
+    && pip3 install awscli \
 
 # getting golang
     && cd /tmp \

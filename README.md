@@ -70,6 +70,8 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 Enjoy!!!
 
 ## Release Notes
+1.6.0 - Add wordpress support.  Fix MonboDB weird build issue.  Python 3.7, DotNetCore 2.2, GoLang 1.12.4, and update postgis-2.4 to postgis-2.5
+
 1.5.2 - with php7.3 support.
 
 1.4.0 - Major release!  In this update, we remove support for php5.6 and 7.0 as it will no longer officially supported/at end of life (EOL): http://php.net/supported-versions.php  There is no excuse.  You know this day was coming.  
