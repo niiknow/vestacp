@@ -124,6 +124,9 @@ RUN cd /tmp \
     && ln -s /usr/bin/php-cgi7.2 /usr/bin/php-cgi \
     && /usr/bin/switch-php.sh "7.2" \
 
+# default python 3.7
+    && ln -sf $(which python3.7) /usr/bin/python3 \
+
 # setting upawscli, golang, and awscli
     && curl -sS "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" \
     && python3 get-pip.py \
@@ -147,6 +150,7 @@ COPY rootfs/. /
 RUN cd /tmp \
 
 # tweaks
+    && touch /var/log/auth.log \
     && chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/service/sshd/run \
     && chmod +x /etc/init.d/mongod \
