@@ -85,6 +85,7 @@ RUN cd /tmp \
     && apt-get clean 
 
 RUN cd /tmp \
+    && touch /var/log/auth.log \
 # begin setup for vesta
     && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/59695acd10ce63740bcf274a13569230362e06c5/install/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
     && sed -i -e "s/mysql\-server nginx/mysql-server/g" /tmp/vst-install-ubuntu.sh \
@@ -150,7 +151,6 @@ COPY rootfs/. /
 RUN cd /tmp \
 
 # tweaks
-    && touch /var/log/auth.log \
     && chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/service/sshd/run \
     && chmod +x /etc/init.d/mongod \

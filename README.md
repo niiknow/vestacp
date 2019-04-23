@@ -2,9 +2,9 @@
 The ultimate control panel with docker (thanks lagun4ik for a great start)
 
 What's included?
-* ubuntu 16.04 lts + Vesta 0.9.8-23
+* ubuntu 16.04 lts + Vesta 0.9.8-24
 * nginx (proxy) -> apache2 -> php-fcgi - high performance and flexible implementation
-* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 8.x, golang 1.11, openvpn, mongodb, couchdb, .net core 2.1 runtime
+* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 10.x, golang 1.12.4, openvpn, mongodb, couchdb, .net core 2.2 runtime
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
 * DNS, named, dovecot/roundcube, spamassassin, clamav, etc... -- disabled by default
 * vesta panel SSL (LE-issued) for mail and control panel - provide $HOSTNAME environment variable
@@ -55,7 +55,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] add incron to monitor and immediately backup /etc/{passwd,shadow,gshadow,group}
 - [x] nginx pagespeed module
 - [x] redirect awstats
-- [x] multiple php{7.1,7.2} fcgi and fpm templates
+- [x] multiple php{7.1,7.2,7.3} fcgi and fpm templates
 
 ### your todo
 - [ ] I recommend the following:
