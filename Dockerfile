@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     GOLANG_VERSION=1.12.4 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.31 \
-    NGINX_VERSION=1.14.2 \
+    NGINX_VERSION=1.16.0 \
     NGINX_PAGESPEED_VERSION=1.13.35.2 \
     NGINX_PSOL_VERSION=1.13.35.2 \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
@@ -150,7 +150,6 @@ RUN cd /tmp \
 COPY rootfs/. /
 
 RUN cd /tmp \
-
 # tweaks
     && chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/service/sshd/run \
@@ -158,6 +157,12 @@ RUN cd /tmp \
     && chmod +x /etc/my_init.d/startup.sh \
     && mv /sysprepz/admin/bin/vesta-*.sh /bin \
 
+# install iconcube loader extension
+    && /bin/vesta-ioncube-install.sh 7.1 \
+    && /bin/vesta-ioncube-install.sh 7.2 \
+    && /bin/vesta-ioncube-install.sh 7.3 \
+
+# activate ini
     && echo "extension=v8js.so" > /etc/php/7.1/mods-available/v8js.ini \
     && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/apache2/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/cli/conf.d/20-v8js.ini \
