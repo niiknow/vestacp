@@ -102,7 +102,7 @@ http {
     proxy_cache_path            /var/cache/nginx/site levels=1:2 keys_zone=site_diskcached:10m max_size=5g inactive=45m use_temp_path=off;
     proxy_cache_path            /var/cache/nginx/disk levels=1:2 keys_zone=my_diskcached:50m max_size=7g inactive=7d use_temp_path=off;
 
-    proxy_cache_key             "$real_scheme$request_method$host$request_uri";
+    proxy_cache_key             "$pid$real_scheme$request_method$host$request_uri";
     proxy_temp_path             /var/cache/nginx/temp;
     proxy_ignore_headers        Vary Expires Set-Cookie Cache-Control;
     proxy_pass_request_headers  on;
@@ -124,7 +124,7 @@ http {
 
     # create fastcgi cache defaults
     fastcgi_cache_use_stale     updating error timeout invalid_header http_500;
-    fastcgi_cache_key           "$real_scheme$request_method$host$request_uri";
+    fastcgi_cache_key           "$pid$real_scheme$request_method$host$request_uri";
 
 
     # File cache settings
