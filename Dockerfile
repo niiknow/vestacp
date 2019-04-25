@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
     GOLANG_VERSION=1.12.4 \
     NGINX_BUILD_DIR=/usr/src/nginx \
-    NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.31 \
+    NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.32 \
     NGINX_VERSION=1.16.0 \
     NGINX_PAGESPEED_VERSION=1.13.35.2 \
     NGINX_PSOL_VERSION=1.13.35.2 \
@@ -29,7 +29,7 @@ RUN cd /tmp \
     && add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main" \
     && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - \
     && add-apt-repository ppa:ubuntugis/ubuntugis-unstable \
-    && curl -sL "https://github.com/simpl/ngx_devel_kit/archive/v$NGINX_DEVEL_KIT_VERSION.tar.gz" -o dev-kit.tar.gz \
+    && curl -sL "https://github.com/simplresty/ngx_devel_kit/archive/v$NGINX_DEVEL_KIT_VERSION.tar.gz" -o dev-kit.tar.gz \
     && mkdir -p /usr/src/nginx/ngx_devel_kit \
     && tar -xof dev-kit.tar.gz -C /usr/src/nginx/ngx_devel_kit --strip-components=1 \
     && rm dev-kit.tar.gz \
