@@ -72,10 +72,6 @@ server {
         fastcgi_cache_valid     200     45m;
     }
 
-    location ~ /purge-cache(/.*) {
-        fastcgi_cache_purge fpm_%domain% "$real_scheme$request_method$host$1";
-    }
-
     location ~ /\.|wp-config\.php { 
         deny all;
         log_not_found off;
