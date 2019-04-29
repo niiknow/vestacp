@@ -72,7 +72,7 @@ server {
         fastcgi_cache_valid     200     45m;
     }
 
-    location ~ /\.|wp-config\.php { 
+    location ~ /wp-config\.php { 
         deny all;
         log_not_found off;
         access_log off;
