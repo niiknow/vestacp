@@ -94,3 +94,21 @@ logpath  = /var/log/apache2/domains/*.error.log
 findtime = 60
 maxretry = 6
 bantime  = 1200
+
+[nginx-404]
+enabled  = false
+action   = vesta[name=WEB]
+filter   = nginx-404
+logpath  = /var/log/apache2/domains/*.log
+findtime = 60
+maxretry = 20
+bantime  = 1200
+
+[nginx-403]
+enabled  = false
+action   = vesta[name=WEB]
+filter   = nginx-403
+logpath  = /var/log/apache2/domains/*.log
+findtime = 60
+maxretry = 20
+bantime  = 1200
