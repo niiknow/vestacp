@@ -29,10 +29,6 @@ server {
     location ~ \.php$ {
         try_files $uri /index.php =404;
 
-        if ($http_cookie ~ (comment_author_.*|wordpress_logged_in.*|wp-postpass_.*)) {
-            set $no_cache 1;
-        }
-
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass  unix:/var/run/vesta-php-fpm-%domain_idn%.sock;
         fastcgi_index index.php;
