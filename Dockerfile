@@ -353,7 +353,7 @@ RUN cd /tmp \
 
 # apache stuff
     && echo "\nServerName localhost\n" >> /etc/apache2/apache2.conf \
-    && a2enmod headers && a2dismod php7.3 && a2enmod php7.3 \
+    && a2enmod headers && a2dismod php7.3 && a2enmod php7.2 \
 
 # download new auto host ssl
     && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/master/bin/v-update-host-certificate --output /usr/local/vesta/bin/v-update-host-certificate \
