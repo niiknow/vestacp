@@ -15,6 +15,7 @@ server {
         set $site "%docroot%";
     }
     root $site;
+    pagespeed on;
 
     # captures wp-login and xmlrpc requests and set rate limit
     location ~ (wp-login|xmlrpc)\.php {
