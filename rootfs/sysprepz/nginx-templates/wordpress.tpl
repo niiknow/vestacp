@@ -26,6 +26,7 @@ server {
         fastcgi_param           SCRIPT_FILENAME $document_root$fastcgi_script_name;
 
         include fastcgi_params;
+        pagespeed unplugged;
     }
 
     # only cache GET method
@@ -70,6 +71,10 @@ server {
         fastcgi_cache           fpm_%domain%;
         fastcgi_cache_valid     404     1m;
         fastcgi_cache_valid     200     45m;
+
+        if ($no_cache = 1) {
+            pagespeed Disallow "*";
+        }
     }
 
     location ~ /wp-config\.php { 

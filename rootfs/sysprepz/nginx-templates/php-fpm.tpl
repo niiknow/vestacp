@@ -38,7 +38,12 @@ server {
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
+
+        if ($no_cache = 1) {
+            pagespeed Disallow "*";
+        }
     }
+
     
     error_page  403 /error/404.html;
     error_page  404 /error/404.html;
