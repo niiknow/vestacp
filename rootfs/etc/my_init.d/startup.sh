@@ -43,6 +43,9 @@ fi
 # make sure runit services are running across restart
 find /etc/service/ -name "down" -exec rm -rf {} \;
 
+# make sure mysql log is available for fail2ban
+touch /var/log/mysql/error.log
+
 # starting Vesta
 if [ -f /home/admin/bin/my-startup.sh ]; then
     echo "[i] running /home/admin/bin/my-startup.sh"

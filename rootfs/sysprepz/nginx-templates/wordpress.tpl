@@ -14,6 +14,7 @@ server {
         set $site "%docroot%";
     }
     root $site;
+    pagespeed on;
 
     # captures wp-login and xmlrpc requests and set rate limit
     location ~ (wp-login|xmlrpc)\.php {
@@ -26,6 +27,7 @@ server {
         fastcgi_param           SCRIPT_FILENAME $document_root$fastcgi_script_name;
 
         include fastcgi_params;
+        pagespeed unplugged;
     }
 
     # only cache GET method
@@ -70,9 +72,13 @@ server {
         fastcgi_cache           fpm_%domain%;
         fastcgi_cache_valid     404     1m;
         fastcgi_cache_valid     200     45m;
+
+        if ($no_cache = 1) {
+            pagespeed Disallow "*";
+        }
     }
 
-    location ~ /\.|wp-config\.php { 
+    location ~ /wp-config\.php { 
         deny all;
         log_not_found off;
         access_log off;

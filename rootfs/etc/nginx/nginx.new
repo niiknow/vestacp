@@ -119,7 +119,7 @@ http {
 
 
     # create bruceforce/flood rate limit
-    limit_req_zone              $binary_remote_addr zone=flood:15m rate=5r/s;
+    limit_req_zone              $binary_remote_addr zone=flood:15m rate=10r/m;
 
 
     # create fastcgi cache defaults
@@ -146,15 +146,14 @@ http {
     # Cache bypass
     map $http_cookie $no_cache {
         default 0;
-        ~SESS 1;
         ~wordpress_logged_in 1;
-        ~CONCRETE5 1;
         ~wp-postpass 1;
         ~comment_author 1;
     }
 
 
-    # Pagespeed
+    # Pagespeed (unplugged or disable by default)
+    pagespeed           unplugged;
     pagespeed           FileCachePath /var/ngx_pagespeed_cache;
 
 

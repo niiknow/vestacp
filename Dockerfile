@@ -325,10 +325,12 @@ RUN cd /tmp \
     && sed -i "s/FcgidConnectTimeout 20/FcgidMaxRequestLen 629145600\n  FcgidConnectTimeout 20/" /etc/apache2/mods-available/fcgid.conf \
 
 # fix docker nginx ips
-    && sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/*.tpl \
-    && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/*.stpl \
-    && sed -i -e "s/\%ip\%\:\%proxy\_port\%\;/\%proxy\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/php-fpm/*.tpl \
-    && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%\;/\%proxy\_ssl\_port\%\;/g" /usr/local/vesta/data/templates/web/nginx/php-fpm/*.stpl \
+    && sed -i -e "s/\%ip\%\:\%proxy\_port\%/\%proxy\_port\%/g" /usr/local/vesta/data/templates/web/nginx/*.tpl \
+    && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%/\%proxy\_ssl\_port\%/g" /usr/local/vesta/data/templates/web/nginx/*.stpl \
+    && sed -i -e "s/\%ip\%\:\%web\_port\%/\%web\_port\%/g" /usr/local/vesta/data/templates/web/nginx/*.tpl \
+    && sed -i -e "s/\%ip\%\:\%web\_ssl\_port\%/\%web\_ssl\_port\%/g" /usr/local/vesta/data/templates/web/nginx/*.stpl \
+    && sed -i -e "s/\%ip\%\:\%proxy\_port\%/\%proxy\_port\%/g" /usr/local/vesta/data/templates/web/nginx/php-fpm/*.tpl \
+    && sed -i -e "s/\%ip\%\:\%proxy\_ssl\_port\%/\%proxy\_ssl\_port\%/g" /usr/local/vesta/data/templates/web/nginx/php-fpm/*.stpl \
     && sed -i -e "s/ include \%home\%\/\%user\%\/conf\/web\/nginx\.\%domain\%/ include \%home\%\/\%user\%\/web\/\%domain\%\/private\/*.conf;\n    include \%home\%\/\%user\%\/conf\/web\/nginx\.\%domain\%/g" /usr/local/vesta/data/templates/web/nginx/*.tpl \
     && sed -i -e "s/ include \%home\%\/\%user\%\/conf\/web\/nginx\.\%domain\%/ include \%home\%\/\%user\%\/web\/\%domain\%\/private\/*.conf;\n    include \%home\%\/\%user\%\/conf\/web\/nginx\.\%domain\%/g" /usr/local/vesta/data/templates/web/nginx/*.stpl \
     && bash /usr/local/vesta/upd/switch_rpath.sh \
@@ -348,10 +350,11 @@ RUN cd /tmp \
     && sed -i -e "s/\-c \-\-inserts \-O \-x \-f/\-\-inserts \-x \-f/g" /usr/local/vesta/func/db.sh \
     && sed -i -e "s/dbuser/DBUSER/g" /usr/local/vesta/func/rebuild.sh \
     && sed -i -e "s/ROLE \$DBUSER/ROLE \$DBUSER WITH LOGIN/g" /usr/local/vesta/func/rebuild.sh \
+    && sed -i -e "s/plsql/psql/g" /usr/local/vesta/bin/v-update-sys-rrd-pgsql \
 
 # apache stuff
     && echo "\nServerName localhost\n" >> /etc/apache2/apache2.conf \
-    && a2enmod headers \
+    && a2enmod headers && a2dismod php7.3 && a2enmod php7.2 \
 
 # download new auto host ssl
     && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/master/bin/v-update-host-certificate --output /usr/local/vesta/bin/v-update-host-certificate \
