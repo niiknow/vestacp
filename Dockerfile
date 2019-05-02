@@ -1,4 +1,4 @@
-FROM niiknow/docker-hostingbase:1.3.0
+FROM niiknow/docker-hostingbase:1.3.1
 LABEL maintainer="noogen <friends@niiknow.org>"
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
