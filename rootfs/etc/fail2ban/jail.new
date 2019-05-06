@@ -96,22 +96,12 @@ findtime = 600
 maxretry = 10
 bantime  = 1200
 
-[nginx-404]
-enabled  = false
+[nginx-4xx]
+enabled  = true
 action   = vesta[name=WEB]
-filter   = nginx-404
+filter   = nginx-4xx
 logpath  = /var/log/apache2/domains/*.log
-# 20 errors 404 within 2 minutes, ban for 20 minutes
-findtime = 120
-maxretry = 20
-bantime  = 1200
-
-[nginx-403]
-enabled  = false
-action   = vesta[name=WEB]
-filter   = nginx-403
-logpath  = /var/log/apache2/domains/*.log
-# 20 errors 403 within 2 minutes, ban for 20 minutes
+# 20 of 4xx errors within 2 minutes, ban for 20 minutes
 findtime = 120
 maxretry = 20
 bantime  = 1200
