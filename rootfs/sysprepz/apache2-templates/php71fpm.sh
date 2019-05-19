@@ -5,7 +5,7 @@ domain="$2"
 ip="$3"
 home_dir="$4"
 docroot="$5"
-php_version="7.2"
+php_version="7.1"
 
 fpm_conf="
 [$domain]
