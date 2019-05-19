@@ -13,7 +13,7 @@ export PHP_FCGI_MAX_REQUESTS=1000
 export PHP_FCGI_CHILDREN=4
 exec  /usr/bin/php-cgi7.1
 "
-wrapper_file="$home_dir/$user/web/$domain/cgi-bin/fcgi7.1"
+wrapper_file="/home/$user/web/$domain/cgi-bin/fcgi7.1"
 
 echo "$wrapper_script" > $wrapper_file
 chown $user:$user $wrapper_file
