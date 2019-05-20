@@ -165,7 +165,7 @@ RUN cd /tmp \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
 
 # remove phpmyadmin, phppgadmin
-    && rm -rf /usr/share/phpmyadmin/* && && rm -rf /usr/share/phppgadmin/* \
+    && rm -rf /usr/share/phpmyadmin/* && rm -rf /usr/share/phppgadmin/* \
 
 # install adminer
     && rm -rf /usr/share/adminer/ && mkdir -p /usr/share/adminer/{public,private} \
