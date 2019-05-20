@@ -168,8 +168,8 @@ RUN cd /tmp \
     && rm -rf /usr/share/phpmyadmin/* && rm -rf /usr/share/phppgadmin/* \
 
 # install adminer
-    && rm -rf /usr/share/adminer/ && mkdir -p /usr/share/adminer/{public,private} \
-    && curl -SL 'https://www.adminer.org/latest.php' --output /usr/share/adminer/public/index.php \
+    && rm -rf /usr/share/adminer && mkdir -p /usr/share/adminer/public \
+    && curl -SL https://www.adminer.org/latest.php --output /usr/share/adminer/public/index.php \
 
 # overwrite (phpmyadmin, phppgadmin) with adminer
     && mkdir -p /etc/nginx/conf-d \
