@@ -11,6 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
 
 RUN cd /tmp \
+    && add-apt-repository universe \
     && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 91FA4AD5 \
     && add-apt-repository ppa:deadsnakes/ppa \
     && add-apt-repository ppa:maxmind/ppa -y \
