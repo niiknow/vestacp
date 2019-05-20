@@ -49,7 +49,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] Vesta FileManager
 - [x] Letsencrypt
 - [x] Sending/outgoing email, dovecot
-- [x] phpmyadmin, phppgadmin
+- [x] adminer
 - [x] Redis, Memcached
 - [x] nodejs, golang
 - [x] MariaDB/MySQL, PostgreSql, Mongodb
@@ -72,6 +72,32 @@ Enjoy!!!
 
 ### NOTE
 1. Latest phppgadmin has may have issue with php7.2  
+
+### GEOIP Blocking
+```
+http {
+    ...
+    geoip2 /etc/nginx/geoip2/GeoLite2-Country.mmdb {
+        auto_reload 5m;
+        $geoip2_country_code default=US source=$remote_addr country iso_code;
+    }
+    ...
+    map $geoip2_country_code $allowed_country {
+        default yes;
+        FK no;
+        FM no;
+        EH no;
+    }
+}
+
+server {
+    ...
+    if ($allowed_country = no) {
+        return 444;
+    }
+    ...
+}
+```
 
 
 ## Release Notes
