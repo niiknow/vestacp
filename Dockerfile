@@ -171,6 +171,12 @@ RUN cd /tmp \
     && rm -rf /usr/share/adminer/ && mkdir -p /usr/share/adminer/{public,private} \
     && wget "https://www.adminer.org/latest.php" -O /usr/share/adminer/public/index.php \
 
+# overwrite (phpmyadmin, phppgadmin) with adminer
+    && mkdir -p /etc/nginx/conf-d \
+    && rsync -a /etc/nginx/conf.d/* /etc/nginx/conf-d \
+    && echo 'include /etc/nginx/conf.d/dbadmin.inc;' > /etc/nginx/conf.d/phpmyadmin.inc \
+    && echo 'include /etc/nginx/conf.d/dbadmin.inc;' > /etc/nginx/conf.d/phppgadmin.inc \
+
 # activate ini
     && echo "extension=v8js.so" > /etc/php/7.1/mods-available/v8js.ini \
     && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/apache2/conf.d/20-v8js.ini \
