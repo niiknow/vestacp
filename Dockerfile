@@ -162,15 +162,14 @@ RUN cd /tmp \
     && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
     && ln -s /usr/bin/php-cgi7.2 /usr/bin/php-cgi \
     && /usr/bin/switch-php.sh "7.2" \
-    
-# upgrade phpmyadmin, phppgadmin
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && rm -rf /usr/share/phpmyadmin \
-    && git clone https://github.com/phpmyadmin/phpmyadmin /usr/share/phpmyadmin \
-    && cd /usr/share/phpmyadmin && git checkout STABLE && composer install --no-dev \
-    && rm -rf /usr/share/phppgadmin \
-    && git clone https://github.com/HuasoFoundries/phpPgAdmin6 /usr/share/phppgadmin \
-    && cd /usr/share/phppgadmin && composer install --no-dev \
+
+# remove phpmyadmin, phppgadmin
+    && rm -rf /usr/share/phpmyadmin/* && && rm -rf /usr/share/phppgadmin/* \
+
+# install adminer
+    && rm -rf /usr/share/adminer/ && mkdir -p /usr/share/adminer/{public,private} \
+    && wget "https://www.adminer.org/latest.php" -O /usr/share/adminer/public/index.php \
 
 # activate ini
     && echo "extension=v8js.so" > /etc/php/7.1/mods-available/v8js.ini \
