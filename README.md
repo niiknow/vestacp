@@ -69,8 +69,12 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 
 Enjoy!!!
 
+### NOTE
+1. Latest phppgadmin has may have issue with php7.2  
+
+
 ## Release Notes
-1.6.0 - Add wordpress support.  Fix MongoDB weird build issue.  Python 3.7, DotNetCore 2.2, GoLang 1.12.4, and update postgis-2.4 to postgis-2.5
+1.6.0 - Add wordpress support.  Fix MongoDB weird build issue.  Python 3.7, DotNetCore 2.2, GoLang 1.12.5, and update postgis-2.4 to postgis-2.5
 
 1.5.2 - with php7.3 support.
 

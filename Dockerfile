@@ -1,8 +1,8 @@
-FROM niiknow/docker-hostingbase:1.4.1
+FROM niiknow/docker-hostingbase:1.4.2
 LABEL maintainer="noogen <friends@niiknow.org>"
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.12.4 \
+    GOLANG_VERSION=1.12.5 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.32 \
     NGINX_VERSION=1.16.0 \
@@ -11,7 +11,6 @@ ENV DEBIAN_FRONTEND=noninteractive \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
 
 RUN cd /tmp \
-    && add-apt-repository universe \
     && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 91FA4AD5 \
     && add-apt-repository ppa:deadsnakes/ppa \
     && add-apt-repository ppa:maxmind/ppa -y \
@@ -67,15 +66,15 @@ RUN cd /tmp \
         php7.1-enchant php7.1-imap php7.1-xsl php7.1-mysql php7.1-mysqli php7.1-mysqlnd php7.1-pspell php7.1-gd php7.1-zip \
         php7.1-tidy php7.1-opcache php7.1-json php7.1-bz2 php7.1-pgsql php7.1-mcrypt php7.1-readline php7.1-imagick \
         php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-dev php7.1-fpm php7.1-sodium \
-        php7.1-soap php7.1-bcmath php7.1-fileinfo php7.1-xdebug php7.1-exif php7.1-tokenizer \
+        php7.1-soap php7.1-bcmath php7.1-fileinfo php7.1-xdebug php7.1-exif php7.1-tokenizer php7.1-phar \
     && apt-get install -yq php7.2-mbstring php7.2-cgi php7.2-cli php7.2-dev php7.2-geoip php7.2-common php7.2-xmlrpc php7.2-sybase php7.2-curl \
         php7.2-enchant php7.2-imap php7.2-xsl php7.2-mysql php7.2-mysqli php7.2-mysqlnd php7.2-pspell php7.2-gd php7.2-zip \
-        php7.2-tidy php7.2-opcache php7.2-json php7.2-bz2 php7.2-pgsql php7.2-readline php7.2-imagick \
+        php7.2-tidy php7.2-opcache php7.2-json php7.2-bz2 php7.2-pgsql php7.2-readline php7.2-imagick php7.2-phar \
         php7.2-intl php7.2-sqlite3 php7.2-ldap php7.2-xml php7.2-redis php7.2-dev php7.2-fpm \
         php7.2-soap php7.2-bcmath php7.2-fileinfo php7.2-xdebug php7.2-exif php7.2-tokenizer \
     && apt-get install -yq php7.3-mbstring php7.3-cgi php7.3-cli php7.3-dev php7.3-geoip php7.3-common php7.3-xmlrpc php7.3-sybase php7.3-curl \
         php7.3-enchant php7.3-imap php7.3-xsl php7.3-mysql php7.3-mysqli php7.3-mysqlnd php7.3-pspell php7.3-gd php7.3-zip \
-        php7.3-tidy php7.3-opcache php7.3-json php7.3-bz2 php7.3-pgsql php7.3-readline php7.3-imagick \
+        php7.3-tidy php7.3-opcache php7.3-json php7.3-bz2 php7.3-pgsql php7.3-readline php7.3-imagick php7.3-phar \
         php7.3-intl php7.3-sqlite3 php7.3-ldap php7.3-xml php7.3-redis php7.3-dev php7.3-fpm \
         php7.3-soap php7.3-bcmath php7.3-fileinfo php7.3-xdebug php7.3-exif php7.3-tokenizer \
 
@@ -123,11 +122,6 @@ RUN cd /tmp \
         openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.2 poppler-utils ghostscript \
         libgs-dev imagemagick python3.7 \
 
-# make sure we default fcgi and php to 7.2
-    && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
-    && ln -s /usr/bin/php-cgi7.2 /usr/bin/php-cgi \
-    && /usr/bin/switch-php.sh "7.2" \
-
 # default python 3.7
     && ln -sf $(which python3.7) /usr/bin/python3 \
 
@@ -160,9 +154,23 @@ RUN cd /tmp \
     && mv /sysprepz/admin/bin/vesta-*.sh /bin \
 
 # install iconcube loader extension
+    && /bin/vesta-ioncube-install.sh 7.3 \
     && /bin/vesta-ioncube-install.sh 7.1 \
     && /bin/vesta-ioncube-install.sh 7.2 \
-    && /bin/vesta-ioncube-install.sh 7.3 \
+
+# make sure we default fcgi and php to 7.2
+    && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
+    && ln -s /usr/bin/php-cgi7.2 /usr/bin/php-cgi \
+    && /usr/bin/switch-php.sh "7.2" \
+    
+# upgrade phpmyadmin, phppgadmin
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && rm -rf /usr/share/phpmyadmin \
+    && git clone https://github.com/phpmyadmin/phpmyadmin /usr/share/phpmyadmin \
+    && cd /usr/share/phpmyadmin && git checkout STABLE && composer install --no-dev \
+    && rm -rf /usr/share/phppgadmin \
+    && git clone https://github.com/HuasoFoundries/phpPgAdmin6 /usr/share/phppgadmin \
+    && cd /usr/share/phppgadmin && composer install --no-dev \
 
 # activate ini
     && echo "extension=v8js.so" > /etc/php/7.1/mods-available/v8js.ini \
@@ -533,7 +541,6 @@ RUN cd /tmp \
     && rm -rf /tmp/* \
     && apt-get -yf autoremove \
     && apt-get clean 
-
 
 VOLUME ["/vesta", "/home", "/backup"]
 
