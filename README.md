@@ -70,10 +70,7 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 
 Enjoy!!!
 
-### NOTE
-1. Latest phppgadmin has may have issue with php7.2  
-
-### GEOIP Blocking
+### GeoIP Blocking
 ```
 http {
     ...
