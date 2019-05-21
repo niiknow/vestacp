@@ -8,6 +8,11 @@ cd /etc/init.d/
 ./apache2 start
 ./mysql start
 
+# delete old php-fpm running file on restart
+rm -f /var/run/vesta*.sock
+rm -f /var/run/vesta*.pid
+rm -f /var/run/nginx.pid
+
 # delete defult postgres admindb if not use, then comment out the line below
 ./postgresql start
 ./nginx start
