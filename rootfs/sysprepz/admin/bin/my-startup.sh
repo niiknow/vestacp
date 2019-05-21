@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# re-enable phpmyadmin and phppgadmin
-# rsync -a /etc/apache2/conf-d/php*.conf /etc/apache2/conf.d
-
 # required startup and of course vesta
 cd /etc/init.d/
 ./disable-transparent-hugepages defaults
@@ -15,10 +12,8 @@ cd /etc/init.d/
 ./postgresql start
 ./nginx start
 ./vesta start
+./php7.2-fpm start
+./php7.3-fpm start
 
-# && ./exim4 start \
-# && ./dovecot start \
-# && ./clamav-daemon start \
-# && ./spamassassin start \
-# && ./php7.1-fpm start \
-# && ./fail2ban start \ # -- only if you run with: --cap-add=NET_ADMIN --cap-add=NET_RAW
+# ./fail2ban start \ # -- only if you run with: --cap-add=NET_ADMIN --cap-add=NET_RAW
+# other services (exim4, dovecot, clamav-daemon, spamassassin, couchdb, mongodb)

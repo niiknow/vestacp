@@ -39,7 +39,8 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] Use incrond to watch /etc/{passwd,shadow,gshadow,group} and sync to /backup/.etc so remember to attach the backup volume if you want to save password across restart.
 - [x] AWS CLI has been installed to simplify your backup lifestyle.  You just need to setup a cron on VestaCP.
 - [x] Update *index.html* to remove reference to VestaCP from default site for security.
-- [x] **Dovecot/roundcube email, phpmyadmin, phppgadmin, and DNS services** are disabled by default.  Look at /home/admin/bin/my-startup.sh for instruction on how to re-enable these services.  Remember to restart your container after updating my-startup.sh.
+- [x] **Dovecot/roundcube email, and DNS services** are disabled by default.  Look at /home/admin/bin/my-startup.sh for instruction on how to re-enable these services.  Remember to restart your container after updating my-startup.sh.
+- [x] Replace phpmyadmin and phppgadmin with adminer.
 
 ### misc/tested/verified
 - [x] ssh/sftp, nginx, apache2, php7.1+ & v8js 
@@ -48,7 +49,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] Vesta FileManager
 - [x] Letsencrypt
 - [x] Sending/outgoing email, dovecot
-- [x] phpmyadmin, phppgadmin
+- [x] adminer
 - [x] Redis, Memcached
 - [x] nodejs, golang
 - [x] MariaDB/MySQL, PostgreSql, Mongodb
@@ -69,8 +70,37 @@ If you use this Docker for hosting and allow your user to login, I also recommen
 
 Enjoy!!!
 
+### GeoIP Blocking
+```
+http {
+    ...
+    geoip2 /etc/nginx/geoip2/GeoLite2-Country.mmdb {
+        auto_reload 5m;
+        $geoip2_country_code default=US source=$remote_addr country iso_code;
+    }
+    ...
+    map $geoip2_country_code $allowed_country {
+        default yes;
+        FK no;
+        FM no;
+        EH no;
+    }
+}
+
+server {
+    ...
+    if ($allowed_country = no) {
+        return 444;
+    }
+    ...
+}
+```
+
+
 ## Release Notes
-1.6.0 - Add wordpress support.  Fix MongoDB weird build issue.  Python 3.7, DotNetCore 2.2, GoLang 1.12.4, and update postgis-2.4 to postgis-2.5
+1.8.0 - replace phpmyadmin and phppgadmin with adminer.
+
+1.6.0 - Add wordpress support.  Fix MongoDB weird build issue.  Python 3.7, DotNetCore 2.2, GoLang 1.12.5, and update postgis-2.4 to postgis-2.5
 
 1.5.2 - with php7.3 support.
 
