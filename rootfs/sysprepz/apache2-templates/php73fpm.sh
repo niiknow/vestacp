@@ -60,7 +60,8 @@ echo "$fpm_conf" > $fpm_conf_file
 chown $user:$user $fpm_conf_file
 chmod -f 751 $fpm_conf_file
 mkdir -p /home/$user/web/$domain/tmp/cache
-rm -rf /home/$user/web/$domain/tmp/cache
+rm -rf /home/$user/web/$domain/tmp/*
+chown $user:$user /home/$user/web/$domain/tmp
 mkdir -p /home/$user/web/$domain/tmp/cache
 chown -R www-data:www-data /home/$user/web/$domain/tmp/cache
 

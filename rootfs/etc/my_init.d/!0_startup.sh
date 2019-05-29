@@ -60,3 +60,5 @@ if [ -f /bin/vesta-auto-ssl.sh ]; then
     bash /bin/vesta-auto-ssl.sh
 fi
 
+find /home/admin/web -maxdepth 2 -type d -name "private" -exec sh -c 'echo "include /etc/nginx/conf.d/dbadmin.inc;" > $1/dbadmin.conf ' sh {} ';'
+
