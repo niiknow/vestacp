@@ -150,7 +150,7 @@ RUN cd /tmp \
     && chmod +x /etc/init.d/dovecot \
     && chmod +x /etc/service/sshd/run \
     && chmod +x /etc/init.d/mongod \
-    && chmod +x /etc/my_init.d/startup.sh \
+    && chmod +x /etc/my_init.d/!0_startup.sh \
     && mv /sysprepz/admin/bin/vesta-*.sh /bin \
 
 # install iconcube loader extension
