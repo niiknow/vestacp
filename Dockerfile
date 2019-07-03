@@ -89,7 +89,7 @@ RUN cd /tmp \
 RUN cd /tmp \
     && touch /var/log/auth.log \
 # begin setup for vesta
-    && curl -SL https://github.com/serghey-rodin/vesta/blob/a6d498e7e2088cc5d3b1d88cbcbea6a739d02ef1/install/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
+    && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/a6d498e7e2088cc5d3b1d88cbcbea6a739d02ef1/install/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
     && sed -i -e "s/software\=\"nginx /software\=\"/g" /tmp/vst-install-ubuntu.sh \
 
 # fix mariadb instead of mysql
