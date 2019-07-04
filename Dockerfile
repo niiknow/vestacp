@@ -90,7 +90,7 @@ RUN cd /tmp \
 RUN cd /tmp \
     && touch /var/log/auth.log \
 # begin setup for vesta
-    && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/3acd2281699fcaede439da0687d64586525a15a1/install/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
+    && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/a6d498e7e2088cc5d3b1d88cbcbea6a739d02ef1/install/vst-install-ubuntu.sh -o /tmp/vst-install-ubuntu.sh \
     && sed -i -e "s/software\=\"nginx /software\=\"/g" /tmp/vst-install-ubuntu.sh \
 
 # fix mariadb instead of mysql
@@ -369,10 +369,6 @@ RUN cd /tmp \
 # apache stuff
     && echo "\nServerName localhost\n" >> /etc/apache2/apache2.conf \
     && a2enmod headers && a2dismod php7.3 && a2enmod php7.2 \
-
-# download new auto host ssl
-    && curl -SL https://raw.githubusercontent.com/serghey-rodin/vesta/master/bin/v-update-host-certificate --output /usr/local/vesta/bin/v-update-host-certificate \
-    && chmod +x /usr/local/vesta/bin/v-update-host-certificate \
 
 # disable localhost redirect to bad default IP
     && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/* \
