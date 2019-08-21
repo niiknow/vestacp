@@ -2,7 +2,7 @@
 The ultimate control panel with docker (thanks lagun4ik for a great start)
 
 What's included?
-* ubuntu 16.04 lts + Vesta 0.9.8-24
+* ubuntu 16.04 lts + Vesta 0.9.8-25
 * nginx (proxy) -> apache2 -> php-fcgi - high performance and flexible implementation
 * ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 10.x, golang 1.12.4, openvpn, mongodb, couchdb, .net core 2.2 runtime
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
@@ -98,6 +98,8 @@ server {
 
 
 ## Release Notes
+1.8.5 - build update for Vesta 0.9.8-25 and nginx 1.16.1
+
 1.8.0 - replace phpmyadmin and phppgadmin with adminer.
 
 1.6.0 - Add wordpress support.  Fix MongoDB weird build issue.  Python 3.7, DotNetCore 2.2, GoLang 1.12.5, and update postgis-2.4 to postgis-2.5
