@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     GOLANG_VERSION=1.12.5 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.32 \
-    NGINX_VERSION=1.16.0 \
+    NGINX_VERSION=1.16.1 \
     NGINX_PAGESPEED_VERSION=1.13.35.2 \
     NGINX_PSOL_VERSION=1.13.35.2 \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
