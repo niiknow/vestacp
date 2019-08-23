@@ -66,17 +66,17 @@ RUN cd /tmp \
     && apt-get install -yq php7.1-mbstring php7.1-cgi php7.1-cli php7.1-dev php7.1-geoip php7.1-common php7.1-xmlrpc php7.1-sybase php7.1-curl \
         php7.1-enchant php7.1-imap php7.1-xsl php7.1-mysql php7.1-mysqli php7.1-mysqlnd php7.1-pspell php7.1-gd php7.1-zip \
         php7.1-tidy php7.1-opcache php7.1-json php7.1-bz2 php7.1-pgsql php7.1-mcrypt php7.1-readline php7.1-imagick \
-        php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-dev php7.1-fpm php7.1-sodium \
+        php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-fpm php7.1-sodium \
         php7.1-soap php7.1-bcmath php7.1-fileinfo php7.1-xdebug php7.1-exif php7.1-tokenizer php7.1-phar \
     && apt-get install -yq php7.2-mbstring php7.2-cgi php7.2-cli php7.2-dev php7.2-geoip php7.2-common php7.2-xmlrpc php7.2-sybase php7.2-curl \
         php7.2-enchant php7.2-imap php7.2-xsl php7.2-mysql php7.2-mysqli php7.2-mysqlnd php7.2-pspell php7.2-gd php7.2-zip \
         php7.2-tidy php7.2-opcache php7.2-json php7.2-bz2 php7.2-pgsql php7.2-readline php7.2-imagick php7.2-phar \
-        php7.2-intl php7.2-sqlite3 php7.2-ldap php7.2-xml php7.2-redis php7.2-dev php7.2-fpm \
+        php7.2-intl php7.2-sqlite3 php7.2-ldap php7.2-xml php7.2-redis php7.2-fpm \
         php7.2-soap php7.2-bcmath php7.2-fileinfo php7.2-xdebug php7.2-exif php7.2-tokenizer \
     && apt-get install -yq php7.3-mbstring php7.3-cgi php7.3-cli php7.3-dev php7.3-geoip php7.3-common php7.3-xmlrpc php7.3-sybase php7.3-curl \
         php7.3-enchant php7.3-imap php7.3-xsl php7.3-mysql php7.3-mysqli php7.3-mysqlnd php7.3-pspell php7.3-gd php7.3-zip \
         php7.3-tidy php7.3-opcache php7.3-json php7.3-bz2 php7.3-pgsql php7.3-readline php7.3-imagick php7.3-phar \
-        php7.3-intl php7.3-sqlite3 php7.3-ldap php7.3-xml php7.3-redis php7.3-dev php7.3-fpm \
+        php7.3-intl php7.3-sqlite3 php7.3-ldap php7.3-xml php7.3-redis php7.3-fpm \
         php7.3-soap php7.3-bcmath php7.3-fileinfo php7.3-xdebug php7.3-exif php7.3-tokenizer \
 
 # put nginx on hold so it doesn't get updates with apt-get upgrade, also remove from vesta apt-get
