@@ -29,7 +29,11 @@ niiknow/vestacp
 /backup -- users backup
 
 ## Authorization
-Login: admin Password: MakeItSo18
+Login: admin
+
+To get the password, run
+
+`docker exec $CONTAINER_ID cat /vesta-start/root/password.txt`
 
 ## SSH for FTP
 FTP was not installed on purpose because it's not secure.  Use SFTP instead on the 3322 port.  Disable ssh if you don't really need it and use the Vesta FileManager plugin.  Also, make sure you change the user shell in the Vesta panel in order to use ssh.
