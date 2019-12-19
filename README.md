@@ -102,6 +102,8 @@ server {
 
 
 ## Release Notes
+1.9.0 - remove php7.1 and add php7.4, update to GoLang 1.13.5 and dotnet 3.1
+
 1.8.5 - build update for Vesta 0.9.8-25 and nginx 1.16.1
 
 1.8.0 - replace phpmyadmin and phppgadmin with adminer.
