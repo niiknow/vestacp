@@ -33,7 +33,12 @@ Login: admin
 
 To get the password, run
 
-`docker exec $CONTAINER_ID cat /vesta-start/root/password.txt`
+`sudo docker exec $CONTAINER_ID cat /vesta-start/root/password.txt`
+
+Alternatively, you can change the password with:
+```
+sudo docker exec $CONTAINER_ID /usr/local/vesta/bin/v-change-user-password admin YOURNEWPASSWORD
+```
 
 ## SSH for FTP
 FTP was not installed on purpose because it's not secure.  Use SFTP instead on the 3322 port.  Disable ssh if you don't really need it and use the Vesta FileManager plugin.  Also, make sure you change the user shell in the Vesta panel in order to use ssh.
