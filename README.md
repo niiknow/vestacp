@@ -1,7 +1,7 @@
 # VestaCP
 The ultimate control panel with docker (thanks lagun4ik for a great start)
 
-What's included?
+<b>What's included?</b>
 * ubuntu 16.04 lts + Vesta 0.9.8-25
 * nginx (proxy) -> apache2 -> php-fcgi - high performance and flexible implementation
 * ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 10.x, golang 1.12.4, openvpn, mongodb, couchdb, .net core 2.2 runtime
@@ -11,7 +11,7 @@ What's included?
 * added ability to also run [php-fpm](https://github.com/niiknow/vestacp/blob/master/docs/php-fpm.md)
 ![](https://raw.githubusercontent.com/niiknow/vestacp/master/docs/images/php-fpm.png?raw=true)
 
-Run this image:
+<b>Run this image:</b>
 ```
 mkdir -p /opt/vestacp/{vesta,home,backup}
 
@@ -29,7 +29,16 @@ niiknow/vestacp
 /backup -- users backup
 
 ## Authorization
-Login: admin Password: MakeItSo18
+Login: admin
+
+To get the password, run
+
+`sudo docker exec $CONTAINER_ID cat /vesta-start/root/password.txt`
+
+Alternatively, you can change the password with:
+```
+sudo docker exec $CONTAINER_ID /usr/local/vesta/bin/v-change-user-password admin YOURNEWPASSWORD
+```
 
 ## SSH for FTP
 FTP was not installed on purpose because it's not secure.  Use SFTP instead on the 3322 port.  Disable ssh if you don't really need it and use the Vesta FileManager plugin.  Also, make sure you change the user shell in the Vesta panel in order to use ssh.
@@ -98,6 +107,8 @@ server {
 
 
 ## Release Notes
+1.9.0 - remove php7.1 and add php7.4, update to GoLang 1.13.5 and dotnet 3.1
+
 1.8.5 - build update for Vesta 0.9.8-25 and nginx 1.16.1
 
 1.8.0 - replace phpmyadmin and phppgadmin with adminer.
