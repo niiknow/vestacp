@@ -1,11 +1,11 @@
-FROM niiknow/docker-hostingbase:1.5.0
+FROM niiknow/docker-hostingbase:1.5.2
 LABEL maintainer="noogen <friends@niiknow.org>"
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.13.5 \
+    GOLANG_VERSION=1.14.3 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.32 \
-    NGINX_VERSION=1.16.1 \
+    NGINX_VERSION=1.18.0 \
     NGINX_PAGESPEED_VERSION=1.13.35.2 \
     NGINX_PSOL_VERSION=1.13.35.2 \
     IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/ngx_http_image_filter_module.c
@@ -44,7 +44,7 @@ RUN cd /tmp \
     && echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
     && echo "deb-src http://nginx.org/packages/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
     && apt-get update && apt-get -yf -o Dpkg::Options::="--force-confold"  --no-install-recommends upgrade \
-    && curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
+    && curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - \
     && apt-get install -yf -o Dpkg::Options::="--force-confold" --no-install-recommends libpcre3-dev libssl-dev dpkg-dev libmaxminddb0 libmaxminddb-dev mmdb-bin libgd-dev iproute uuid-dev pwgen \
     && mkdir -p ${NGINX_BUILD_DIR} \
     && cd ${NGINX_BUILD_DIR} \
@@ -121,8 +121,8 @@ RUN cd /tmp \
         postgresql-9.6-postgis-2.5 postgresql-9.6-pgrouting postgis postgis-gui postgresql-9.6-pgaudit \
         postgresql-9.6-postgis-2.5-scripts postgresql-9.6-repack \
 
-# install nodejs, memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
-    && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server \
+# install memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
+    && apt-get install -yf --no-install-recommends memcached php-memcached redis-server \
         openvpn mongodb-org php-mongodb couchdb dotnet-sdk-3.1 poppler-utils ghostscript \
         libgs-dev imagemagick python3.7 \
 
@@ -158,9 +158,9 @@ RUN cd /tmp \
     && mv /sysprepz/admin/bin/vesta-*.sh /bin \
 
 # install iconcube loader extension
-    && /bin/vesta-ioncube-install.sh 7.3 \
-    && /bin/vesta-ioncube-install.sh 7.4 \
+    # && /bin/vesta-ioncube-install.sh 7.4 \
     && /bin/vesta-ioncube-install.sh 7.2 \
+    && /bin/vesta-ioncube-install.sh 7.3 \
 
 # make sure we default fcgi and php to 7.2
     && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
@@ -182,23 +182,23 @@ RUN cd /tmp \
     && echo 'include /etc/nginx/conf.d/dbadmin.inc;' > /etc/nginx/conf.d/phppgadmin.inc \
 
 # activate ini
-#    && echo "extension=v8js.so" > /etc/php/7.4/mods-available/v8js.ini \
-#    && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/apache2/conf.d/20-v8js.ini \
-#    && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/cli/conf.d/20-v8js.ini \
-#    && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/cgi/conf.d/20-v8js.ini \
-#    && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/fpm/conf.d/20-v8js.ini \
+    && echo "extension=v8js.so" > /etc/php/7.4/mods-available/v8js.ini \
+    && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/apache2/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/cli/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/cgi/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/fpm/conf.d/20-v8js.ini \
 
     && echo "extension=v8js.so" > /etc/php/7.2/mods-available/v8js.ini \
     && ln -sf /etc/php/7.2/mods-available/v8js.ini /etc/php/7.2/apache2/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.2/mods-available/v8js.ini /etc/php/7.2/cli/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.2/mods-available/v8js.ini /etc/php/7.2/cgi/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.2/mods-available/v8js.ini /etc/php/7.2/fpm/conf.d/20-v8js.ini \
-
-#    && echo "extension=pcs.so" > /etc/php/7.4/mods-available/pcs.ini \
-#    && ln -sf /etc/php/7.4/mods-available/pcs.ini /etc/php/7.4/apache2/conf.d/15-pcs.ini \
-#    && ln -sf /etc/php/7.4/mods-available/pcs.ini /etc/php/7.4/cli/conf.d/15-pcs.ini \
-#    && ln -sf /etc/php/7.4/mods-available/pcs.ini /etc/php/7.4/cgi/conf.d/15-pcs.ini \
-#    && ln -sf /etc/php/7.4/mods-available/pcs.ini /etc/php/7.4/fpm/conf.d/15-pcs.ini \
+    
+    && echo "extension=v8js.so" > /etc/php/7.3/mods-available/v8js.ini \
+    && ln -sf /etc/php/7.3/mods-available/v8js.ini /etc/php/7.3/apache2/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.3/mods-available/v8js.ini /etc/php/7.3/cli/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.3/mods-available/v8js.ini /etc/php/7.3/cgi/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.3/mods-available/v8js.ini /etc/php/7.3/fpm/conf.d/20-v8js.ini \
 
     && echo "extension=pcs.so" > /etc/php/7.2/mods-available/pcs.ini \
     && ln -sf /etc/php/7.2/mods-available/pcs.ini /etc/php/7.2/apache2/conf.d/15-pcs.ini \
@@ -212,11 +212,11 @@ RUN cd /tmp \
     && ln -sf /etc/php/7.3/mods-available/pcs.ini /etc/php/7.3/cgi/conf.d/15-pcs.ini \
     && ln -sf /etc/php/7.3/mods-available/pcs.ini /etc/php/7.3/fpm/conf.d/15-pcs.ini \
 
-#    && echo "extension=couchbase.so" > /etc/php/7.4/mods-available/couchbase.ini \
-#    && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/apache2/conf.d/30-couchbase.ini \
-#    && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/cli/conf.d/30-couchbase.ini \
-#    && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/cgi/conf.d/30-couchbase.ini \
-#    && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/fpm/conf.d/30-couchbase.ini \
+    && echo "extension=couchbase.so" > /etc/php/7.4/mods-available/couchbase.ini \
+    && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/apache2/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/cli/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/cgi/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/fpm/conf.d/30-couchbase.ini \
 
     && echo "extension=couchbase.so" > /etc/php/7.2/mods-available/couchbase.ini \
     && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/apache2/conf.d/30-couchbase.ini \
