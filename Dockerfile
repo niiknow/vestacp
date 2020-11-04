@@ -1,14 +1,14 @@
-FROM niiknow/docker-hostingbase:1.4.2
+FROM niiknow/docker-hostingbase:1.5.3
 LABEL maintainer="noogen <friends@niiknow.org>"
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.12.5 \
+    GOLANG_VERSION=1.14.3 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.32 \
-    NGINX_VERSION=1.16.1 \
+    NGINX_VERSION=1.18.0 \
     NGINX_PAGESPEED_VERSION=1.13.35.2 \
     NGINX_PSOL_VERSION=1.13.35.2 \
-    IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/src/ngx_http_image_filter_module.c
+    IMAGE_FILTER_URL=https://raw.githubusercontent.com/niiknow/docker-nginx-image-proxy/master/build/ngx_http_image_filter_module.c
 
 RUN cd /tmp \
     && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 91FA4AD5 \
@@ -42,9 +42,9 @@ RUN cd /tmp \
     && cp /etc/apt/sources.list /etc/apt/sources.list.bak \
     && echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
     && echo "deb-src http://nginx.org/packages/ubuntu/ xenial nginx" | tee -a /etc/apt/sources.list \
-    && apt-get update && apt-get -y --no-install-recommends upgrade \
-    && curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
-    && apt-get install -y --no-install-recommends libpcre3-dev libssl-dev dpkg-dev libmaxminddb0 libmaxminddb-dev mmdb-bin libgd-dev iproute uuid-dev \
+    && apt-get update && apt-get -yf -o Dpkg::Options::="--force-confold"  --no-install-recommends upgrade \
+    && curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - \
+    && apt-get install -yf -o Dpkg::Options::="--force-confold" --no-install-recommends libpcre3-dev libssl-dev dpkg-dev libmaxminddb0 libmaxminddb-dev mmdb-bin libgd-dev iproute uuid-dev pwgen \
     && mkdir -p ${NGINX_BUILD_DIR} \
     && cd ${NGINX_BUILD_DIR} \
     && git clone https://github.com/leev/ngx_http_geoip2_module ngx_http_geoip2_module \
@@ -62,11 +62,11 @@ RUN cd /tmp \
     && cd ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}; dpkg-buildpackage -uc -us -b \
     && cd ${NGINX_BUILD_DIR} \
     && dpkg -i nginx_${NGINX_VERSION}-1~xenial_amd64.deb \
-    && apt-get install -yq php7.1-mbstring php7.1-cgi php7.1-cli php7.1-dev php7.1-geoip php7.1-common php7.1-xmlrpc php7.1-sybase php7.1-curl \
-        php7.1-enchant php7.1-imap php7.1-xsl php7.1-mysql php7.1-mysqli php7.1-mysqlnd php7.1-pspell php7.1-gd php7.1-zip \
-        php7.1-tidy php7.1-opcache php7.1-json php7.1-bz2 php7.1-pgsql php7.1-mcrypt php7.1-readline php7.1-imagick \
-        php7.1-intl php7.1-sqlite3 php7.1-ldap php7.1-xml php7.1-redis php7.1-fpm php7.1-sodium \
-        php7.1-soap php7.1-bcmath php7.1-fileinfo php7.1-xdebug php7.1-exif php7.1-tokenizer php7.1-phar \
+    && apt-get install -yq php7.4-mbstring php7.4-cgi php7.4-cli php7.4-dev php7.4-geoip php7.4-common php7.4-xmlrpc php7.4-sybase php7.4-curl \
+        php7.4-enchant php7.4-imap php7.4-xsl php7.4-mysql php7.4-mysqli php7.4-mysqlnd php7.4-pspell php7.4-gd php7.4-zip \
+        php7.4-tidy php7.4-opcache php7.4-json php7.4-bz2 php7.4-pgsql php7.4-readline php7.4-imagick php7.3-phar \
+        php7.4-intl php7.4-sqlite3 php7.4-ldap php7.4-xml php7.4-redis php7.4-fpm \
+        php7.4-soap php7.4-bcmath php7.4-fileinfo php7.4-xdebug php7.4-exif php7.4-tokenizer \
     && apt-get install -yq php7.2-mbstring php7.2-cgi php7.2-cli php7.2-dev php7.2-geoip php7.2-common php7.2-xmlrpc php7.2-sybase php7.2-curl \
         php7.2-enchant php7.2-imap php7.2-xsl php7.2-mysql php7.2-mysqli php7.2-mysqlnd php7.2-pspell php7.2-gd php7.2-zip \
         php7.2-tidy php7.2-opcache php7.2-json php7.2-bz2 php7.2-pgsql php7.2-readline php7.2-imagick php7.2-phar \
@@ -98,6 +98,9 @@ RUN cd /tmp \
 # fix postgres-9.6 instead of 9.5
     && sed -i -e "s/postgresql postgresql-contrib /postgresql\-9\.6 postgresql\-contrib\-9\.6 postgresql\-client\-9\.6 /g" /tmp/vst-install-ubuntu.sh \
 
+# generate secure password
+    && pwgen -c -n -1 12 > $HOME/password.txt \
+
 # begin install vesta
     && bash /tmp/vst-install-ubuntu.sh \
         --nginx yes --apache yes --phpfpm no \
@@ -106,20 +109,20 @@ RUN cd /tmp \
         --spamassassin yes --clamav yes \
         --iptables yes --fail2ban yes \
         --mysql yes --postgresql yes --remi yes \
-        --quota no --password MakeItSo18 \
+        --quota no --password $(cat $HOME/password.txt) \
         -y no -f \
 
 # begin apache stuff
     && service apache2 stop && service vesta stop \
 
 # install additional mods since 7.2 became default in the php repo
-    && apt-get install -yf --no-install-recommends libapache2-mod-php7.1 libapache2-mod-php7.2 libapache2-mod-php7.3 \
+    && apt-get install -yf --no-install-recommends libapache2-mod-php7.4 libapache2-mod-php7.2 libapache2-mod-php7.3 \
         postgresql-9.6-postgis-2.5 postgresql-9.6-pgrouting postgis postgis-gui postgresql-9.6-pgaudit \
         postgresql-9.6-postgis-2.5-scripts postgresql-9.6-repack \
 
-# install nodejs, memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
-    && apt-get install -yf --no-install-recommends nodejs memcached php-memcached redis-server \
-        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-2.2 poppler-utils ghostscript \
+# install memcached, redis-server, openvpn, mongodb, dotnet-sdk, and couchdb
+    && apt-get install -yf --no-install-recommends memcached php-memcached redis-server \
+        openvpn mongodb-org php-mongodb couchdb dotnet-sdk-3.1 poppler-utils ghostscript \
         libgs-dev imagemagick python3.7 \
 
 # default python 3.7
@@ -154,9 +157,9 @@ RUN cd /tmp \
     && mv /sysprepz/admin/bin/vesta-*.sh /bin \
 
 # install iconcube loader extension
-    && /bin/vesta-ioncube-install.sh 7.3 \
-    && /bin/vesta-ioncube-install.sh 7.1 \
+    # && /bin/vesta-ioncube-install.sh 7.4 \
     && /bin/vesta-ioncube-install.sh 7.2 \
+    && /bin/vesta-ioncube-install.sh 7.3 \
 
 # make sure we default fcgi and php to 7.2
     && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
@@ -178,23 +181,23 @@ RUN cd /tmp \
     && echo 'include /etc/nginx/conf.d/dbadmin.inc;' > /etc/nginx/conf.d/phppgadmin.inc \
 
 # activate ini
-    && echo "extension=v8js.so" > /etc/php/7.1/mods-available/v8js.ini \
-    && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/apache2/conf.d/20-v8js.ini \
-    && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/cli/conf.d/20-v8js.ini \
-    && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/cgi/conf.d/20-v8js.ini \
-    && ln -sf /etc/php/7.1/mods-available/v8js.ini /etc/php/7.1/fpm/conf.d/20-v8js.ini \
+    && echo "extension=v8js.so" > /etc/php/7.4/mods-available/v8js.ini \
+    && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/apache2/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/cli/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/cgi/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/fpm/conf.d/20-v8js.ini \
 
     && echo "extension=v8js.so" > /etc/php/7.2/mods-available/v8js.ini \
     && ln -sf /etc/php/7.2/mods-available/v8js.ini /etc/php/7.2/apache2/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.2/mods-available/v8js.ini /etc/php/7.2/cli/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.2/mods-available/v8js.ini /etc/php/7.2/cgi/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.2/mods-available/v8js.ini /etc/php/7.2/fpm/conf.d/20-v8js.ini \
-
-    && echo "extension=pcs.so" > /etc/php/7.1/mods-available/pcs.ini \
-    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/apache2/conf.d/15-pcs.ini \
-    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/cli/conf.d/15-pcs.ini \
-    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/cgi/conf.d/15-pcs.ini \
-    && ln -sf /etc/php/7.1/mods-available/pcs.ini /etc/php/7.1/fpm/conf.d/15-pcs.ini \
+    
+    && echo "extension=v8js.so" > /etc/php/7.3/mods-available/v8js.ini \
+    && ln -sf /etc/php/7.3/mods-available/v8js.ini /etc/php/7.3/apache2/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.3/mods-available/v8js.ini /etc/php/7.3/cli/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.3/mods-available/v8js.ini /etc/php/7.3/cgi/conf.d/20-v8js.ini \
+    && ln -sf /etc/php/7.3/mods-available/v8js.ini /etc/php/7.3/fpm/conf.d/20-v8js.ini \
 
     && echo "extension=pcs.so" > /etc/php/7.2/mods-available/pcs.ini \
     && ln -sf /etc/php/7.2/mods-available/pcs.ini /etc/php/7.2/apache2/conf.d/15-pcs.ini \
@@ -208,11 +211,11 @@ RUN cd /tmp \
     && ln -sf /etc/php/7.3/mods-available/pcs.ini /etc/php/7.3/cgi/conf.d/15-pcs.ini \
     && ln -sf /etc/php/7.3/mods-available/pcs.ini /etc/php/7.3/fpm/conf.d/15-pcs.ini \
 
-    && echo "extension=couchbase.so" > /etc/php/7.1/mods-available/couchbase.ini \
-    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/apache2/conf.d/30-couchbase.ini \
-    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cli/conf.d/30-couchbase.ini \
-    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/cgi/conf.d/30-couchbase.ini \
-    && ln -sf /etc/php/7.1/mods-available/couchbase.ini /etc/php/7.1/fpm/conf.d/30-couchbase.ini \
+    && echo "extension=couchbase.so" > /etc/php/7.4/mods-available/couchbase.ini \
+    && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/apache2/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/cli/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/cgi/conf.d/30-couchbase.ini \
+    && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/fpm/conf.d/30-couchbase.ini \
 
     && echo "extension=couchbase.so" > /etc/php/7.2/mods-available/couchbase.ini \
     && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/apache2/conf.d/30-couchbase.ini \
@@ -261,10 +264,10 @@ RUN cd /tmp \
     && sed -i -e "s/^#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/9.6/main/postgresql.conf \
 
 # php stuff - after vesta because of vesta-php installs
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.1/apache2/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.1/cli/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.1/cgi/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.1/fpm/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.4/apache2/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.4/cli/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.4/cgi/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.4/fpm/php.ini \
 
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.2/apache2/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.2/cli/php.ini \
@@ -276,10 +279,10 @@ RUN cd /tmp \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.3/cgi/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.3/fpm/php.ini \
 
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.1/apache2/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.1/cli/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.1/cgi/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.1/fpm/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.4/apache2/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.4/cli/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.4/cgi/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.4/fpm/php.ini \
 
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.2/apache2/php.ini \
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.2/cli/php.ini \
@@ -291,10 +294,10 @@ RUN cd /tmp \
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.3/cgi/php.ini \
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.3/fpm/php.ini \
 
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.1/apache2/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.1/cli/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.1/cgi/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.1/fpm/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.4/apache2/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.4/cli/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.4/cgi/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.4/fpm/php.ini \
 
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.2/apache2/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.2/cli/php.ini \
@@ -306,10 +309,10 @@ RUN cd /tmp \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.3/cgi/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.3/fpm/php.ini \
 
-    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.1/apache2/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.1/cli/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.1/cgi/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.1/fpm/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.4/apache2/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.4/cli/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.4/cgi/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.4/fpm/php.ini \
 
     && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.2/apache2/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.2/cli/php.ini \
@@ -321,10 +324,10 @@ RUN cd /tmp \
     && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.3/cgi/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.3/fpm/php.ini \
 
-    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.1/apache2/php.ini \
-    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.1/cli/php.ini \
-    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.1/cgi/php.ini \
-    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.1/fpm/php.ini \
+    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.4/apache2/php.ini \
+    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.4/cli/php.ini \
+    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.4/cgi/php.ini \
+    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.4/fpm/php.ini \
 
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.2/apache2/php.ini \
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.2/cli/php.ini \
@@ -367,7 +370,7 @@ RUN cd /tmp \
 
 # apache stuff
     && echo "\nServerName localhost\n" >> /etc/apache2/apache2.conf \
-    && a2enmod headers && a2dismod php7.3 && a2enmod php7.2 \
+    && a2enmod headers && a2dismod php7.3 && a2dismod php7.4 && a2enmod php7.2 \
 
 # disable localhost redirect to bad default IP
     && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/* \
