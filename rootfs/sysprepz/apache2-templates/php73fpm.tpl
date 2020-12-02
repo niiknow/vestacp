@@ -2,7 +2,7 @@
 #<VirtualHost %ip%:%web_port%>
 #
 #    ServerName %domain_idn%
-#    # php72fpm
+#    # php73fpm
 #    DocumentRoot %sdocroot%
 #    <Location />
 #        Deny from all

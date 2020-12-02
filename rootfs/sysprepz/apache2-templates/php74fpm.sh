@@ -42,7 +42,7 @@ rm -f /home/$user/web/$domain/cgi-bin/php*-fpm.conf
 # restart any *running* php fpm found with ps -uaxw
 # otherwise, simply use: 
 # find /etc/init.d/ -name 'php*-fpm*' -type f -exec basename {} \; | xargs -I{} service {} restart || true
-phpfpms="7.2:7.3:7.4"
+phpfpms="7.2:7.3:7.4:8.0"
 
 iphpfpm=(${phpfpms//:/ })
 for i in "${!iphpfpm[@]}"

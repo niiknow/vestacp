@@ -107,6 +107,7 @@ server {
 
 
 ## Release Notes
+1.9.4 - fix build and prep for php8.0
 1.9.1 - build update for nginx 1.18.0, GoLang 1.14.3, nodejs 12, and phpv8js for php7.4
 
 1.9.0 - remove php7.1 and add php7.4, update to GoLang 1.13.5 and dotnet 3.1

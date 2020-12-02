@@ -2,7 +2,7 @@ FROM niiknow/docker-hostingbase:1.5.3
 LABEL maintainer="noogen <friends@niiknow.org>"
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.14.3 \
+    GOLANG_VERSION=1.15.5 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.32 \
     NGINX_VERSION=1.18.0 \
