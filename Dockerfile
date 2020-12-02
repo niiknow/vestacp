@@ -1,4 +1,4 @@
-FROM niiknow/docker-hostingbase:1.5.3
+FROM niiknow/docker-hostingbase:1.6.1
 LABEL maintainer="noogen <friends@niiknow.org>"
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
@@ -63,16 +63,16 @@ RUN cd /tmp \
     && cd ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}; dpkg-buildpackage -uc -us -b \
     && cd ${NGINX_BUILD_DIR} \
     && dpkg -i nginx_${NGINX_VERSION}-2~xenial_amd64.deb \
+    && apt-get install -yq php8.0-mbstring php8.0-cgi php8.0-cli php8.0-dev php8.0-common php8.0-sybase php8.0-curl \
+        php8.0-enchant php8.0-imap php8.0-xsl php8.0-mysql php8.0-mysqli php8.0-mysqlnd php8.0-pspell php8.0-gd php8.0-zip \
+        php8.0-tidy php8.0-opcache php8.0-bz2 php8.0-pgsql php8.0-readline php8.0-imagick php7.3-phar \
+        php8.0-intl php8.0-sqlite3 php8.0-ldap php8.0-xml php8.0-redis php8.0-fpm \
+        php8.0-soap php8.0-bcmath php8.0-fileinfo php8.0-xdebug php8.0-exif php8.0-tokenizer \
     && apt-get install -yq php7.4-mbstring php7.4-cgi php7.4-cli php7.4-dev php7.4-geoip php7.4-common php7.4-xmlrpc php7.4-sybase php7.4-curl \
         php7.4-enchant php7.4-imap php7.4-xsl php7.4-mysql php7.4-mysqli php7.4-mysqlnd php7.4-pspell php7.4-gd php7.4-zip \
         php7.4-tidy php7.4-opcache php7.4-json php7.4-bz2 php7.4-pgsql php7.4-readline php7.4-imagick php7.3-phar \
         php7.4-intl php7.4-sqlite3 php7.4-ldap php7.4-xml php7.4-redis php7.4-fpm \
         php7.4-soap php7.4-bcmath php7.4-fileinfo php7.4-xdebug php7.4-exif php7.4-tokenizer \
-    && apt-get install -yq php7.2-mbstring php7.2-cgi php7.2-cli php7.2-dev php7.2-geoip php7.2-common php7.2-xmlrpc php7.2-sybase php7.2-curl \
-        php7.2-enchant php7.2-imap php7.2-xsl php7.2-mysql php7.2-mysqli php7.2-mysqlnd php7.2-pspell php7.2-gd php7.2-zip \
-        php7.2-tidy php7.2-opcache php7.2-json php7.2-bz2 php7.2-pgsql php7.2-readline php7.2-imagick php7.2-phar \
-        php7.2-intl php7.2-sqlite3 php7.2-ldap php7.2-xml php7.2-redis php7.2-fpm \
-        php7.2-soap php7.2-bcmath php7.2-fileinfo php7.2-xdebug php7.2-exif php7.2-tokenizer \
     && apt-get install -yq php7.3-mbstring php7.3-cgi php7.3-cli php7.3-dev php7.3-geoip php7.3-common php7.3-xmlrpc php7.3-sybase php7.3-curl \
         php7.3-enchant php7.3-imap php7.3-xsl php7.3-mysql php7.3-mysqli php7.3-mysqlnd php7.3-pspell php7.3-gd php7.3-zip \
         php7.3-tidy php7.3-opcache php7.3-json php7.3-bz2 php7.3-pgsql php7.3-readline php7.3-imagick php7.3-phar \
@@ -116,8 +116,8 @@ RUN cd /tmp \
 # begin apache stuff
     && service apache2 stop && service vesta stop \
 
-# install additional mods since 7.2 became default in the php repo
-    && apt-get install -yf --no-install-recommends libapache2-mod-php7.4 libapache2-mod-php7.2 libapache2-mod-php7.3 \
+# install additional mods
+    && apt-get install -yf --no-install-recommends libapache2-mod-php8.0 libapache2-mod-php7.4 libapache2-mod-php7.3 \
         postgresql-9.6-postgis-2.5 postgresql-9.6-pgrouting postgis postgis-gui postgresql-9.6-pgaudit \
         postgresql-9.6-postgis-2.5-scripts postgresql-9.6-repack \
 
@@ -158,14 +158,14 @@ RUN cd /tmp \
     && mv /sysprepz/admin/bin/vesta-*.sh /bin \
 
 # install iconcube loader extension
-    # && /bin/vesta-ioncube-install.sh 7.4 \
-    && /bin/vesta-ioncube-install.sh 7.2 \
+    # && /bin/vesta-ioncube-install.sh 8.0 \
+    && /bin/vesta-ioncube-install.sh 7.4 \
     && /bin/vesta-ioncube-install.sh 7.3 \
 
-# make sure we default fcgi and php to 7.2
+# make sure we default fcgi and php to 7.4
     && mv /usr/bin/php-cgi /usr/bin/php-cgi-old \
-    && ln -s /usr/bin/php-cgi7.2 /usr/bin/php-cgi \
-    && /usr/bin/switch-php.sh "7.2" \
+    && ln -s /usr/bin/php-cgi7.4 /usr/bin/php-cgi \
+    && /usr/bin/switch-php.sh "7.4" \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
 
 # remove phpmyadmin, phppgadmin
@@ -188,23 +188,17 @@ RUN cd /tmp \
     && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/cgi/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.4/mods-available/v8js.ini /etc/php/7.4/fpm/conf.d/20-v8js.ini \
 
-    && echo "extension=v8js.so" > /etc/php/7.2/mods-available/v8js.ini \
-    && ln -sf /etc/php/7.2/mods-available/v8js.ini /etc/php/7.2/apache2/conf.d/20-v8js.ini \
-    && ln -sf /etc/php/7.2/mods-available/v8js.ini /etc/php/7.2/cli/conf.d/20-v8js.ini \
-    && ln -sf /etc/php/7.2/mods-available/v8js.ini /etc/php/7.2/cgi/conf.d/20-v8js.ini \
-    && ln -sf /etc/php/7.2/mods-available/v8js.ini /etc/php/7.2/fpm/conf.d/20-v8js.ini \
-    
     && echo "extension=v8js.so" > /etc/php/7.3/mods-available/v8js.ini \
     && ln -sf /etc/php/7.3/mods-available/v8js.ini /etc/php/7.3/apache2/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.3/mods-available/v8js.ini /etc/php/7.3/cli/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.3/mods-available/v8js.ini /etc/php/7.3/cgi/conf.d/20-v8js.ini \
     && ln -sf /etc/php/7.3/mods-available/v8js.ini /etc/php/7.3/fpm/conf.d/20-v8js.ini \
 
-    && echo "extension=pcs.so" > /etc/php/7.2/mods-available/pcs.ini \
-    && ln -sf /etc/php/7.2/mods-available/pcs.ini /etc/php/7.2/apache2/conf.d/15-pcs.ini \
-    && ln -sf /etc/php/7.2/mods-available/pcs.ini /etc/php/7.2/cli/conf.d/15-pcs.ini \
-    && ln -sf /etc/php/7.2/mods-available/pcs.ini /etc/php/7.2/cgi/conf.d/15-pcs.ini \
-    && ln -sf /etc/php/7.2/mods-available/pcs.ini /etc/php/7.2/fpm/conf.d/15-pcs.ini \
+    && echo "extension=pcs.so" > /etc/php/7.4/mods-available/pcs.ini \
+    && ln -sf /etc/php/7.4/mods-available/pcs.ini /etc/php/7.4/apache2/conf.d/15-pcs.ini \
+    && ln -sf /etc/php/7.4/mods-available/pcs.ini /etc/php/7.4/cli/conf.d/15-pcs.ini \
+    && ln -sf /etc/php/7.4/mods-available/pcs.ini /etc/php/7.4/cgi/conf.d/15-pcs.ini \
+    && ln -sf /etc/php/7.4/mods-available/pcs.ini /etc/php/7.4/fpm/conf.d/15-pcs.ini \
 
     && echo "extension=pcs.so" > /etc/php/7.3/mods-available/pcs.ini \
     && ln -sf /etc/php/7.3/mods-available/pcs.ini /etc/php/7.3/apache2/conf.d/15-pcs.ini \
@@ -217,12 +211,6 @@ RUN cd /tmp \
     && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/cli/conf.d/30-couchbase.ini \
     && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/cgi/conf.d/30-couchbase.ini \
     && ln -sf /etc/php/7.4/mods-available/couchbase.ini /etc/php/7.4/fpm/conf.d/30-couchbase.ini \
-
-    && echo "extension=couchbase.so" > /etc/php/7.2/mods-available/couchbase.ini \
-    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/apache2/conf.d/30-couchbase.ini \
-    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/cli/conf.d/30-couchbase.ini \
-    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/cgi/conf.d/30-couchbase.ini \
-    && ln -sf /etc/php/7.2/mods-available/couchbase.ini /etc/php/7.2/fpm/conf.d/30-couchbase.ini \
 
     && echo "extension=couchbase.so" > /etc/php/7.3/mods-available/couchbase.ini \
     && ln -sf /etc/php/7.3/mods-available/couchbase.ini /etc/php/7.3/apache2/conf.d/30-couchbase.ini \
@@ -265,75 +253,75 @@ RUN cd /tmp \
     && sed -i -e "s/^#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/9.6/main/postgresql.conf \
 
 # php stuff - after vesta because of vesta-php installs
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/8.0/apache2/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/8.0/cli/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/8.0/cgi/php.ini \
+    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/8.0/fpm/php.ini \
+
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.4/apache2/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.4/cli/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.4/cgi/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.4/fpm/php.ini \
-
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.2/apache2/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.2/cli/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.2/cgi/php.ini \
-    && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.2/fpm/php.ini \
 
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.3/apache2/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.3/cli/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.3/cgi/php.ini \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 600M/" /etc/php/7.3/fpm/php.ini \
 
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/8.0/apache2/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/8.0/cli/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/8.0/cgi/php.ini \
+    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/8.0/fpm/php.ini \
+
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.4/apache2/php.ini \
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.4/cli/php.ini \
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.4/cgi/php.ini \
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.4/fpm/php.ini \
-
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.2/apache2/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.2/cli/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.2/cgi/php.ini \
-    && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.2/fpm/php.ini \
 
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.3/apache2/php.ini \
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.3/cli/php.ini \
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.3/cgi/php.ini \
     && sed -i "s/post_max_size = 8M/post_max_size = 600M/" /etc/php/7.3/fpm/php.ini \
 
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/8.0/apache2/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/8.0/cli/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/8.0/cgi/php.ini \
+    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/8.0/fpm/php.ini \
+
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.4/apache2/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.4/cli/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.4/cgi/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.4/fpm/php.ini \
-
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.2/apache2/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.2/cli/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.2/cgi/php.ini \
-    && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.2/fpm/php.ini \
 
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.3/apache2/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.3/cli/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.3/cgi/php.ini \
     && sed -i "s/max_input_time = 60/max_input_time = 3600/" /etc/php/7.3/fpm/php.ini \
 
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/8.0/apache2/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/8.0/cli/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/8.0/cgi/php.ini \
+    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/8.0/fpm/php.ini \
+
     && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.4/apache2/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.4/cli/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.4/cgi/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.4/fpm/php.ini \
-
-    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.2/apache2/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.2/cli/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.2/cgi/php.ini \
-    && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.2/fpm/php.ini \
 
     && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.3/apache2/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.3/cli/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.3/cgi/php.ini \
     && sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.3/fpm/php.ini \
 
+    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/8.0/apache2/php.ini \
+    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/8.0/cli/php.ini \
+    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/8.0/cgi/php.ini \
+    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/8.0/fpm/php.ini \
+
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.4/apache2/php.ini \
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.4/cli/php.ini \
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.4/cgi/php.ini \
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.4/fpm/php.ini \
-
-    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.2/apache2/php.ini \
-    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.2/cli/php.ini \
-    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.2/cgi/php.ini \
-    && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.2/fpm/php.ini \
 
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.3/apache2/php.ini \
     && sed -i -e "s/;sendmail_path =/sendmail_path = \/usr\/sbin\/exim \-t/g" /etc/php/7.3/cli/php.ini \
@@ -369,9 +357,9 @@ RUN cd /tmp \
     && sed -i -e "s/ROLE \$DBUSER/ROLE \$DBUSER WITH LOGIN/g" /usr/local/vesta/func/rebuild.sh \
     && sed -i -e "s/plsql/psql/g" /usr/local/vesta/bin/v-update-sys-rrd-pgsql \
 
-# apache stuff
+# apache stuff, default php7.4
     && echo "\nServerName localhost\n" >> /etc/apache2/apache2.conf \
-    && a2enmod headers && a2dismod php7.3 && a2dismod php7.4 && a2enmod php7.2 \
+    && a2enmod headers && a2dismod php7.3 && a2dismod php8.0 && a2enmod php7.4 \
 
 # disable localhost redirect to bad default IP
     && sed -i -e "s/^NAT=.*/NAT=\'\'/g" /usr/local/vesta/data/ips/* \

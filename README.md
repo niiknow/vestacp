@@ -4,7 +4,7 @@ The ultimate control panel with docker (thanks lagun4ik for a great start)
 <b>What's included?</b>
 * ubuntu 16.04 lts + Vesta 0.9.8-25
 * nginx (proxy) -> apache2 -> php-fcgi - high performance and flexible implementation
-* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 12.x, golang 1.14.x, openvpn, mongodb, couchdb, .net core 3.1
+* ssh/sftp, letsencrypt, memcached, redis, MariaDB 10.2, postgresql 9.6, nodejs 12.x, golang 1.15.x, openvpn, mongodb, couchdb, .net core 3.1
 * folder redirection for data persistence and automatic daily backup provided by VestaCP
 * DNS, named, dovecot/roundcube, spamassassin, clamav, etc... -- disabled by default
 * vesta panel SSL (LE-issued) for mail and control panel - provide $HOSTNAME environment variable
@@ -52,7 +52,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] Replace phpmyadmin and phppgadmin with adminer.
 
 ### misc/tested/verified
-- [x] ssh/sftp, nginx, apache2, php7.2+ & v8js 
+- [x] ssh/sftp, nginx, apache2, php7.3+ & v8js 
 - [x] log viewing in Vesta
 - [x] backup and restore
 - [x] Vesta FileManager
@@ -65,7 +65,7 @@ FTP was not installed on purpose because it's not secure.  Use SFTP instead on t
 - [x] add incron to monitor and immediately backup /etc/{passwd,shadow,gshadow,group}
 - [x] nginx pagespeed module
 - [x] redirect awstats
-- [x] multiple php{7.2,7.3,7.4} fcgi and fpm templates
+- [x] multiple php{7.3,7.4,8.0} fcgi and fpm templates
 
 ### your todo
 - [ ] I recommend the following:
@@ -107,7 +107,10 @@ server {
 
 
 ## Release Notes
-1.9.4 - fix build and prep for php8.0
+1.10.0 - add php8.0, remove php7.2, default php7.4.  It is suggest that you start this like migrating server: backup and restore individual user.
+
+1.9.3 - fix build and prep for php8.0
+
 1.9.1 - build update for nginx 1.18.0, GoLang 1.14.3, nodejs 12, and phpv8js for php7.4
 
 1.9.0 - remove php7.1 and add php7.4, update to GoLang 1.13.5 and dotnet 3.1
