@@ -2,7 +2,7 @@ FROM niiknow/docker-hostingbase:1.5.3
 LABEL maintainer="noogen <friends@niiknow.org>"
 ENV DEBIAN_FRONTEND=noninteractive \
     VESTA=/usr/local/vesta \
-    GOLANG_VERSION=1.14.3 \
+    GOLANG_VERSION=1.15.5 \
     NGINX_BUILD_DIR=/usr/src/nginx \
     NGINX_DEVEL_KIT_VERSION=0.3.0 NGINX_SET_MISC_MODULE_VERSION=0.32 \
     NGINX_VERSION=1.18.0 \
@@ -62,7 +62,7 @@ RUN cd /tmp \
     && apt-get build-dep nginx -y \
     && cd ${NGINX_BUILD_DIR}/nginx-${NGINX_VERSION}; dpkg-buildpackage -uc -us -b \
     && cd ${NGINX_BUILD_DIR} \
-    && dpkg -i nginx_${NGINX_VERSION}-1~xenial_amd64.deb \
+    && dpkg -i nginx_${NGINX_VERSION}-2~xenial_amd64.deb \
     && apt-get install -yq php7.4-mbstring php7.4-cgi php7.4-cli php7.4-dev php7.4-geoip php7.4-common php7.4-xmlrpc php7.4-sybase php7.4-curl \
         php7.4-enchant php7.4-imap php7.4-xsl php7.4-mysql php7.4-mysqli php7.4-mysqlnd php7.4-pspell php7.4-gd php7.4-zip \
         php7.4-tidy php7.4-opcache php7.4-json php7.4-bz2 php7.4-pgsql php7.4-readline php7.4-imagick php7.3-phar \
